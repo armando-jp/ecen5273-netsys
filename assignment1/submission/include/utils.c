@@ -41,7 +41,7 @@ bool is_ip(char *ip)
     strcpy(ip_str, ip);
 
     char *ptr;
-    uint8_t dots;
+    uint8_t dots = 0;
     uint16_t num;
 
     if(ip_str == NULL)
@@ -89,8 +89,6 @@ bool is_ip(char *ip)
     }
 
     return true;
-    
-
 }
 
 bool is_port(char *port_str)
@@ -113,3 +111,4 @@ bool is_port(char *port_str)
 
     return false;
 }
+

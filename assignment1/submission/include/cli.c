@@ -1,7 +1,10 @@
 #include "cli.h"
+#include <stdio.h>
 
 const char *ws1=" \t";
 const char *ws2=" \t\r\n";
+
+static char user_input[MAX_USER_INPUT];
 
 static const
 CLICMDS cli[NUM_COMMANDS] = {
@@ -31,7 +34,7 @@ char *get_help(uint8_t cmd)
  * Find token in table.
  * Return command code, or 0 if not found.
  */
-uint8_t match_command(char *token)
+static uint8_t match_command(char *token)
 {
     uint8_t i = NUM_COMMANDS;
     for (i = 0; i < NUM_COMMANDS; i++)
@@ -45,7 +48,7 @@ uint8_t match_command(char *token)
  * Return CMD value, or 0 if no command.
  * If command has a arg, return in *param.
  */
-int16_t get_command(char *buf, char *param, uint16_t *param2)
+int16_t get_command(char *buf, char *param)
 {
     char *token = buf;
     int16_t rval = 0;
@@ -68,13 +71,19 @@ int16_t get_command(char *buf, char *param, uint16_t *param2)
         // "get <file_name>"
         case CMD_GET:
             token = strtok(NULL, ws2);
-            strcpy(param, token);
 
             // if <file_name> not found, return 0.
-            if (token == NULL) 
+            if (!token) 
+            {
                 cmd = 0;
-
+            }
+            else
+            {
+                strcpy(param, token);
+            }
             break;
+                
+
 
         // For CMD_GPUT we expect
         // "put <file_name>"
@@ -84,7 +93,9 @@ int16_t get_command(char *buf, char *param, uint16_t *param2)
 
             // if <file_name> not found, return 0.
             if (token == NULL) 
+            {
                 cmd = 0;
+            }
 
             break;
 
@@ -96,10 +107,28 @@ int16_t get_command(char *buf, char *param, uint16_t *param2)
 
             // if <file_name> not found, return 0.
             if (token == NULL) 
+            {
                 cmd = 0;
+            }
 
             break;
 
     }
     return (cmd);
+}
+
+void cli_display_main_menu()
+{
+    printf("Main Menu\n");
+    for(int i = 1; i <= NUM_COMMANDS; i++)
+    {
+        printf("%d. %s", i, get_help(i));
+    }
+}
+
+char *cli_get_user_response()
+{
+    printf("> ");
+    fgets(user_input, MAX_USER_INPUT, stdin);
+    return user_input;
 }

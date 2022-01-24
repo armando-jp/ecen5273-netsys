@@ -5,6 +5,9 @@
 #include <stdint.h>
 #include <string.h>
 
+#define MAX_USER_INPUT (50)
+#define MAX_USER_ARG   (50)
+
 typedef struct _cli {
   char *text;
   char *help;
@@ -20,6 +23,8 @@ typedef struct _cli {
 #define NUM_COMMANDS 5
 
 char *get_help(uint8_t cmd);
-
+void cli_display_main_menu();
+char *cli_get_user_response();
+int16_t get_command(char *buf, char *param);
 
 #endif /*INC_CLI_*/
