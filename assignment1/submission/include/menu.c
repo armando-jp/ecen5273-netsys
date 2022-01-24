@@ -1,5 +1,8 @@
 #include <stdio.h>
 #include "menu.h"
+#include "cli.h"
+
+char user_input[MAX_USER_INPUT];
 
 static char *txt_bad_args_client = "Invalid arguments!\n\
 Usage: client [ip_address] [port_number]\n";
@@ -36,3 +39,17 @@ void msg_invalid_port(char *port_str)
 {
     printf("%s is an invalid port!\n", port_str);
 }
+
+void msg_display_main_menu()
+{
+    printf("Main Menu\n");
+    for(int i = 1; i <= NUM_COMMANDS; i++)
+    {
+        printf("%d. %s", i, get_help(i));
+    }
+}
+
+// char *get_user_input()
+// {
+//     fgets(user_input, MAX_USER_INPUT, )
+// }

@@ -26,8 +26,8 @@ LDLIBS   := -lm                # Left empty if no libs are needed
 
 all: client server
 
-client: ./client/uftp_client.c ./include/menu.c ./include/utils.c
-	$(CC) -o client_out ./client/uftp_client.c  ./include/menu.c ./include/utils.c
+client: ./client/uftp_client.c ./include/menu.c ./include/utils.c ./include/cli.c
+	$(CC) -o client_out ./client/uftp_client.c  ./include/menu.c ./include/utils.c ./include/cli.c
 
 server: ./server/uftp_server.c ./include/menu.c
 	$(CC) -o server_out ./server/uftp_server.c  ./include/menu.c
