@@ -7,6 +7,7 @@
 // function declerations
 void test_greeting(int);
 void msg_bad_args_client();
+void msg_bad_args_server();
 void msg_invalid_port(char *port_str);
 void msg_invalid_ip(char *ip);
 void msg_bad_command();

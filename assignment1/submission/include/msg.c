@@ -4,6 +4,9 @@
 static char *txt_bad_args_client = "Invalid arguments!\n\
 Usage: client [ip_address] [port_number]\n";
 
+static char *txt_bad_args_server = "Invalid arguments!\n\
+Usage: server [port_number]\n";
+
 
 void test_greeting(int selection)
 {
@@ -46,4 +49,9 @@ void msg_bad_command()
 void msg_app_closing()
 {
     printf("Terminating client application.\n");
+}
+
+void msg_bad_args_server()
+{
+    printf("%s", txt_bad_args_server);
 }

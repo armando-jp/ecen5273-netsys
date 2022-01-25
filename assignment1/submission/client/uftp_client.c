@@ -2,6 +2,7 @@
 #include "../include/cli.h"
 #include "../include/utils.h"
 #include "../include/socket.h"
+
 #include <stdio.h>
 
 int main(int argc, char *argv[]) 
@@ -42,7 +43,7 @@ int main(int argc, char *argv[])
 
     // generate struct needed for connection
     // TODO: ERROR HANDLING
-    ret = sock_init_udp_struct(port_str, ip_str);
+    ret = sock_init_udp_struct(port_str, ip_str, true);
     sock_create_socket();
     // sock_print_ip();
     ret = sock_sendto("Hello from Client!\n", 20);

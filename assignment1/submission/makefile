@@ -29,5 +29,5 @@ all: client server
 client: ./client/uftp_client.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c
 	$(CC) -o client_out ./client/uftp_client.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c
 
-server: ./server/uftp_server.c ./include/msg.c
-	$(CC) -o server_out ./server/uftp_server.c  ./include/msg.c
+server: ./server/uftp_server.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c
+	$(CC) -o server_out ./server/uftp_server.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c
