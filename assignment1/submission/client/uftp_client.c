@@ -1,7 +1,7 @@
 #include "../include/msg.h"
 #include "../include/cli.h"
 #include "../include/utils.h"
-
+#include "../include/socket.h"
 #include <stdio.h>
 
 int main(int argc, char *argv[]) 
@@ -23,6 +23,9 @@ int main(int argc, char *argv[])
     char *port_str = argv[2];
 
     // verify IP string
+    // TODO: This only applies if IPv4 is supplied and won't work
+    // with a string (i.e. www.google.com) consider removing and checking 
+    // for valid address later in program?
     if(!is_ip(ip_str))
     {
         msg_invalid_ip(ip_str);
@@ -37,6 +40,15 @@ int main(int argc, char *argv[])
         return 0;
     }
 
+    // generate struct needed for connection
+    // TODO: ERROR HANDLING
+    ret = sock_init_udp_struct(port_str, ip_str);
+    sock_create_socket();
+    // sock_print_ip();
+    ret = sock_sendto("Hello from Client!\n", 20);
+    printf("Sent %d bytes to %s\n", ret, ip_str);
+    sock_free_udp_struct();
+    
     // enter super loop
     while(1)
     {
