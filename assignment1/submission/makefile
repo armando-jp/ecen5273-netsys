@@ -22,12 +22,12 @@ OBJ += $(patsubst $(INCLUDE_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
 CFLAGS   := -Wall              # some warnings about bad code
 LDFLAGS  := -Llib              # -L is a linker flag
-LDLIBS   := -lm                # Left empty if no libs are needed
+LDLIBS   := -lrt       # Left empty if no libs are needed
 
 all: client server
 
-client: ./client/uftp_client.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c
-	$(CC) -o client_out ./client/uftp_client.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c
+client: ./client/uftp_client.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c
+	$(CC) -o client_out ./client/uftp_client.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c $(LDLIBS)
 
-server: ./server/uftp_server.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c
-	$(CC) -o server_out ./server/uftp_server.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c
+server: ./server/uftp_server.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c
+	$(CC) -o server_out ./server/uftp_server.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c $(LDLIBS)

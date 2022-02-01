@@ -2,8 +2,11 @@
 #include "../include/cli.h"
 #include "../include/utils.h"
 #include "../include/socket.h"
+#include "../include/timer.h"
 
 #include <stdio.h>
+
+extern struct t_eventData eventData;
 
 int main(int argc, char *argv[]) 
 {
@@ -12,6 +15,7 @@ int main(int argc, char *argv[])
     char *user_resp = NULL;
     char user_param[MAX_USER_ARG];
     char payload[MAX_PAYLOAD];
+    
 
     // verify the correct number of arguments
     if(argc != 3)

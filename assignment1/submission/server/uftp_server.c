@@ -2,6 +2,7 @@
 #include "../include/cli.h"
 #include "../include/utils.h"
 #include "../include/socket.h"
+#include "../include/timer.h"
 
 #include <stdio.h>
 
@@ -39,8 +40,7 @@ int main(int argc, char *argv[])
     {
         printf("listener: waiting to recvfrom...\n");
         // block until message is received
-        sock_clear_array(in_buf);
-
+        sock_clear_input_buffer();
         sock_recv();
         sock_print_last_msg();
 

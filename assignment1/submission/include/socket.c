@@ -12,10 +12,8 @@
 
 #include "socket.h"
 
-// TODO: Remove error handling from here (all printf statements) and 
-// relocate to msg.c/h
-
 static int status;
+
 
 static char ip4[INET_ADDRSTRLEN]; // space to hold IPv4 strings4
 
@@ -30,6 +28,72 @@ char in_buf[MAX_IN_BUF_LEN];
 int numbytes;
 socklen_t addr_len;
 
+
+
+/*******************************************************************************
+* Utility Functions
+*******************************************************************************/
+// prints the IP address generated in the servinfo struct
+void sock_print_ip()
+{
+    struct addrinfo *p;
+    char ipstr[INET6_ADDRSTRLEN];
+
+    for(p = servinfo; p != NULL; p = p->ai_next) 
+    {
+        void *addr;
+        char *ipver;
+
+        // get the pointer to the address itself,
+        // different fields in IPv4 and IPv6:
+        if (p->ai_family == AF_INET) // IPv4
+        { 
+            struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
+            addr = &(ipv4->sin_addr);
+            ipver = "IPv4";
+        }
+        else // IPv6
+        { 
+            struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
+            addr = &(ipv6->sin6_addr);
+            ipver = "IPv6";
+        }
+        // convert the IP to a string and print it:
+        inet_ntop(p->ai_family, addr, ipstr, sizeof ipstr);
+        printf("  %s: %s\n", ipver, ipstr);
+    }
+}
+
+// get sockaddr, IPv4 or IPv6:
+void *sock_get_in_addr(struct sockaddr *sa)
+{
+    // IPv4
+    if (sa->sa_family == AF_INET) 
+    {
+        return &(((struct sockaddr_in*)sa)->sin_addr);
+    }
+
+    // IPv6
+    return &(((struct sockaddr_in6*)sa)->sin6_addr);
+}
+
+// Prints the last received message 
+void sock_print_last_msg()
+{
+    printf("server: packet is %d bytes long\n", numbytes);
+    in_buf[numbytes] = '\0';
+    printf("server: packet contains \"%s\"\n", in_buf);
+}
+
+// clears the input buffer
+void sock_clear_input_buffer()
+{
+    memset(in_buf, 0, sizeof(in_buf));
+}
+
+/*******************************************************************************
+* Functions used for initialize/disable UDP interfaces
+*******************************************************************************/
 // initialize servinfo struct using IPv4/IPv6, UDP, and assign address of 
 // local host to the socket struct.
 bool sock_init_udp_struct(char *port, char *ip, bool is_client)
@@ -64,37 +128,6 @@ void sock_free_udp_struct()
     freeaddrinfo(servinfo); // free linked list
 }
 
-// prints the IP address generated in the servinfo struct
-void sock_print_ip()
-{
-    struct addrinfo *p;
-    char ipstr[INET6_ADDRSTRLEN];
-
-    for(p = servinfo; p != NULL; p = p->ai_next) 
-    {
-        void *addr;
-        char *ipver;
-
-        // get the pointer to the address itself,
-        // different fields in IPv4 and IPv6:
-        if (p->ai_family == AF_INET) // IPv4
-        { 
-            struct sockaddr_in *ipv4 = (struct sockaddr_in *)p->ai_addr;
-            addr = &(ipv4->sin_addr);
-            ipver = "IPv4";
-        }
-        else // IPv6
-        { 
-            struct sockaddr_in6 *ipv6 = (struct sockaddr_in6 *)p->ai_addr;
-            addr = &(ipv6->sin6_addr);
-            ipver = "IPv6";
-        }
-        // convert the IP to a string and print it:
-        inet_ntop(p->ai_family, addr, ipstr, sizeof ipstr);
-        printf("  %s: %s\n", ipver, ipstr);
-    }
-}
-
 bool sock_create_socket()
 {
     struct addrinfo *p;
@@ -124,20 +157,6 @@ int sock_sendto(char *buf, uint32_t length)
     return sendto(sockfd, buf, length, 0, ptr->ai_addr, ptr->ai_addrlen);
 }
 
-// get sockaddr, IPv4 or IPv6:
-void *sock_get_in_addr(struct sockaddr *sa)
-{
-    // IPv4
-    if (sa->sa_family == AF_INET) 
-    {
-        return &(((struct sockaddr_in*)sa)->sin_addr);
-    }
-
-    // IPv6
-    return &(((struct sockaddr_in6*)sa)->sin6_addr);
-}
-
-// creates socket and binds
 int sock_bind()
 {
     for(ptr = servinfo; ptr != NULL; ptr = ptr->ai_next) 
@@ -165,6 +184,11 @@ int sock_bind()
     }
 }
 
+// Attempts to receive (MAX_IN_BUF_LEN-1) bytes over a UDP connection.
+// Stores result in (in_buf), number of bytes read (numbytes) message origin IP 
+// (their_addr), and length of origin address (addr_len). 
+//
+// This is a BLOCKING CALL.
 int sock_recv()
 {
     addr_len = sizeof their_addr;
@@ -177,19 +201,7 @@ int sock_recv()
     return numbytes;
 }
 
-void sock_print_last_msg()
-{
-    printf("server: packet is %d bytes long\n", numbytes);
-    in_buf[numbytes] = '\0';
-    printf("server: packet contains \"%s\"\n", in_buf);
-}
-
 void sock_close_socket()
 {
     close(sockfd);
-}
-
-void sock_clear_array(char *buf)
-{
-    memset(buf, 0, sizeof(buf));
 }

@@ -15,5 +15,5 @@ int sock_bind();
 int sock_recv();
 void sock_print_last_msg();
 void sock_close_socket();
-void sock_clear_array(char *buf);
+void sock_clear_input_buffer();
 #endif /*INC_SOCKET_H_*/
