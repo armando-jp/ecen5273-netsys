@@ -188,3 +188,8 @@ void sock_close_socket()
 {
     close(sockfd);
 }
+
+void sock_clear_array(char *buf)
+{
+    memset(buf, 0, sizeof(buf));
+}

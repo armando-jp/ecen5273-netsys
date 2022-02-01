@@ -11,6 +11,7 @@ int main(int argc, char *argv[])
     int ret;
     char *user_resp = NULL;
     char user_param[MAX_USER_ARG];
+    char payload[MAX_PAYLOAD];
 
     // verify the correct number of arguments
     if(argc != 3)
@@ -46,7 +47,7 @@ int main(int argc, char *argv[])
     ret = sock_init_udp_struct(port_str, ip_str, true);
     sock_create_socket();
     // sock_print_ip();
-    ret = sock_sendto("Hello from Client!\n", 20);
+    ret = sock_sendto("Hello from Client!", 19);
     printf("Sent %d bytes to %s\n", ret, ip_str);
     sock_free_udp_struct();
     
@@ -68,18 +69,31 @@ int main(int argc, char *argv[])
         {
             case CMD_GET:
                 // perform get operation
+                // calculate payload size
+                snprintf(payload, MAX_PAYLOAD, "get %s",user_param);
+                ret = sock_sendto(payload, strlen(payload));
+                printf("Sent %d bytes to %s\n", ret, ip_str);
                 break;
 
             case CMD_PUT:
                 // perform put operation
+                snprintf(payload, MAX_PAYLOAD, "put %s",user_param);
+                ret = sock_sendto(payload, strlen(payload));
+                printf("Sent %d bytes to %s\n", ret, ip_str);
                 break;
 
             case CMD_DELETE:
                 // perform delete operation
+                snprintf(payload, MAX_PAYLOAD, "delete %s",user_param);
+                ret = sock_sendto(payload, strlen(payload));
+                printf("Sent %d bytes to %s\n", ret, ip_str);
                 break;
 
             case CMD_LS:
                 // perform ls operation
+                snprintf(payload, MAX_PAYLOAD, "ls %s",user_param);
+                ret = sock_sendto(payload, strlen(payload));
+                printf("Sent %d bytes to %s\n", ret, ip_str);
                 break;
 
             case CMD_EXIT:

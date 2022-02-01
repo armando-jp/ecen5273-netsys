@@ -9,7 +9,7 @@ static char user_input[MAX_USER_INPUT];
 static const
 CLICMDS cli[NUM_COMMANDS] = {
     {"get",    "\tget <file_name>\r\n",    CMD_GET},
-    {"put",    "\tput <file_name>\r\n",  CMD_PUT},
+    {"put",    "\tput <file_name>\r\n",    CMD_PUT},
     {"delete", "\tdelete <file_name>\r\n", CMD_DELETE},
     {"ls",     "\tls\r\n",                 CMD_LS},
     {"exit",   "\texit\r\n",               CMD_EXIT},
@@ -85,7 +85,7 @@ int16_t get_command(char *buf, char *param)
                 
 
 
-        // For CMD_GPUT we expect
+        // For CMD_PUT we expect
         // "put <file_name>"
         case CMD_PUT:
             token = strtok(NULL, ws2);
