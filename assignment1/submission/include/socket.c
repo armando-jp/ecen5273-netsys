@@ -34,6 +34,11 @@ socklen_t addr_len;
 * Utility Functions
 *******************************************************************************/
 // prints the IP address generated in the servinfo struct
+char *sock_get_in_buf()
+{
+    return in_buf;
+}
+
 void sock_print_ip()
 {
     struct addrinfo *p;

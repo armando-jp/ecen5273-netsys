@@ -3,6 +3,9 @@
 #include "../include/utils.h"
 #include "../include/socket.h"
 #include "../include/timer.h"
+#include "../include/file.h"
+#include "../include/crc.h"
+#include "../include/packet.h"
 
 #include <stdio.h>
 
@@ -31,7 +34,7 @@ int main(int argc, char *argv[])
     }
 
     sock_init_udp_struct(port_str, NULL, false);
-    // sock_create_socket();
+    sock_create_socket();
     sock_bind();
     sock_free_udp_struct();
 
@@ -41,8 +44,9 @@ int main(int argc, char *argv[])
         printf("listener: waiting to recvfrom...\n");
         // block until message is received
         sock_clear_input_buffer();
-        sock_recv();
-        sock_print_last_msg();
+        ret = sock_recv();
+        printf("Received bytes = %d\n", ret);
+        packet_print(sock_get_in_buf(), ret);
 
         // process command
         ret = get_command(in_buf, cmd_params);
@@ -62,6 +66,11 @@ int main(int argc, char *argv[])
             case CMD_PUT:
                 // perform put operation
                 printf("Performing PUT command with param \"%s\"\n", cmd_params);
+
+                sock_clear_input_buffer();
+                ret = sock_recv();
+                packet_print(sock_get_in_buf(), ret);
+                
                 break;
 
             case CMD_DELETE:

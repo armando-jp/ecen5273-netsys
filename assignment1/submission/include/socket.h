@@ -1,10 +1,10 @@
 #ifndef INC_SOCKET_H_
 #define INC_SOCKET_H_
 
-#define MAX_IN_BUF_LEN (100)
-#define MAX_PAYLOAD (64000) // 64 Bytes
+#define MAX_IN_BUF_LEN (600)
 
 // function declerations
+char *sock_get_in_buf();
 bool sock_init_udp_struct(char *port, char *ip, bool is_client);
 void sock_free_udp_struct();
 void sock_print_ip();
