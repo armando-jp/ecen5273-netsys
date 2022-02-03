@@ -12,6 +12,7 @@
 int ret;
 char cmd_params[MAX_USER_ARG];
 extern char in_buf[MAX_IN_BUF_LEN];
+uint32_t crc32;
 
 int main(int argc, char *argv[]) 
 {
@@ -45,11 +46,24 @@ int main(int argc, char *argv[])
         // block until message is received
         sock_clear_input_buffer();
         ret = sock_recv();
-        printf("Received bytes = %d\n", ret);
-        packet_print(sock_get_in_buf(), ret);
+
+        // parse input sock buffer into packet struct
+        packet_parse(sock_get_in_buf());
+        packet_print_struct();
+
+        // verify that payload contents are correct
+        crc32 = crc_generate(packet_get_payload(), packet_get_payload_size());
+        if(crc32 != packet_get_crc32())
+        {
+            printf("CRC32 mismatch, corrupted packet!");
+            continue;
+        }
+
+    
+
 
         // process command
-        ret = get_command(in_buf, cmd_params);
+        ret = get_command(packet_get_payload(), cmd_params);
         if(!ret)
         {
             msg_bad_command();
@@ -64,12 +78,31 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_PUT:
+                // the command we received was correct
+                // 1. generate ACK packet.
+                // 2. send ACK packet
+
+
                 // perform put operation
                 printf("Performing PUT command with param \"%s\"\n", cmd_params);
 
-                sock_clear_input_buffer();
-                ret = sock_recv();
-                packet_print(sock_get_in_buf(), ret);
+                // // receive a chunk
+                // sock_clear_input_buffer();
+                // ret = sock_recv();
+
+                // // parse packet
+                // packet_parse(sock_get_in_buf());
+
+                // // print parsed packet
+                // packet_print_struct();
+
+                // // get crc32 for received chunks
+                // uint32_t crc32 = crc_generate(packet_get_payload(), packet_get_payload_size());
+                // printf("Calculated CRC32: %u\n", crc32);
+
+                // // print OG payload
+                // printf("Unparsed payload contents\n");
+                // packet_print(sock_get_in_buf(), ret);
                 
                 break;
 

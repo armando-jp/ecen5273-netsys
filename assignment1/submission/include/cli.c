@@ -5,6 +5,7 @@ const char *ws1=" \t";
 const char *ws2=" \t\r\n";
 
 static char user_input[MAX_USER_INPUT];
+static char cmd_filtered[MAX_USER_INPUT];
 
 static const
 CLICMDS cli[NUM_COMMANDS] = {
@@ -14,6 +15,23 @@ CLICMDS cli[NUM_COMMANDS] = {
     {"ls",     "\tls\r\n",                 CMD_LS},
     {"exit",   "\texit\r\n",               CMD_EXIT},
 };
+
+// generates a filtered string of the users command
+void cli_generate_filtered_usr_cmd(char *cmd, char *param)
+{
+    memset(cmd_filtered, 0, MAX_USER_INPUT);
+    sprintf(cmd_filtered, "%s %s", cmd, param);
+}
+
+uint32_t cli_get_filtered_usr_cmd_size()
+{
+    return strlen(cmd_filtered);
+}
+
+char *cli_get_filtered_usr_cmd()
+{
+    return cmd_filtered;
+}
 
 // returns the help string specified by the 'cmd' arg
 char *get_help(uint8_t cmd)

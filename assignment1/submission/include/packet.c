@@ -4,64 +4,133 @@
 
 #include "packet.h"
 
-// packet size = |PAYLOAD SIZE (4 bytes) | PAYLOAD (<=CHUNK_SIZE) | CRC32 (4 bytes)|
-//                           4           +           500          +      4
-uint32_t packet_generate(char *packet_buf, uint32_t packet_size, char *payload_buf, uint32_t payload_size, uint32_t crc32)
+/*
+ * The way to use this library is to first load the packet struct with:
+ *      * payload size (uint32_t)
+ *      * payload      (char array[<=MAX_PAYLOAD])
+ *      * crc32        (uint32_t)
+ * Using the packet_write_*() commands.
+ * 
+ * Then, after loading the struct, use packet_generate() to populate the char 
+ * array which will be transmitted via UDP.
+ * 
+ * On the receiving device, the usage is to use packet_parse() to populate
+ * the packet struct. Packet struct fields can then be accessed using the 
+ * packet_get_*() methods.
+ * 
+ * Use https://crccalc.com/ to verify generated crc32 values.
+ */
+
+// Struct for holding parsed packet contents
+static Packet packet = {0};
+// Char array for holding unparsed packet contents
+static char packet_buf[MAX_PAYLOAD];
+
+
+/*******************************************************************************
+* Functions for generating and parsing packets
+*******************************************************************************/
+uint32_t packet_generate()
 {
     // clear packet_buf
-    memset(packet_buf, 0, packet_size);
+    memset(packet_buf, 0, MAX_PAYLOAD);
 
     // copy size field into first 4 bytes of packet_buf
-    memcpy(packet_buf, &payload_size, sizeof(uint32_t));
+    memcpy(packet_buf, &packet.payload_size, sizeof(packet.payload_size));
 
     // copy payload into packet_buf
-    memcpy(packet_buf + 4, payload_buf, payload_size);
+    memcpy(packet_buf + sizeof(packet.payload_size), packet.payload, packet.payload_size);
 
     // copy crc32 into last 4 bytes of packet_buf
-    memcpy((packet_buf + packet_size + 4), &crc32, sizeof(uint32_t));
+    memcpy((packet_buf + packet.payload_size + sizeof(packet.payload_size)), &packet.crc32, sizeof(packet.crc32));
 
-    return 4 + packet_size + 4;
+    //             4 bytes     + <=500 bytes +    4 bytes
+    return sizeof(packet.payload_size) + packet.payload_size + sizeof(packet.crc32);
 }
 
-void packet_print(char *packet_buf, uint32_t size)
+
+// Used by receiving device. Used to parse a buffer into the packet struct.
+void packet_parse(char *buf)
+{
+    // copy size field
+    memcpy(&packet.payload_size, buf, sizeof(packet.payload_size));
+    // copy payload
+    memcpy(packet.payload, buf+sizeof(packet.payload_size), packet.payload_size);
+    // copy crc32 field            4 bytes           <=500 bytes
+    memcpy(&packet.crc32, sizeof(packet.payload_size) + buf + packet.payload_size, sizeof(packet.crc32));
+    // populate total packet size field
+    packet.total_size = sizeof(packet.payload_size) + packet.payload_size + sizeof(packet.crc32);
+}
+
+
+/*******************************************************************************
+* Functions for getting and writing to packet struct
+*******************************************************************************/
+char *packet_get_payload()
+{
+    return packet.payload;
+}
+
+uint32_t packet_get_payload_size()
+{
+    return packet.payload_size;
+}
+
+uint32_t packet_get_crc32()
+{
+    return packet.crc32;
+}
+
+uint32_t packet_get_total_size()
+{
+    return packet.total_size;
+}
+
+void packet_write_payload(char *buf, uint32_t size)
+{
+    memset(packet.payload, 0, CHUNK_SIZE);
+    memcpy(packet.payload, buf, size);
+}
+
+void packet_write_payload_size(uint32_t size)
+{
+    packet.payload_size = size;
+}
+
+void packet_write_crc32(uint32_t crc32)
+{
+    packet.crc32 = crc32;
+}
+
+void packet_write_total_size(uint32_t size)
+{
+    packet.total_size = size;
+}
+
+char *packet_get_buf()
+{
+    return packet_buf;
+}
+/*******************************************************************************
+* Utility functions
+*******************************************************************************/
+void packet_print(char *buf, uint32_t size)
 {
     int i = 0;
     while(size)
     {
-        printf("%02x ", packet_buf[i] & 0xFF);
+        printf("%02x ", buf[i] & 0xFF);
         size--;
         i++;
     }
     printf("\n");
 }
 
-char *packet_get_buf(char *packet_buf)
+void packet_print_struct()
 {
-    return packet_buf;
-}
-
-void packet_extract()
-{
-
-}
-
-int packet_command(char *packet_buf, char *cmd, char *user_param)
-{
-    uint32_t size;
-
-    // clear packet_buf
-    memset(packet_buf, 0, sizeof(packet_buf));
-
-    // copy size field into first 4 bytes of packet_buf
-    printf("cmd, user_param = %s %s\n", cmd, user_param);
-
-    memcpy(packet_buf, cmd, strlen(cmd));
-    packet_buf[strlen(cmd)] = 0x20;
-    memcpy(packet_buf + 1 + strlen(cmd), user_param, strlen(user_param));
-
-    // snprintf(packet_buf, sizeof(packet_buf), "%s %s", cmd, user_param);
-    printf("packet contents = %s\n", packet_buf);
-
-    size = strlen(cmd) + 1 + strlen(user_param);
-    return size;
+    printf("SIZE OF PACKET: %u\n", packet.total_size);
+    printf("SIZE OF PAYLOAD: %u\n", packet.payload_size);
+    printf("PAYLOAD CONTENTS:\n");
+    packet_print(packet.payload, packet.payload_size);
+    printf("PACKET CRC32: %u\n", packet.crc32);
 }

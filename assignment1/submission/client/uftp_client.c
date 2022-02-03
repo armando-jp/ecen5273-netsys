@@ -1,9 +1,6 @@
 #include <stdio.h>
 #include <unistd.h>
-
-#define CHUNK_SIZE (500)
-#define MAX_PAYLOAD (4 + CHUNK_SIZE + 4)
-
+#include <stdint.h>
 #include "../include/msg.h"
 #include "../include/cli.h"
 #include "../include/utils.h"
@@ -13,6 +10,9 @@
 #include "../include/crc.h"
 #include "../include/packet.h"
 
+#define DEBUG         (0)
+#define CHUNK_SIZE    (500)
+#define MAX_PAYLOAD   (4 + CHUNK_SIZE + 4)
 
 char packet[MAX_PAYLOAD];
 extern struct t_eventData eventData;
@@ -91,46 +91,98 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_PUT:
-                // send the command to prep the server
-                ret = packet_command(packet, "put", user_param);
-                printf("packet_size = %d\n", ret);
-                packet_print(packet, ret);
+                /***************************************************************
+                 * Generate CMD packet
+                 **************************************************************/
+                // generate filtered version of user commands
+                cli_generate_filtered_usr_cmd("put", user_param);
 
-                ret = sock_sendto(packet, ret);
+                // populate packet struct
+                packet_write_payload_size(cli_get_filtered_usr_cmd_size());
+                packet_write_payload(
+                    cli_get_filtered_usr_cmd(), 
+                    packet_get_payload_size()
+                );
+                packet_write_crc32(
+                    crc_generate(
+                        packet_get_payload(), 
+                        packet_get_payload_size()
+                    )
+                );
+                // generate packet buffer
+                ret = packet_generate();
+                packet_write_total_size(ret);
+
+#if DEBUG                
+                // view generated command packet fields
+                packet_print_struct();
+#endif
+                /***************************************************************
+                 * Send CMD packet & wait for ACK
+                 **************************************************************/
+                ret = sock_sendto(packet_get_buf(), packet_get_total_size());
                 printf("Sent %u bytes to %s\n", ret, ip_str);
                 printf("\n");
 
+                // wait for ACK packet before sending next message. 
+                // receiving this ACK means:
+                //      * server received msg correctly matching crc for payload
+                //      * a proper command was sent (PUT, GET, LS, DELETE)
+                if (!ACK received)
+                {
+                    // if the ack was not received, that means something went
+                    // wrong during transmission. we need to start over and go
+                    // to when user enters command. 
+                }
 
-                // display file information
-                file_open(user_param);
-                printf("%s size (bytes): %d\n", user_param, file_get_size());
 
-                // file_print_all(CHUNK_SIZE);
+                /***************************************************************
+                 * Begin sending FILE & getting ACK (send-and-wait approach)
+                 **************************************************************/
+                /**
+                 * 1. Open FILE.
+                 * 2. Generate packet of payload size CHUNK w/ paylaod size + crc32.
+                 *      IF EOF REACHED:
+                 *          TOGGLE FLAG TO INDICATE LAST LOOP
+                 * 3. Send the packet.
+                 * 4. Start timer.
+                 * 5. Wait for ACK from server.
+                 *      IF !ACK (TIMEOUT):
+                 *          REPEAT FROM STEP 3.
+                 * 6. REPEAT FROM STEP 2.
+                 * 7. CLOSE FILE.
+                 */
+        
+                // // display file information
+                // file_open(user_param);
+                // printf("%s size (bytes): %d\n", user_param, file_get_size());
 
-                // generate and print crc32
-                uint32_t crc32 = crc_generate_file(file_get_fp());
-                printf("File CRC: %u\n", crc32);
+                // // file_print_all(CHUNK_SIZE);
 
-                // reset fp for actual read
-                file_reset_fileptr();
-                ret = file_read_chunk(CHUNK_SIZE);
-                printf("Chunk read: %d\n", ret);
-                crc32 = crc_generate(file_get_file_buf(), ret);
-                printf("Chunk CRC32: %u\n", crc32);
-                uint32_t sent = packet_generate(
-                    packet, 
-                    CHUNK_SIZE,
-                    file_get_file_buf(),
-                    ret, 
-                    crc32
-                );
-                printf("Packet size: %d\n", sent);
-                packet_print(packet, sent);
+                // // generate and print crc32
+                // uint32_t crc32 = crc_generate_file(file_get_fp());
+                // printf("File CRC: %u\n", crc32);
 
-                // send file to server
-                sleep(1);
-                res = sock_sendto(packet, sent);
-                printf("Sent %u bytes to %s\n", res, ip_str);
+                // // reset fp for actual read
+                // file_reset_fileptr();
+                // ret = file_read_chunk(CHUNK_SIZE);
+                // printf("Chunk read: %d\n", ret);
+                // crc32 = crc_generate(file_get_file_buf(), ret);
+                // printf("Chunk CRC32: %u\n", crc32);
+                // uint32_t sent = packet_generate(
+                //     packet, 
+                //     CHUNK_SIZE,
+                //     file_get_file_buf(),
+                //     ret, 
+                //     crc32
+                // );
+                // printf("Packet size: %d\n", sent);
+                // packet_print(packet, sent);
+
+                // // send file to server
+                // sleep(1);
+                // res = sock_sendto(packet, sent);
+                // printf("Sent %u bytes to %s\n", res, ip_str);
                 break;
 
             case CMD_DELETE:

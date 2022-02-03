@@ -27,4 +27,8 @@ void cli_display_main_menu();
 char *cli_get_user_response();
 int16_t get_command(char *buf, char *param);
 
+// usr cmd generation
+void cli_generate_filtered_usr_cmd(char *cmd, char *param);
+uint32_t cli_get_filtered_usr_cmd_size();
+char *cli_get_filtered_usr_cmd();
 #endif /*INC_CLI_*/
