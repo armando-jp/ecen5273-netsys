@@ -9,7 +9,7 @@ bool sock_init_udp_struct(char *port, char *ip, bool is_client);
 void sock_free_udp_struct();
 void sock_print_ip();
 bool sock_create_socket();
-int sock_sendto(char *buf, uint32_t length);
+int sock_sendto(char *buf, uint32_t length, bool is_client);
 
 int sock_bind();
 int sock_recv();

@@ -19,8 +19,24 @@ CLICMDS cli[NUM_COMMANDS] = {
 // generates a filtered string of the users command
 void cli_generate_filtered_usr_cmd(char *cmd, char *param)
 {
+    char *last;
+    const char ch = '/';
+
     memset(cmd_filtered, 0, MAX_USER_INPUT);
-    sprintf(cmd_filtered, "%s %s", cmd, param);
+
+    // parse file name if contains '/'
+    last = strrchr(param, ch);
+
+    // generate filtered cmd string
+    if(last != NULL)
+    {
+        sprintf(cmd_filtered, "%s %s", cmd, last+1);
+    }
+    else
+    {
+        sprintf(cmd_filtered, "%s %s", cmd, param);
+    }
+
 }
 
 uint32_t cli_get_filtered_usr_cmd_size()

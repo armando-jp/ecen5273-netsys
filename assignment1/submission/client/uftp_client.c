@@ -16,11 +16,13 @@
 
 char packet[MAX_PAYLOAD];
 extern struct t_eventData eventData;
+uint32_t crc32_calc;
 
 int main(int argc, char *argv[]) 
 {
     // variables for user input processing
     uint32_t ret;
+    uint32_t amt_read;
     int res;
     char *user_resp = NULL;
     char user_param[MAX_USER_ARG];
@@ -57,12 +59,8 @@ int main(int argc, char *argv[])
     }
 
     // generate struct needed for connection
-    // TODO: ERROR HANDLING
     ret = sock_init_udp_struct(port_str, ip_str, true);
     sock_create_socket();
-    // sock_print_ip();
-    // ret = sock_sendto("Hello from Client!", 19);
-    // printf("Sent %d bytes to %s\n", ret, ip_str);
     sock_free_udp_struct();
     
     // enter super loop
@@ -92,12 +90,12 @@ int main(int argc, char *argv[])
 
             case CMD_PUT:
                 /***************************************************************
-                 * Generate CMD packet
+                 * Send CMD and get server ACK
                  **************************************************************/
-                // generate filtered version of user commands
+                // 1. generate filtered version of user commands
                 cli_generate_filtered_usr_cmd("put", user_param);
 
-                // populate packet struct
+                // 2. fill packet struct fields
                 packet_write_payload_size(cli_get_filtered_usr_cmd_size());
                 packet_write_payload(
                     cli_get_filtered_usr_cmd(), 
@@ -109,93 +107,160 @@ int main(int argc, char *argv[])
                         packet_get_payload_size()
                     )
                 );
-                // generate packet buffer
+
+                // 3. generate packet buffer
                 ret = packet_generate();
                 packet_write_total_size(ret);
 
-#if DEBUG                
-                // view generated command packet fields
-                packet_print_struct();
-#endif
-                /***************************************************************
-                 * Send CMD packet & wait for ACK
-                 **************************************************************/
-                ret = sock_sendto(packet_get_buf(), packet_get_total_size());
+                // 4. send cmd packet to server
+                ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
                 printf("Sent %u bytes to %s\n", ret, ip_str);
                 printf("\n");
 
-                // wait for ACK packet before sending next message. 
-                // receiving this ACK means:
-                //      * server received msg correctly matching crc for payload
-                //      * a proper command was sent (PUT, GET, LS, DELETE)
-                if (!ACK received)
+                // 5. wait for ack from server
+                printf("Waiting for ACK from server\n");
+                sock_clear_input_buffer();
+                ret = sock_recv();
+printf("Here1\n");
+                // 6. parse server response
+                packet_parse(sock_get_in_buf());
+printf("Here2\n");
+                // 7. verify that payload contents are correct (crc32 check)
+                crc32_calc = crc_generate(
+                    packet_get_payload(), 
+                    packet_get_payload_size()
+                );
+printf("Here3\n");
+                if(crc32_calc != packet_get_crc32())
                 {
-                    // if the ack was not received, that means something went
-                    // wrong during transmission. we need to start over and go
-                    // to when user enters command. 
+                    printf("CRC32 mismatch, corrupted packet!");
+                    continue;
                 }
 
+                // 8. check that the payload is ACK
+                if ( strcmp(packet_get_payload(), "ACK") != 0 )
+                {
+                    // ack was not received. start over.
+                    printf("ACK NOT RECEIVED\n");
+                    continue;
+                }
 
                 /***************************************************************
-                 * Begin sending FILE & getting ACK (send-and-wait approach)
+                 * Transmit File
                  **************************************************************/
-                /**
-                 * 1. Open FILE.
-                 * 2. Generate packet of payload size CHUNK w/ paylaod size + crc32.
-                 *      IF EOF REACHED:
-                 *          TOGGLE FLAG TO INDICATE LAST LOOP
-                 * 3. Send the packet.
-                 * 4. Start timer.
-                 * 5. Wait for ACK from server.
-                 *      IF !ACK (TIMEOUT):
-                 *          REPEAT FROM STEP 3.
-                 * 6. REPEAT FROM STEP 2.
-                 * 7. CLOSE FILE.
-                 */
-        
-                // // display file information
-                // file_open(user_param);
-                // printf("%s size (bytes): %d\n", user_param, file_get_size());
+                // Open file to send
+                file_open(user_param, 0);
+                printf("%s size (bytes): %d\n", user_param, file_get_size());
 
-                // // file_print_all(CHUNK_SIZE);
+                // Generate the complete files CRC32
+                uint32_t crc32_calc = crc_generate_file(file_get_fp());
+                printf("File CRC: %u\n", crc32_calc);
 
-                // // generate and print crc32
-                // uint32_t crc32 = crc_generate_file(file_get_fp());
-                // printf("File CRC: %u\n", crc32);
+                // reset fp for actual read
+                file_reset_fileptr();
 
-                // // reset fp for actual read
-                // file_reset_fileptr();
-                // ret = file_read_chunk(CHUNK_SIZE);
-                // printf("Chunk read: %d\n", ret);
-                // crc32 = crc_generate(file_get_file_buf(), ret);
-                // printf("Chunk CRC32: %u\n", crc32);
-                // uint32_t sent = packet_generate(
-                //     packet, 
-                //     CHUNK_SIZE,
-                //     file_get_file_buf(),
-                //     ret, 
-                //     crc32
-                // );
-                // printf("Packet size: %d\n", sent);
-                // packet_print(packet, sent);
+                while(1)
+                {
+                    // 1. Read a chunk from file
+                    ret = file_read_chunk(CHUNK_SIZE);
+                    amt_read = ret;
 
-                // // send file to server
-                // sleep(1);
-                // res = sock_sendto(packet, sent);
-                // printf("Sent %u bytes to %s\n", res, ip_str);
+                    if(amt_read == 0)
+                    {
+                        // end of file reached, send ack
+                    }
+
+                    // 2. fill packet struct fields
+                    packet_write_payload_size(ret);
+                    packet_write_payload(
+                        file_get_file_buf(), 
+                        packet_get_payload_size()
+                    );
+                    packet_write_crc32(
+                        crc_generate(
+                            packet_get_payload(), 
+                            packet_get_payload_size()
+                        )
+                    );
+
+                    // 3. generate packet buffer
+                    ret = packet_generate();
+                    packet_write_total_size(ret);
+
+                    // 4. send cmd packet to server
+                    ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
+                    printf("Sent %u bytes to %s\n", ret, ip_str);
+
+                    // 5. wait for ack from server
+                    printf("Waiting for ACK from server\n");
+                    sock_clear_input_buffer();
+                    ret = sock_recv();
+
+                    // 6. parse server response
+                    packet_parse(sock_get_in_buf());
+
+                    // 7. verify that payload contents are correct (crc32 check)
+                    crc32_calc = crc_generate(
+                        packet_get_payload(), 
+                        packet_get_payload_size()
+                    );
+                    if(crc32_calc != packet_get_crc32())
+                    {
+                        printf("CRC32 mismatch, corrupted packet!");
+                        continue;
+                    }
+
+                    // 8. check that the payload is ACK
+                    if ( strcmp(packet_get_payload(), "ACK") != 0 )
+                    {
+                        // ack was not received. start over.
+                        printf("ACK NOT RECEIVED\n");
+                        continue;
+                    }
+
+                    // 9. check if amt_read was chunck size 
+                    if (amt_read != CHUNK_SIZE)
+                    {
+                        // means we probably made it to the EOF, in which
+                        // case, we break out of the loop and send the final
+                        // ACK.
+                        break;
+                    }
+                }
+                file_close();
+
+                /***************************************************************
+                 * Send final ACK
+                 **************************************************************/
+                // 1. generate ACK packet.
+                printf("Generating ACK packet\n");
+                packet_write_payload_size(sizeof("ACK"));
+                packet_write_payload("ACK", packet_get_payload_size());
+                packet_write_crc32(
+                    crc_generate(
+                        packet_get_payload(), 
+                        packet_get_payload_size()
+                    )
+                );
+                packet_generate();
+
+                // 2. send ACK packet
+                ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
+                
+
                 break;
 
             case CMD_DELETE:
                 // perform delete operation
                 snprintf(payload, MAX_PAYLOAD, "delete %s",user_param);
-                ret = sock_sendto(payload, strlen(payload));
+                ret = sock_sendto(payload, strlen(payload), true);
                 printf("Sent %d bytes to %s\n", ret, ip_str);
                 break;
 
             case CMD_LS:
                 // perform ls operation
                 snprintf(payload, MAX_PAYLOAD, "ls %s",user_param);
-                ret = sock_sendto(payload, strlen(payload));
+                ret = sock_sendto(payload, strlen(payload), true);
                 printf("Sent %d bytes to %s\n", ret, ip_str);
                 break;
 

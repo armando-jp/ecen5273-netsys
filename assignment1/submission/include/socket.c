@@ -99,8 +99,8 @@ void sock_clear_input_buffer()
 /*******************************************************************************
 * Functions used for initialize/disable UDP interfaces
 *******************************************************************************/
-// initialize servinfo struct using IPv4/IPv6, UDP, and assign address of 
-// local host to the socket struct.
+// this function first populates the "hints" struct.
+// hints will be prepared differently depending 
 bool sock_init_udp_struct(char *port, char *ip, bool is_client)
 {
     memset(&hints, 0, sizeof(hints)); // ensure struct is empty
@@ -157,11 +157,6 @@ bool sock_create_socket()
     ptr = p;
 }
 
-int sock_sendto(char *buf, uint32_t length)
-{
-    return sendto(sockfd, buf, length, 0, ptr->ai_addr, ptr->ai_addrlen);
-}
-
 int sock_bind()
 {
     for(ptr = servinfo; ptr != NULL; ptr = ptr->ai_next) 
@@ -189,6 +184,16 @@ int sock_bind()
     }
 }
 
+void sock_close_socket()
+{
+    close(sockfd);
+}
+
+
+
+/*******************************************************************************
+* Functions SENDING and RECEIVING
+*******************************************************************************/
 // Attempts to receive (MAX_IN_BUF_LEN-1) bytes over a UDP connection.
 // Stores result in (in_buf), number of bytes read (numbytes) message origin IP 
 // (their_addr), and length of origin address (addr_len). 
@@ -197,7 +202,14 @@ int sock_bind()
 int sock_recv()
 {
     addr_len = sizeof their_addr;
-    numbytes = recvfrom(sockfd, in_buf, MAX_IN_BUF_LEN-1 , 0, (struct sockaddr *)&their_addr, &addr_len);
+    numbytes = recvfrom(
+        sockfd, 
+        in_buf, 
+        MAX_IN_BUF_LEN-1 , 
+        0, 
+        (struct sockaddr *)&their_addr, 
+        &addr_len
+    );
     if (numbytes == -1) 
     {
         perror("recvfrom");
@@ -206,7 +218,19 @@ int sock_recv()
     return numbytes;
 }
 
-void sock_close_socket()
+int sock_sendto(char *buf, uint32_t length, bool is_client)
 {
-    close(sockfd);
+    if(is_client)
+    {
+        return sendto(sockfd, buf, length, 0, ptr->ai_addr, ptr->ai_addrlen);
+    }
+
+    return sendto(
+        sockfd, 
+        buf, 
+        length, 
+        0, 
+        (struct sockaddr *)&their_addr,
+        sizeof(their_addr)
+    );
 }
