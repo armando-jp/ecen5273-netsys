@@ -7,6 +7,8 @@
 #include <unistd.h>
 #include <errno.h>
 #include <string.h>
+#include <stdbool.h>
+
 #include "timer.h"
 
 pid_t gettid(void);
@@ -20,9 +22,9 @@ timer_t timerid;
 
 struct itimerspec its_start = 
 {   /* specify start delay and interval */
-    .it_value.tv_sec     = 1,
+    .it_value.tv_sec     = 0,
     .it_value.tv_nsec    = 0,
-    .it_interval.tv_sec  = 1,
+    .it_interval.tv_sec  = 5,
     .it_interval.tv_nsec = 0
 };
 
@@ -35,7 +37,7 @@ struct itimerspec its_stop =
 };
 
 // handler data struct
-struct t_eventData eventData = { .myData = 0 };
+struct t_eventData eventData = { .myData = false };
 
 // signal handler variables
 /* specify signal and handler */
@@ -56,7 +58,8 @@ static void handler(int sig, siginfo_t *si, void *uc)
     UNUSED(sig);
     UNUSED(uc);
     struct t_eventData *data = (struct t_eventData *) si->_sifields._rt.si_sigval.sival_ptr;
-    printf("Timer fired %d - thread-id: %d\n", ++data->myData, gettid());
+    // printf("Timer fired %d - thread-id: %d\n", ++data->myData, gettid());
+    data->myData = true;
 }
 
 /*******************************************************************************
@@ -129,4 +132,17 @@ void timer_init_sigevent()
     sev.sigev_notify = SIGEV_SIGNAL; // Linux-specific
     sev.sigev_signo = SIGRTMIN;
     sev.sigev_value.sival_ptr = &eventData;
+}
+
+/*******************************************************************************
+* Timer GET/SET methods
+*******************************************************************************/
+bool timer_get_flag()
+{
+    return eventData.myData;
+}
+
+void timer_clear_flag()
+{
+    eventData.myData = false;
 }

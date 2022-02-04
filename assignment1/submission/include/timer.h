@@ -3,10 +3,11 @@
 
 #define UNUSED(x) (void)(x)
 
+#include <stdbool.h>
 
 // Struct decleration
 struct t_eventData{
-    int myData;
+    bool myData;
 };
 
 
@@ -21,5 +22,8 @@ void timer_init();
 
 void timer_init_sigaction();
 void timer_init_sigevent();
+
+bool timer_get_flag();
+void timer_clear_flag();
 
 #endif /* INC_TIMER_H_ */

@@ -8,7 +8,7 @@
 #include <stdio.h>
 #include <stdlib.h>
 #include <unistd.h> // for close
-
+#include <time.h>
 
 #include "socket.h"
 
@@ -28,6 +28,11 @@ char in_buf[MAX_IN_BUF_LEN];
 int numbytes;
 socklen_t addr_len;
 
+// struct containing timeout info
+struct timeval tv = {
+    .tv_sec = 0,
+    .tv_usec = 0
+};
 
 
 /*******************************************************************************
@@ -189,7 +194,22 @@ void sock_close_socket()
     close(sockfd);
 }
 
+/*******************************************************************************
+* Timeout Funcs
+*******************************************************************************/
+void socket_init_timeout()
+{
+   setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv); 
+}
+void sock_enable_timeout()
+{
+    tv.tv_sec = TIMEOUT_SEC;
+}
 
+void sock_disable_timeout()
+{
+    tv.tv_sec = 0;
+}
 
 /*******************************************************************************
 * Functions SENDING and RECEIVING

@@ -8,6 +8,7 @@
 #include "../include/packet.h"
 
 #include <stdio.h>
+#include <errno.h>
 
 #define DEBUG (0)
 
@@ -41,6 +42,9 @@ int main(int argc, char *argv[])
     sock_create_socket();
     sock_bind();
     sock_free_udp_struct();
+
+    // configure timeout for RECV
+    socket_init_timeout();
 
     // enter super loop
     while(1)
@@ -80,6 +84,7 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_PUT:
+                sock_enable_timeout();
                 // 1. generate ACK packet.
                 printf("Generating ACK packet\n");
                 packet_write_payload_size(sizeof("ACK"));
@@ -163,6 +168,7 @@ int main(int argc, char *argv[])
 
                 }
                 file_close();
+                sock_disable_timeout();
                 
                 // print some stats on our new file
                 file_open(cmd_params, 0);
