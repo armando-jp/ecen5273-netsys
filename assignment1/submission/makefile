@@ -27,7 +27,7 @@ LDLIBS   := -lrt -lz           # Left empty if no libs are needed
 all: client server
 
 client: ./client/uftp_client.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c 
-	$(CC) -o client_out ./client/uftp_client.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c $(LDLIBS)
+	$(CC) -o client_out ./client/uftp_client.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c $(LDLIBS) $(CFLAGS)
 
 server: ./server/uftp_server.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c
-	$(CC) -o server_out ./server/uftp_server.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c $(LDLIBS)
+	$(CC) -o server_out ./server/uftp_server.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c $(LDLIBS) $(CFLAGS)
