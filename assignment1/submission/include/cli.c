@@ -153,7 +153,8 @@ int16_t get_command(char *buf, char *param)
 void cli_display_main_menu()
 {
     printf("Main Menu\n");
-    for(int i = 1; i <= NUM_COMMANDS; i++)
+    int i;
+    for(i = 1; i <= NUM_COMMANDS; i++)
     {
         printf("%d. %s", i, get_help(i));
     }
