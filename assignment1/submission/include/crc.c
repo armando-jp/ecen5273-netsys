@@ -10,7 +10,7 @@ char crc_buf[MAX_CRC_BUF_SIZE];
 
 uint32_t crc_generate(char *buf, uint32_t len)
 {
-    return crc32(0, buf, len);
+    return crc32(0, (uint8_t*) buf, len);
 }
 
 uint32_t crc_generate_file(FILE *fp)
@@ -38,7 +38,7 @@ uint32_t crc_generate_file(FILE *fp)
         );
         file_size -= read;
 
-        crc = crc32(crc, crc_buf, read);
+        crc = crc32(crc, (uint8_t*)crc_buf, read);
 
         memset(crc_buf, 0, sizeof(crc_buf));
     }

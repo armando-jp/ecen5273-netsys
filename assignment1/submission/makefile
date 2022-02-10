@@ -20,7 +20,7 @@ OBJ += $(patsubst $(SERVER_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 OBJ += $(patsubst $(INCLUDE_SRC_DIR)/%.c, $(OBJ_DIR)/%.o, $(SRC))
 
 
-CFLAGS   := -Wall -std=c99     # some warnings about bad code
+CFLAGS   := -Wall              # some warnings about bad code
 LDFLAGS  := -Llib              # -L is a linker flag
 LDLIBS   := -lrt -lz           # Left empty if no libs are needed
 

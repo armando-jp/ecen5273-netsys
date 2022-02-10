@@ -6,7 +6,6 @@
 
 // function declerations
 void print_hex(const char *s);
-static bool is_number(char *str);
 bool is_ip(char *ip_str);
 bool is_port(char *port_str);
 

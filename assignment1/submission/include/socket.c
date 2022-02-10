@@ -15,8 +15,6 @@
 static int status;
 
 
-static char ip4[INET_ADDRSTRLEN]; // space to hold IPv4 strings4
-
 static struct addrinfo hints;
 static struct addrinfo *servinfo = NULL; // points to results from getaddrinfo()
 static int sockfd; // socket file descriptor
@@ -160,6 +158,7 @@ bool sock_create_socket()
     }
 
     ptr = p;
+    return true;
 }
 
 int sock_bind()
@@ -187,6 +186,7 @@ int sock_bind()
         fprintf(stderr, "listener: failed to bind socket\n");
         return 2;
     }
+    return 0;
 }
 
 void sock_close_socket()

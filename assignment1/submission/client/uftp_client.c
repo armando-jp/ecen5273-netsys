@@ -117,7 +117,7 @@ int main(int argc, char *argv[])
 
                 // 4. send cmd packet to server
                 ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-                printf("Sent ACK\n");
+                printf("Sent CMD\n");
 
                 // 5. wait for ack from server
                 printf("Waiting for ACK from server\n");

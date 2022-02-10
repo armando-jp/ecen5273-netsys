@@ -85,7 +85,6 @@ static uint8_t match_command(char *token)
 int16_t get_command(char *buf, char *param)
 {
     char *token = buf;
-    int16_t rval = 0;
     uint8_t cmd;
 
     /* Find beginning of command... (skip leading spaces) */
