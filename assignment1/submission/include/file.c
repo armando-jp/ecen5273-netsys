@@ -158,3 +158,15 @@ uint32_t file_write_chunk(char* buf, uint32_t chunk_size)
     return total_write;
 }
 
+/*******************************************************************************
+ * Functions for DELETING files
+*******************************************************************************/
+int file_delete(char * file_name)
+{
+    return remove(file_name);
+}
+
+/*******************************************************************************
+ * Functions for getting directory contents (LS)
+*******************************************************************************/
+extern int alphasort()

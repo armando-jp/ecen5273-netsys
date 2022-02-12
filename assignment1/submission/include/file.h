@@ -18,4 +18,6 @@ FILE *file_get_fp();
 void file_print_all();
 void file_clear_buf();
 void file_reset_fileptr();
+int file_delete(char * file_name);
+
 #endif /*INC_FILE_*/

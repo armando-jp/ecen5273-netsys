@@ -44,7 +44,7 @@ int main(int argc, char *argv[])
     sock_free_udp_struct();
 
     // configure timeout for RECV
-    socket_init_timeout();
+    // socket_init_timeout();
 
     // enter super loop
     while(1)
@@ -84,7 +84,6 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_PUT:
-                sock_enable_timeout();
                 // 1. generate ACK packet.
                 printf("Generating ACK packet\n");
                 packet_write_payload_size(sizeof("ACK"));
@@ -179,8 +178,34 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_DELETE:
-                // perform delete operation
+                 // 1. generate ACK packet.
+                printf("Generating ACK packet\n");
+                packet_write_payload_size(sizeof("ACK"));
+                packet_write_payload("ACK", packet_get_payload_size());
+                packet_write_crc32(
+                    crc_generate(
+                        packet_get_payload(), 
+                        packet_get_payload_size()
+                    )
+                );
+                packet_generate();
+
+                // 2. send ACK packet
+                ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
+
+                // Start DELETE operation
                 printf("Performing DELETE command with param \"%s\"\n", cmd_params);
+
+                // preperations
+                // 1. open file with 
+                if(file_delete(cmd_params) == -1)
+                {
+                    printf("Failed to delete file %s\n", cmd_params);
+                }
+                else
+                {
+                    printf("%s deleted sucessfully\n", cmd_params);
+                }
                 break;
 
             case CMD_LS:
