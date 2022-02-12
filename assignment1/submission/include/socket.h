@@ -1,6 +1,7 @@
 #ifndef INC_SOCKET_H_
 #define INC_SOCKET_H_
 
+#define USE_TIMEOUT (1)
 #define TIMEOUT_SEC (5)
 #define MAX_IN_BUF_LEN (600)
 

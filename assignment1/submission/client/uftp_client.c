@@ -20,7 +20,7 @@
 int main(int argc, char *argv[]) 
 {
     // variables for user input processing
-    uint32_t ret;
+    int ret;
     uint32_t amt_read;
     uint32_t crc32_calc;
 
@@ -59,11 +59,15 @@ int main(int argc, char *argv[])
 
     // generate struct needed for connection
     ret = sock_init_udp_struct(port_str, ip_str, true);
-    sock_create_socket();
+    if(!ret)
+    {
+        printf("Error in sock_init_udp_struct\n");
+    }
+    if(!sock_create_socket())
+    {
+        printf("Error in sock_create_scket()\n");
+    }
     sock_free_udp_struct();
-
-    // configure timeout for RECV
-    socket_init_timeout();
     
     // enter super loop
     while(1)
@@ -91,7 +95,6 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_PUT:
-                sock_enable_timeout();
                 /***************************************************************
                  * Send CMD and get server ACK
                  **************************************************************/
@@ -115,19 +118,24 @@ int main(int argc, char *argv[])
                 ret = packet_generate();
                 packet_write_total_size(ret);
 
-                // 4. send cmd packet to server
-                ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-                printf("Sent CMD\n");
-
-                // 5. wait for ack from server
-                printf("Waiting for ACK from server\n");
+                ret = 0;
                 sock_clear_input_buffer();
-                ret = sock_recv();
-                
+                while(ret <= 0)
+                {
+                    // 4. send cmd packet to server
+                    ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
+                    printf("Sent CMD\n");
+
+                    // 5. wait for ack from server
+                    printf("Waiting for ACK from server\n");
+                    socket_init_timeout();
+                    sock_enable_timeout();
+                    ret = sock_recv();
+                    printf("RET = %d\n", ret);
+                }
 
                 // 6. parse server response
                 packet_parse(sock_get_in_buf());
-
                 // 7. verify that payload contents are correct (crc32 check)
                 crc32_calc = crc_generate(
                     packet_get_payload(), 
@@ -167,11 +175,6 @@ int main(int argc, char *argv[])
                     ret = file_read_chunk(CHUNK_SIZE);
                     amt_read = ret;
 
-                    if(amt_read == 0)
-                    {
-                        // end of file reached, send ack
-                    }
-
                     // 2. fill packet struct fields
                     packet_write_payload_size(ret);
                     packet_write_payload(
@@ -189,14 +192,20 @@ int main(int argc, char *argv[])
                     ret = packet_generate();
                     packet_write_total_size(ret);
 
-                    // 4. send cmd packet to server
-                    ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-                    printf("Sent %u bytes to %s\n", ret, ip_str);
+                    ret = 0;
+                    while(ret <= 0)
+                    {
+                        // 4. send cmd packet to server
+                        ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
+                        printf("Sent %u bytes to %s\n", ret, ip_str);
 
-                    // 5. wait for ack from server
-                    printf("Waiting for ACK from server\n");
-                    sock_clear_input_buffer();
-                    ret = sock_recv();
+                        // 5. wait for ack from server
+                        printf("Waiting for ACK from server\n");
+                        socket_init_timeout();
+                        sock_enable_timeout();
+                        sock_clear_input_buffer();
+                        ret = sock_recv();
+                    }
 
                     // 6. parse server response
                     packet_parse(sock_get_in_buf());
@@ -264,7 +273,67 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_DELETE:
+                printf("In delete\n");
+                /***************************************************************
+                 * Send CMD and get server ACK
+                 **************************************************************/
+                // 1. generate filtered version of user commands
+                cli_generate_filtered_usr_cmd("delete", user_param);
 
+                // 2. fill packet struct fields
+                packet_write_payload_size(cli_get_filtered_usr_cmd_size());
+                packet_write_payload(
+                    cli_get_filtered_usr_cmd(), 
+                    packet_get_payload_size()
+                );
+                packet_write_crc32(
+                    crc_generate(
+                        packet_get_payload(), 
+                        packet_get_payload_size()
+                    )
+                );
+
+                // 3. generate packet buffer
+                ret = packet_generate();
+                packet_write_total_size(ret);
+
+                ret = 0;
+                sock_clear_input_buffer();
+                while(ret <= 0)
+                {
+                    // 4. send cmd packet to server
+                    ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
+                    printf("Sent CMD\n");
+
+                    // 5. wait for ack from server
+                    printf("Waiting for ACK from server\n");
+                    socket_init_timeout();
+                    sock_enable_timeout();
+                    ret = sock_recv();
+                    printf("RET = %d\n", ret);
+                }
+
+                // 6. parse server response
+                packet_parse(sock_get_in_buf());
+
+                // 7. verify that payload contents are correct (crc32 check)
+                crc32_calc = crc_generate(
+                    packet_get_payload(), 
+                    packet_get_payload_size()
+                );
+                if(crc32_calc != packet_get_crc32())
+                {
+                    printf("CRC32 mismatch, corrupted packet!");
+                    continue;
+                }
+
+                // 8. check that the payload is ACK
+                if ( strcmp(packet_get_payload(), "ACK") != 0 )
+                {
+                    // ack was not received. start over.
+                    printf("ACK NOT RECEIVED\n");
+                    continue;
+                }
                 break;
 
             case CMD_LS:

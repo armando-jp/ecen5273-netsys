@@ -28,9 +28,10 @@ socklen_t addr_len;
 
 // struct containing timeout info
 struct timeval tv = {
-    .tv_sec = 0,
+    .tv_sec = TIMEOUT_SEC,
     .tv_usec = 0
 };
+fd_set readfds; // delcare a read set
 
 
 /*******************************************************************************
@@ -199,11 +200,13 @@ void sock_close_socket()
 *******************************************************************************/
 void socket_init_timeout()
 {
-   setsockopt(sockfd, SOL_SOCKET, SO_RCVTIMEO, (const char*)&tv, sizeof tv); 
+    FD_ZERO(&readfds);
+    FD_SET(sockfd, &readfds); // add socket to the read set
+    tv.tv_sec = TIMEOUT_SEC;
 }
 void sock_enable_timeout()
 {
-    tv.tv_sec = TIMEOUT_SEC;
+    select(sockfd+1, &readfds, NULL, NULL, &tv); 
 }
 
 void sock_disable_timeout()
@@ -222,20 +225,52 @@ void sock_disable_timeout()
 int sock_recv()
 {
     addr_len = sizeof their_addr;
-    numbytes = recvfrom(
-        sockfd, 
-        in_buf, 
-        MAX_IN_BUF_LEN-1 , 
-        0, 
-        (struct sockaddr *)&their_addr, 
-        &addr_len
-    );
-    if (numbytes == -1) 
+
+    if(USE_TIMEOUT)
     {
-        perror("recvfrom");
-        exit(1);
+        if(FD_ISSET(sockfd, &readfds))
+        {
+            numbytes = recvfrom(
+                sockfd, 
+                in_buf, 
+                MAX_IN_BUF_LEN-1 , 
+                0, 
+                (struct sockaddr *)&their_addr, 
+                &addr_len
+            );
+            FD_CLR(sockfd, &readfds);
+        }
+        else
+        {
+            printf("Timeout!\n");
+            return -1;
+        }
+
+        if (numbytes == -1) 
+        {
+            perror("recvfrom");
+            exit(1);
+        }
+
+        return numbytes;
     }
-    return numbytes;
+    else // not using timeouts
+    {
+        numbytes = recvfrom(
+            sockfd, 
+            in_buf, 
+            MAX_IN_BUF_LEN-1 , 
+            0, 
+            (struct sockaddr *)&their_addr, 
+            &addr_len
+        );
+        if (numbytes == -1) 
+        {
+            perror("recvfrom");
+            exit(1);
+        }
+        return numbytes; 
+    }
 }
 
 int sock_sendto(char *buf, uint32_t length, bool is_client)
