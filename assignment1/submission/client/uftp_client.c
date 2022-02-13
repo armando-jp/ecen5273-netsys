@@ -14,8 +14,6 @@
 #include "../include/state_machine.h"
 
 #define DEBUG         (0)
-#define CHUNK_SIZE    (500)
-#define MAX_PAYLOAD   (4 + CHUNK_SIZE + 4)
 
 
 int main(int argc, char *argv[]) 
@@ -121,7 +119,6 @@ int main(int argc, char *argv[])
 
                 // 3. generate packet buffer
                 ret = packet_generate();
-                packet_write_total_size(ret);
 
                 ret = 0;
                 sock_clear_input_buffer();

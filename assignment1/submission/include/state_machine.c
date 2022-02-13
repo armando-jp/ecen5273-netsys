@@ -20,6 +20,7 @@ void sm_client_put()
     state_t current_state = sendCmd_t;
 
     event_t event = evtNull_t;
+    uint32_t sequence_number = 0;
 
     while(true)
     {
@@ -30,6 +31,7 @@ void sm_client_put()
                 cli_generate_filtered_usr_cmd("put", cli_get_user_param_buf());
 
                 // 2. fill packet struct fields
+                packet_write_sequence_number(0);
                 packet_write_payload_size(cli_get_filtered_usr_cmd_size());
                     packet_write_payload(
                         cli_get_filtered_usr_cmd(), 
@@ -38,13 +40,12 @@ void sm_client_put()
                     packet_write_crc32(
                         crc_generate(
                             packet_get_payload(), 
-                            packet_get_payload_size()
+                            packet_get_packet_size_for_crc()
                         )
                     );
 
                 // 3. generate packet buffer
                 ret = packet_generate();
-                packet_write_total_size(ret);
 
                 // Open file to send
                 file_open(cli_get_user_param_buf(), 0);
@@ -72,6 +73,7 @@ void sm_client_put()
                     }
 
                     // fill packet struct fields
+                    packet_write_sequence_number(sequence_number);
                     packet_write_payload_size(ret);
                     packet_write_payload(
                         file_get_file_buf(), 
@@ -80,13 +82,12 @@ void sm_client_put()
                     packet_write_crc32(
                         crc_generate(
                             packet_get_payload(), 
-                            packet_get_payload_size()
+                            packet_get_packet_size_for_crc()
                         )
                     );
 
                     // generate packet buffer
                     ret = packet_generate();
-                    packet_write_total_size(ret);
                     // packet_print_struct();
 
                     // prepare to transition to next state
@@ -100,12 +101,13 @@ void sm_client_put()
 
                     // generate ACK packet.
                     printf("Generating ACK packet\n");
+                    packet_write_sequence_number(0);
                     packet_write_payload_size(sizeof("ACK"));
                     packet_write_payload("ACK", packet_get_payload_size());
                     packet_write_crc32(
                         crc_generate(
                             packet_get_payload(), 
-                            packet_get_payload_size()
+                            packet_get_packet_size_for_crc()
                         )
                     );
                     packet_generate();
@@ -220,7 +222,6 @@ void sm_server_put()
     int ret;
     // int transmit_complete = 0;
     uint32_t crc32_calc;
-    char dummy_array[100];
 
     state_t previous_state = null_t; if(previous_state != null_t) {};
     state_t current_state = sendAck_t;
@@ -237,16 +238,16 @@ void sm_server_put()
             case(sendAck_t):
                 // generate ACK packet.
                 // printf("Generating ACK packet\n");
+                packet_write_sequence_number(0);
                 packet_write_payload_size(sizeof("ACK"));
                 packet_write_payload("ACK", packet_get_payload_size());
                 packet_write_crc32(
                     crc_generate(
                         packet_get_payload(), 
-                        packet_get_payload_size()
+                        packet_get_packet_size_for_crc()
                     )
                 );
                 ret = packet_generate();
-                packet_write_total_size(ret);
 
                 // send ACK packet 
                 printf("Sending ACK\n");

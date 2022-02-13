@@ -6,6 +6,7 @@
 
 /*
  * The way to use this library is to first load the packet struct with:
+ *      * frame number (uint32_t)
  *      * payload size (uint32_t)
  *      * payload      (char array[<=MAX_PAYLOAD])
  *      * crc32        (uint32_t)
@@ -26,7 +27,6 @@ static Packet packet = {0};
 // Char array for holding unparsed packet contents
 static char packet_buf[MAX_PAYLOAD];
 
-
 /*******************************************************************************
 * Functions for generating and parsing packets
 *******************************************************************************/
@@ -35,31 +35,35 @@ uint32_t packet_generate()
     // clear packet_buf
     memset(packet_buf, 0, MAX_PAYLOAD);
 
-    // copy size field into first 4 bytes of packet_buf
-    memcpy(packet_buf, &packet.payload_size, sizeof(packet.payload_size));
+    // copy sequence number field into first 4 bytes of packet_buf
+    memcpy(packet_buf, &packet.sequence_number, sizeof(packet.sequence_number));
+
+    // copy size field into second 4 bytes of packet_buf
+    memcpy(packet_buf + sizeof(packet.sequence_number), &packet.payload_size, sizeof(packet.payload_size));
 
     // copy payload into packet_buf
-    memcpy(packet_buf + sizeof(packet.payload_size), packet.payload, packet.payload_size);
+    memcpy(packet_buf + sizeof(packet.sequence_number) + sizeof(packet.payload_size), packet.payload, packet.payload_size);
 
     // copy crc32 into last 4 bytes of packet_buf
-    memcpy((packet_buf + packet.payload_size + sizeof(packet.payload_size)), &packet.crc32, sizeof(packet.crc32));
+    memcpy((packet_buf + sizeof(packet.sequence_number) + packet.payload_size + sizeof(packet.payload_size)), &packet.crc32, sizeof(packet.crc32));
 
     //             4 bytes     + <=500 bytes +    4 bytes
-    return sizeof(packet.payload_size) + packet.payload_size + sizeof(packet.crc32);
+    return sizeof(packet.sequence_number) + sizeof(packet.payload_size) + packet.payload_size + sizeof(packet.crc32);
 }
 
 
 // Used by receiving device. Used to parse a buffer into the packet struct.
 void packet_parse(char *buf)
 {
+    // copy sequence number field
+    memcpy(&packet.sequence_number, buf, sizeof(packet.sequence_number));
     // copy size field
-    memcpy(&packet.payload_size, buf, sizeof(packet.payload_size));
+    memcpy(&packet.payload_size, buf + sizeof(packet.sequence_number), sizeof(packet.payload_size));
     // copy payload
-    memcpy(packet.payload, buf+sizeof(packet.payload_size), packet.payload_size);
-    // copy crc32 field            4 bytes           <=500 bytes
-    memcpy(&packet.crc32, sizeof(packet.payload_size) + buf + packet.payload_size, sizeof(packet.crc32));
-    // populate total packet size field
-    packet.total_size = sizeof(packet.payload_size) + packet.payload_size + sizeof(packet.crc32);
+    memcpy(packet.payload, sizeof(packet.sequence_number) + sizeof(packet.payload_size) + buf, packet.payload_size);
+    // copy crc32 field 
+    memcpy(&packet.crc32, sizeof(packet.sequence_number)+ sizeof(packet.payload_size) + buf + packet.payload_size, sizeof(packet.crc32));
+
 }
 
 
@@ -81,9 +85,9 @@ uint32_t packet_get_crc32()
     return packet.crc32;
 }
 
-uint32_t packet_get_total_size()
+uint32_t packet_get_sequence_number()
 {
-    return packet.total_size;
+    return packet.sequence_number;
 }
 
 void packet_write_payload(char *buf, uint32_t size)
@@ -102,14 +106,24 @@ void packet_write_crc32(uint32_t crc32)
     packet.crc32 = crc32;
 }
 
-void packet_write_total_size(uint32_t size)
+void packet_write_sequence_number(uint32_t size)
 {
-    packet.total_size = size;
+    packet.sequence_number = size;
 }
 
 char *packet_get_buf()
 {
     return packet_buf;
+}
+
+uint32_t packet_get_packet_size_for_crc()
+{
+    return sizeof(packet.sequence_number) + sizeof(packet.payload_size) + packet.payload_size;
+}
+
+uint32_t packet_get_total_size()
+{
+    return sizeof(packet.sequence_number) + sizeof(packet.payload_size) + packet.payload_size + sizeof(packet.crc32);
 }
 /*******************************************************************************
 * Utility functions
@@ -128,7 +142,7 @@ void packet_print(char *buf, uint32_t size)
 
 void packet_print_struct()
 {
-    printf("SIZE OF PACKET: %u\n", packet.total_size);
+    printf("PACKET SEQUENCE NUMBER: %u\n", packet.sequence_number);
     printf("SIZE OF PAYLOAD: %u\n", packet.payload_size);
     printf("PAYLOAD CONTENTS:\n");
     packet_print(packet.payload, packet.payload_size);
