@@ -1201,7 +1201,7 @@ void sm_server_ls()
 
     event_t event = evtNull_t;
 
-    printf("Performing LS command\n");
+    // printf("Performing LS command\n");
 
     while(true)
     {
@@ -1224,7 +1224,7 @@ void sm_server_ls()
                 // packet_print_struct();
 
                 // send ACK packet 
-                printf("Sending ACK\n");
+                // printf("Sending ACK\n");
                 ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
 
                 // we just started, create first payload.
@@ -1265,7 +1265,7 @@ void sm_server_ls()
 
                 if(!transmit_complete)
                 {
-                    printf("Generating Payload\n");
+                    // printf("Generating Payload\n");
                     // create the packet to send
                     if((payload_size = file_get_ls()) > 0)
                     {
@@ -1280,7 +1280,7 @@ void sm_server_ls()
                                     packet_get_packet_size_for_crc()
                                 )
                             );
-                            packet_print_struct();
+                            // packet_print_struct();
                             ret = packet_generate();  
                             transmit_complete = 1;
                         }
@@ -1331,7 +1331,7 @@ void sm_server_ls()
                     {
                         // send packet to server
                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
-                        printf("Sent PACKET\n");
+                        // printf("Sent PACKET\n");
 
                         // wait for any kind of response from server
                         // printf("Waiting for ACK from server\n");
@@ -1364,7 +1364,7 @@ void sm_server_ls()
                     }
                     else
                     {
-                        printf("Got ACK\n");
+                        // printf("Got ACK\n");
                         event = evtAckRecv_t;
                     }
                 }
