@@ -22,6 +22,7 @@ typedef enum event {
     evtFileTransNotComplete_t,
     evtPayloadReceived_t,
     evtPayloadNotReceived_t,
+    evtNull_t,
 } event_t;
 
 

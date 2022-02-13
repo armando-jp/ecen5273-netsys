@@ -19,7 +19,7 @@ void sm_client_put()
     state_t previous_state = null_t;
     state_t current_state = sendCmd_t;
 
-    event_t event = null_t;
+    event_t event = evtNull_t;
 
     while(true)
     {
@@ -46,6 +46,10 @@ void sm_client_put()
                 ret = packet_generate();
                 packet_write_total_size(ret);
 
+                // Open file to send
+                file_open(cli_get_user_param_buf(), 0);
+                printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
+
                 if(ret > 0)
                 {
                     event = evtAckNotRecv_t;
@@ -55,14 +59,13 @@ void sm_client_put()
                 break;
 
             case(transmitPayload_t):
-                // Open file to send
-                file_open(cli_get_user_param_buf(), 0);
-                printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
-                
+                printf("In transmit payload\n");
+
                 if(!transmit_complete)
                 {
                     // Read a chunk from file
                     ret = file_read_chunk(packet_get_chunk_size());
+                    printf("file read returned %d bytes\n", ret);
                     if(ret != packet_get_chunk_size())
                     {
                         transmit_complete = 1;
@@ -129,7 +132,7 @@ void sm_client_put()
                         // send packet to server
                         sock_clear_input_buffer();
                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-                        printf("Sent CMD\n");
+                        printf("Sent PACKET\n");
 
                         // wait for any kind of response from server
                         printf("Waiting for ACK from server\n");
@@ -151,12 +154,12 @@ void sm_client_put()
                         printf("CRC32 mismatch, corrupted packet!");
                         continue;
                     }
+
                     // check that the payload is ACK
                     if ( strcmp(packet_get_payload(), "ACK") != 0 )
                     {
                         // ack was not received. start over.
                         printf("ACK NOT RECEIVED\n");
-                        continue;
                     }
                     else
                     {
@@ -171,7 +174,7 @@ void sm_client_put()
                     previous_state = waitAck_t;
                     current_state = logFileInfo_t;
                 }
-                else
+                else if (previous_state == sendCmd_t)
                 {
                     previous_state = waitAck_t;
                     current_state = transmitPayload_t;
@@ -238,7 +241,13 @@ void sm_server_put()
                     previous_state = sendAck_t;
                     current_state = logFileInfo_t; 
                 }
-                else
+                else if(event == evtPayloadReceived_t)
+                {
+                    // wait for next payload
+                    previous_state = sendAck_t;
+                    current_state = waitPayload_t;    
+                }
+                else if (event == evtNull_t)
                 {
                     // start PUT operation
                     printf("Performing PUT command with param \"%s\"\n", cli_get_user_param_buf());
