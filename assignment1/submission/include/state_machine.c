@@ -87,6 +87,7 @@ void sm_client_put()
                     // generate packet buffer
                     ret = packet_generate();
                     packet_write_total_size(ret);
+                    packet_print_struct();
 
                     // prepare to transition to next state
                     event = evtAckNotRecv_t;
@@ -141,7 +142,6 @@ void sm_client_put()
                         socket_init_timeout();
                         sock_enable_timeout();
                         ret = sock_recv(1);
-                        printf("received %d bytes\n", ret);
                         sock_disable_timeout();
                     }
 
@@ -167,6 +167,7 @@ void sm_client_put()
                     }
                     else
                     {
+                        printf("Got ACK\n");
                         event = evtAckRecv_t;
                     }
                 }
@@ -183,10 +184,16 @@ void sm_client_put()
                     previous_state = waitAck_t;
                     current_state = transmitPayload_t;
                 }
+                else if(previous_state == transmitPayload_t)
+                {
+                    previous_state = waitAck_t;
+                    current_state = transmitPayload_t;
+                }
 
                 break;
 
             case(logFileInfo_t):
+                printf("===PRINTING FILE STATS===\n");
                 file_open(cli_get_user_param_buf(), 0);
                 printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
 
