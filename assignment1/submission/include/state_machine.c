@@ -253,6 +253,8 @@ void sm_server_put()
                     )
                 );
                 ret = packet_generate();
+                printf("======SENDING: ACK\n");
+                packet_print_struct();
 
                 // send ACK packet 
                 printf("Sending ACK\n");
@@ -302,7 +304,7 @@ void sm_server_put()
 
                 // parse packet
                 packet_parse(sock_get_in_buf());
-                printf("======\n");
+                printf("======PAYLOAD\n");
                 packet_print_struct();
 
                 // verify correct payload
@@ -313,7 +315,8 @@ void sm_server_put()
                 if(crc32_calc != packet_get_crc32())
                 {
                     // data is corrupted, go back to step 1.
-                    printf("CRC32 mismatch, corrupted packet!");
+                    printf("CRC32 mismatch, corrupted packet!\n");
+                    printf("PACKET CRC = %u | CALC CRC32 = %u\n", packet_get_crc32(), crc32_calc);
                     continue;
                 }
 

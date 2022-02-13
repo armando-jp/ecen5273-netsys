@@ -61,7 +61,9 @@ int main(int argc, char *argv[])
 
 
         // verify that payload contents are correct
-        crc32_calc = crc_generate(packet_get_payload(), packet_get_payload_size());
+        crc32_calc = crc_generate(
+            packet_get_buf(), 
+            packet_get_packet_size_for_crc());
         if(crc32_calc != packet_get_crc32())
         {
             printf("CRC32 mismatch, corrupted packet!");
