@@ -25,7 +25,7 @@ void sm_client_get()
     uint32_t sequence_number = 0;
     uint32_t last_sequece_number = 0;
 
-     while(true)
+    while(true)
     {
         switch(current_state)
         {
@@ -49,12 +49,9 @@ void sm_client_get()
 
                 // 3. generate packet buffer
                 ret = packet_generate();
-                // printf("====SENDING: CMD\n");
-                // packet_print_struct();
 
-                // Open file to send
-                file_open(cli_get_user_param_buf(), 0);
-                printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
+                // Open file to write to
+                file_open(cli_get_user_param_buf(), 1);
 
                 if(ret > 0)
                 {
@@ -65,6 +62,7 @@ void sm_client_get()
                 break;
 
             case(waitPayload_t):
+            printf("In wait payload\n");
                 // loop until a packet is received
                 ret = 0;
                 while(ret <= 0)
@@ -142,7 +140,7 @@ void sm_client_get()
                     {
                         // send packet to server
                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-                        //printf("Sent PACKET\n");
+                        printf("Sent CMD\n");
 
                         // wait for any kind of response from server
                         // printf("Waiting for ACK from server\n");
@@ -163,7 +161,7 @@ void sm_client_get()
                     );
                     if(crc32_calc != packet_get_crc32())
                     {
-                        printf("CRC32 mismatch, corrupted packet!");
+                        printf("CRC32 mismatch, corrupted packet!\n");
                         continue;
                     }
 
@@ -175,7 +173,7 @@ void sm_client_get()
                     }
                     else
                     {
-                        // printf("Got ACK\n");
+                        printf("Got ACK\n");
                         event = evtAckRecv_t;
                     }
                 }
@@ -209,7 +207,7 @@ void sm_client_get()
 
             case(savePayload_t):
                 // save payload to file
-                // printf("GOING TO WRITE TO FILE\n");
+                printf("GOING TO WRITE TO FILE\n");
                 ret = file_write_chunk(
                     packet_get_payload(), 
                     packet_get_payload_size()
@@ -223,7 +221,7 @@ void sm_client_get()
                 }
                 else
                 {
-                    // printf("Wrote %d bytes to file\n", ret);
+                    printf("Wrote %d bytes to file\n", ret);
                     event = evtPayloadReceived_t;
                     previous_state = savePayload_t;
                     current_state = sendAck_t;   
@@ -314,7 +312,7 @@ void sm_client_put()
     event_t event = evtNull_t;
     uint32_t sequence_number = 0;
     uint32_t last_sequece_number = 0;
-    
+
     file_open(cli_get_user_param_buf(), 0);
     while(true)
     {
