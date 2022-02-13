@@ -97,8 +97,8 @@ int main(int argc, char *argv[])
                 packet_write_payload("ACK", packet_get_payload_size());
                 packet_write_crc32(
                     crc_generate(
-                        packet_get_payload(), 
-                        packet_get_payload_size()
+                        (char *)packet_get_struct(), 
+                        packet_get_packet_size_for_crc()
                     )
                 );
                 packet_generate();
