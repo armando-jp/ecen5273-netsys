@@ -213,11 +213,15 @@ void sm_server_put()
     int ret;
     // int transmit_complete = 0;
     uint32_t crc32_calc;
+    char dummy_array[100];
 
     state_t previous_state = null_t;
     state_t current_state = sendAck_t;
 
-    event_t event = null_t;
+    event_t event = evtNull_t;
+
+    printf("Performing PUT command with param \"%s\"\n", cli_get_user_param_buf());
+    file_open(cli_get_user_param_buf(), 1);
 
     while(true)
     {
@@ -234,38 +238,45 @@ void sm_server_put()
                         packet_get_payload_size()
                     )
                 );
-                packet_generate();
+                ret = packet_generate();
+                packet_write_total_size(ret);
 
                 // send ACK packet 
+                printf("Sending ACK\n");
                 ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
-                
+
                 // we were just sending the final ACK, we are done
                 if(event == evtFileTransComplete_t)
                 {
+                    printf("sendAck: evtFileTransComplete\n");
                     previous_state = sendAck_t;
                     current_state = logFileInfo_t; 
                 }
                 else if(event == evtPayloadReceived_t)
                 {
+                    printf("sendAck: evtPayloadReceived\n");
                     // wait for next payload
                     previous_state = sendAck_t;
                     current_state = waitPayload_t;    
                 }
                 else if (event == evtNull_t)
                 {
-                    // start PUT operation
-                    printf("Performing PUT command with param \"%s\"\n", cli_get_user_param_buf());
-                    file_open(cli_get_user_param_buf(), 1);
+                    printf("sendAck: evtNull_t\n");
 
                     event = evtFileTransNotComplete_t;
                     previous_state = sendAck_t;
                     current_state = waitPayload_t;
                 }
 
+                // printf("prev state %d\n", previous_state);
+                // printf("state = %d\n", current_state);
+                // printf("event = %d\n", event);
+
                 break;
 
             case(waitPayload_t):
                 // loop until a packet is received
+                ret = 0;
                 while(ret <= 0)
                 {
                     // wait for any kind of response from server
@@ -292,16 +303,25 @@ void sm_server_put()
                     continue;
                 }
 
-                // Check if ACK packet (means end of transmission)
-                if ( strcmp(packet_get_payload(), "ACK") == 0 )
+                // check if we got a command, if so, re ACK the message
+                ret = get_command(packet_get_payload(), dummy_array);
+                if(ret)
+                {
+                    event = evtNull_t;
+                    previous_state = waitPayload_t;
+                    current_state = sendAck_t;
+                }
+                // Check if we got an ACK packet (means end of transmission)
+                else if ( strcmp(packet_get_payload(), "ACK") == 0 )
                 {
                     printf("ACK Received!\nEOF\n");
                     event = evtFileTransComplete_t;
                     previous_state = waitPayload_t;
-                    current_state = logFileInfo_t;
+                    current_state = sendAck_t;
                     // transmit_complete = 1;
                     file_close();
                 }
+                // otherwise, we got a normal payload and carry on saving
                 else
                 {
                     event = evtPayloadReceived_t;
@@ -332,19 +352,6 @@ void sm_server_put()
                     current_state = sendAck_t;   
                 }
 
-                // if we were sending the final ack, go to log info,
-                // otherwise, prepare to send another payload packet.
-                if(previous_state == sendAck_t)
-                {
-                    previous_state = waitAck_t;
-                    current_state = logFileInfo_t;
-                }
-                else
-                {
-                    previous_state = waitAck_t;
-                    current_state = transmitPayload_t;
-                }
-
                 break;
 
             case(logFileInfo_t):
@@ -355,6 +362,7 @@ void sm_server_put()
                 crc32_calc = crc_generate_file(file_get_fp());
                 printf("File CRC: %u\n", crc32_calc);
                 file_close();
+                printf("prev state %d\n", previous_state);
                 return;
 
                 break;
