@@ -73,6 +73,7 @@ int main(int argc, char *argv[])
         // display main menu and process user response
         cli_display_main_menu();
         user_resp = cli_get_user_response();
+        memset(user_param, 0, MAX_USER_ARG);
         ret = get_command(user_resp, user_param);
         
         if(!ret)
@@ -158,16 +159,71 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_EXIT:
+                // 1. generate filtered version of user commands
+                cli_generate_filtered_usr_cmd("exit", user_param);
+
+                // 2. fill packet struct fields
+                packet_write_payload_size(cli_get_filtered_usr_cmd_size());
+                packet_write_payload(
+                    cli_get_filtered_usr_cmd(), 
+                    packet_get_payload_size()
+                );
+                packet_write_crc32(
+                    crc_generate(
+                        (char *)packet_get_struct(), 
+                        packet_get_packet_size_for_crc()
+                    )
+                );
+                ret = packet_generate();
+
+                // wait for ack
+                ret = 0;
+                sock_clear_input_buffer();
+                while(ret <= 0)
+                {
+                    // 4. send cmd packet to server
+                    ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
+                    // printf("Sent CMD\n");
+
+                    // 5. wait for ack from server
+                    //printf("Waiting for ACK from server\n");
+                    socket_init_timeout();
+                    sock_enable_timeout();
+                    ret = sock_recv(1);
+                    // printf("RET = %d\n", ret);
+                }
+
+                // 6. parse server response
+                packet_parse(sock_get_in_buf());
+
+                // 7. verify that payload contents are correct (crc32 check)
+                crc32_calc = crc_generate(
+                    (char *) packet_get_struct(), 
+                    packet_get_packet_size_for_crc()
+                );
+                if(crc32_calc != packet_get_crc32())
+                {
+                    printf("CRC32 mismatch, corrupted packet!");
+                    continue;
+                }
+
+                // 8. check that the payload is ACK
+                if ( strcmp(packet_get_payload(), "ACK") != 0 )
+                {
+                    // ack was not received. start over.
+                    printf("ACK NOT RECEIVED\n");
+                    continue;
+                }
+                else
+                {
+                    printf("Server terminated sucessfully\n");
+                }
+                sock_close_socket();
                 msg_app_closing();
                 return 0;
         }
 
-        // printf("CMD: %d\nBUF: %s\nPARAM: %s\n", ret, user_resp, user_param);
-
     }
-    
 
-
-    //test_greeting(0);
     return 0;
 }
