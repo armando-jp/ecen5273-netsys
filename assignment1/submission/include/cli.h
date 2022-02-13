@@ -22,13 +22,30 @@ typedef struct _cli {
 
 #define NUM_COMMANDS 5
 
-char *get_help(uint8_t cmd);
-void cli_display_main_menu();
-char *cli_get_user_response();
-int16_t get_command(char *buf, char *param);
-
-// usr cmd generation
+/*******************************************************************************
+ * User Input Processing Functions
+*******************************************************************************/
 void cli_generate_filtered_usr_cmd(char *cmd, char *param);
 uint32_t cli_get_filtered_usr_cmd_size();
 char *cli_get_filtered_usr_cmd();
+int16_t get_command(char *buf, char *param);
+
+/*******************************************************************************
+ * Get command help Functions
+*******************************************************************************/
+char *get_help(uint8_t cmd);
+
+/*******************************************************************************
+ * Display Functions
+*******************************************************************************/
+void cli_display_main_menu();
+char *cli_get_user_response();
+
+/*******************************************************************************
+ * Getter/Setter Functions
+*******************************************************************************/
+char *cli_get_user_input_buf();
+char *cli_get_cmd_filtered_buf();
+char *cli_get_user_param_buf();
+
 #endif /*INC_CLI_*/

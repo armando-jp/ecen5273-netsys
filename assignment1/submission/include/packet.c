@@ -134,3 +134,8 @@ void packet_print_struct()
     packet_print(packet.payload, packet.payload_size);
     printf("PACKET CRC32: %u\n", packet.crc32);
 }
+
+uint32_t packet_get_chunk_size()
+{
+    return CHUNK_SIZE;
+}

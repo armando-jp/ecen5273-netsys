@@ -11,6 +11,7 @@
 #include "../include/file.h"
 #include "../include/crc.h"
 #include "../include/packet.h"
+#include "../include/state_machine.h"
 
 #define DEBUG         (0)
 #define CHUNK_SIZE    (500)
@@ -21,7 +22,6 @@ int main(int argc, char *argv[])
 {
     // variables for user input processing
     int ret;
-    uint32_t amt_read;
     uint32_t crc32_calc;
 
     char *user_resp = NULL;
@@ -95,181 +95,7 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_PUT:
-                /***************************************************************
-                 * Send CMD and get server ACK
-                 **************************************************************/
-                // 1. generate filtered version of user commands
-                cli_generate_filtered_usr_cmd("put", user_param);
-
-                // 2. fill packet struct fields
-                packet_write_payload_size(cli_get_filtered_usr_cmd_size());
-                packet_write_payload(
-                    cli_get_filtered_usr_cmd(), 
-                    packet_get_payload_size()
-                );
-                packet_write_crc32(
-                    crc_generate(
-                        packet_get_payload(), 
-                        packet_get_payload_size()
-                    )
-                );
-
-                // 3. generate packet buffer
-                ret = packet_generate();
-                packet_write_total_size(ret);
-
-                ret = 0;
-                sock_clear_input_buffer();
-                while(ret <= 0)
-                {
-                    // 4. send cmd packet to server
-                    ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-                    printf("Sent CMD\n");
-
-                    // 5. wait for ack from server
-                    printf("Waiting for ACK from server\n");
-                    socket_init_timeout();
-                    sock_enable_timeout();
-                    ret = sock_recv();
-                    printf("RET = %d\n", ret);
-                }
-
-                // 6. parse server response
-                packet_parse(sock_get_in_buf());
-                // 7. verify that payload contents are correct (crc32 check)
-                crc32_calc = crc_generate(
-                    packet_get_payload(), 
-                    packet_get_payload_size()
-                );
-                if(crc32_calc != packet_get_crc32())
-                {
-                    printf("CRC32 mismatch, corrupted packet!");
-                    continue;
-                }
-
-                // 8. check that the payload is ACK
-                if ( strcmp(packet_get_payload(), "ACK") != 0 )
-                {
-                    // ack was not received. start over.
-                    printf("ACK NOT RECEIVED\n");
-                    continue;
-                }
-
-                /***************************************************************
-                 * Transmit File
-                 **************************************************************/
-                // Open file to send
-                file_open(user_param, 0);
-                printf("%s size (bytes): %d\n", user_param, file_get_size());
-
-                // Generate the complete files CRC32
-                crc32_calc = crc_generate_file(file_get_fp());
-                printf("File CRC: %u\n", crc32_calc);
-
-                // reset fp for actual read
-                file_reset_fileptr();
-
-                while(1)
-                {
-                    // 1. Read a chunk from file
-                    ret = file_read_chunk(CHUNK_SIZE);
-                    amt_read = ret;
-
-                    // 2. fill packet struct fields
-                    packet_write_payload_size(ret);
-                    packet_write_payload(
-                        file_get_file_buf(), 
-                        packet_get_payload_size()
-                    );
-                    packet_write_crc32(
-                        crc_generate(
-                            packet_get_payload(), 
-                            packet_get_payload_size()
-                        )
-                    );
-
-                    // 3. generate packet buffer
-                    ret = packet_generate();
-                    packet_write_total_size(ret);
-
-                    ret = 0;
-                    while(ret <= 0)
-                    {
-                        // 4. send cmd packet to server
-                        ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-                        printf("Sent %u bytes to %s\n", ret, ip_str);
-
-                        // 5. wait for ack from server
-                        printf("Waiting for ACK from server\n");
-                        socket_init_timeout();
-                        sock_enable_timeout();
-                        sock_clear_input_buffer();
-                        ret = sock_recv();
-                    }
-
-                    // 6. parse server response
-                    packet_parse(sock_get_in_buf());
-
-                    // 7. verify that payload contents are correct (crc32 check)
-                    crc32_calc = crc_generate(
-                        packet_get_payload(), 
-                        packet_get_payload_size()
-                    );
-                    if(crc32_calc != packet_get_crc32())
-                    {
-                        printf("CRC32 mismatch, corrupted packet!");
-                        continue;
-                    }
-
-                    // 8. check that the payload is ACK
-                    if ( strcmp(packet_get_payload(), "ACK") != 0 )
-                    {
-                        // ack was not received. start over.
-                        printf("ACK NOT RECEIVED\n");
-                        continue;
-                    }
-
-                    // 9. check if amt_read was chunck size 
-                    if (amt_read != CHUNK_SIZE)
-                    {
-                        // means we probably made it to the EOF, in which
-                        // case, we break out of the loop and send the final
-                        // ACK.
-                        break;
-                    }
-                }
-                file_close();
-
-                /***************************************************************
-                 * Send final ACK
-                 **************************************************************/
-                // 1. generate ACK packet.
-                printf("Generating ACK packet\n");
-                packet_write_payload_size(sizeof("ACK"));
-                packet_write_payload("ACK", packet_get_payload_size());
-                packet_write_crc32(
-                    crc_generate(
-                        packet_get_payload(), 
-                        packet_get_payload_size()
-                    )
-                );
-                packet_generate();
-
-                // 2. send ACK packet
-                ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
-                sock_disable_timeout();
-
-                /***************************************************************
-                 * Calculate original file CRC32 one last time.
-                 **************************************************************/
-                file_open(user_param, 0);
-                printf("%s size (bytes): %d\n", user_param, file_get_size());
-
-                // Generate the complete files CRC32
-                crc32_calc = crc_generate_file(file_get_fp());
-                printf("File CRC: %u\n", crc32_calc);
-                file_close();
-
+                sm_client_put();
                 break;
 
             case CMD_DELETE:
@@ -309,7 +135,7 @@ int main(int argc, char *argv[])
                     printf("Waiting for ACK from server\n");
                     socket_init_timeout();
                     sock_enable_timeout();
-                    ret = sock_recv();
+                    ret = sock_recv(1);
                     printf("RET = %d\n", ret);
                 }
 

@@ -169,4 +169,4 @@ int file_delete(char * file_name)
 /*******************************************************************************
  * Functions for getting directory contents (LS)
 *******************************************************************************/
-extern int alphasort()
+//extern int alphasort();

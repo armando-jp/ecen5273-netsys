@@ -222,11 +222,11 @@ void sock_disable_timeout()
 // (their_addr), and length of origin address (addr_len). 
 //
 // This is a BLOCKING CALL.
-int sock_recv()
+int sock_recv(int use_timeout)
 {
     addr_len = sizeof their_addr;
 
-    if(USE_TIMEOUT)
+    if(use_timeout)
     {
         if(FD_ISSET(sockfd, &readfds))
         {

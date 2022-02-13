@@ -6,6 +6,7 @@ const char *ws2=" \t\r\n";
 
 static char user_input[MAX_USER_INPUT];
 static char cmd_filtered[MAX_USER_INPUT];
+static char user_param[MAX_USER_INPUT];
 
 static const
 CLICMDS cli[NUM_COMMANDS] = {
@@ -16,6 +17,9 @@ CLICMDS cli[NUM_COMMANDS] = {
     {"exit",   "\texit\r\n",               CMD_EXIT},
 };
 
+/*******************************************************************************
+ * User Input Processing Functions
+*******************************************************************************/
 // generates a filtered string of the users command
 void cli_generate_filtered_usr_cmd(char *cmd, char *param)
 {
@@ -47,21 +51,6 @@ uint32_t cli_get_filtered_usr_cmd_size()
 char *cli_get_filtered_usr_cmd()
 {
     return cmd_filtered;
-}
-
-// returns the help string specified by the 'cmd' arg
-char *get_help(uint8_t cmd)
-{
-    uint8_t i = 0;
-    char *rval = NULL;
-
-    for (i = 0; i < NUM_COMMANDS; i++) {
-       if (cmd == cli[i].cmd) {
-           rval = cli[i].help;
-           break;
-       }
-    }
-    return (rval);
 }
 
 /*
@@ -147,9 +136,31 @@ int16_t get_command(char *buf, char *param)
             break;
 
     }
+    strcpy(user_param, param);
     return (cmd);
 }
 
+/*******************************************************************************
+ * Get command help Functions
+*******************************************************************************/
+// returns the help string specified by the 'cmd' arg
+char *get_help(uint8_t cmd)
+{
+    uint8_t i = 0;
+    char *rval = NULL;
+
+    for (i = 0; i < NUM_COMMANDS; i++) {
+       if (cmd == cli[i].cmd) {
+           rval = cli[i].help;
+           break;
+       }
+    }
+    return (rval);
+}
+
+/*******************************************************************************
+ * Display Functions
+*******************************************************************************/
 void cli_display_main_menu()
 {
     printf("Main Menu\n");
@@ -165,4 +176,22 @@ char *cli_get_user_response()
     printf("> ");
     fgets(user_input, MAX_USER_INPUT, stdin);
     return user_input;
+}
+
+/*******************************************************************************
+ * Getter/Setter Functions
+*******************************************************************************/
+char *cli_get_user_input_buf()
+{
+    return user_input;
+}
+
+char *cli_get_cmd_filtered_buf()
+{
+    return cmd_filtered;
+}
+
+char *cli_get_user_param_buf()
+{
+    return user_param;
 }
