@@ -90,6 +90,8 @@ void sm_client_put()
                     ret = packet_generate();
                     // packet_print_struct();
 
+                    sequence_number++;
+
                     // prepare to transition to next state
                     event = evtAckNotRecv_t;
                     previous_state = transmitPayload_t;
@@ -153,7 +155,7 @@ void sm_client_put()
                     // verify that payload contents are correct (crc32 check)
                     crc32_calc = crc_generate(
                         packet_get_payload(), 
-                        packet_get_payload_size()
+                        packet_get_packet_size_for_crc()
                     );
                     if(crc32_calc != packet_get_crc32())
                     {
@@ -222,6 +224,7 @@ void sm_server_put()
     int ret;
     // int transmit_complete = 0;
     uint32_t crc32_calc;
+    uint32_t last_sequence_number;
 
     state_t previous_state = null_t; if(previous_state != null_t) {};
     state_t current_state = sendAck_t;
@@ -301,7 +304,7 @@ void sm_server_put()
                 // verify correct payload
                 crc32_calc = crc_generate(
                     packet_get_payload(), 
-                    packet_get_payload_size()
+                    packet_get_packet_size_for_crc()
                 );
                 if(crc32_calc != packet_get_crc32())
                 {
@@ -309,8 +312,8 @@ void sm_server_put()
                     printf("CRC32 mismatch, corrupted packet!");
                     continue;
                 }
-                // printf("======\n");
-                //packet_print_struct();
+                printf("======\n");
+                packet_print_struct();
 
                 // check if we got a command, if so, re ACK the message
                 if(strstr(packet_get_payload(), "put") != NULL)
@@ -329,9 +332,17 @@ void sm_server_put()
                     // transmit_complete = 1;
                     file_close();
                 }
+                // we got the same packet as before. don't save and just send an ACK
+                else if(last_sequence_number == packet_get_sequence_number())
+                {
+                    event = evtPayloadReceived_t;
+                    previous_state = waitPayload_t;
+                    current_state = sendAck_t;
+                }
                 // otherwise, we got a normal payload and carry on saving
                 else
                 {
+                    last_sequence_number = packet_get_sequence_number();
                     event = evtPayloadReceived_t;
                     previous_state = waitPayload_t;
                     current_state = savePayload_t;
