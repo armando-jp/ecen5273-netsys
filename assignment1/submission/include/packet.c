@@ -125,6 +125,11 @@ uint32_t packet_get_total_size()
 {
     return sizeof(packet.sequence_number) + sizeof(packet.payload_size) + packet.payload_size + sizeof(packet.crc32);
 }
+
+uint8_t *packet_get_struct()
+{
+    return &packet;
+}
 /*******************************************************************************
 * Utility functions
 *******************************************************************************/
