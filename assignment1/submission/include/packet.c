@@ -47,7 +47,7 @@ uint32_t packet_generate()
     // copy crc32 into last 4 bytes of packet_buf
     memcpy((packet_buf + sizeof(packet.sequence_number) + packet.payload_size + sizeof(packet.payload_size)), &packet.crc32, sizeof(packet.crc32));
 
-    //             4 bytes     + <=500 bytes +    4 bytes
+    //             4 bytes                +                 4 bytes     + <=500 bytes  +    4 bytes
     return sizeof(packet.sequence_number) + sizeof(packet.payload_size) + packet.payload_size + sizeof(packet.crc32);
 }
 
@@ -62,7 +62,7 @@ void packet_parse(char *buf)
     // copy payload
     memcpy(packet.payload, sizeof(packet.sequence_number) + sizeof(packet.payload_size) + buf, packet.payload_size);
     // copy crc32 field 
-    memcpy(&packet.crc32, sizeof(packet.sequence_number)+ sizeof(packet.payload_size) + buf + packet.payload_size, sizeof(packet.crc32));
+    memcpy(&packet.crc32, sizeof(packet.sequence_number) + sizeof(packet.payload_size) + buf + packet.payload_size, sizeof(packet.crc32));
 
 }
 

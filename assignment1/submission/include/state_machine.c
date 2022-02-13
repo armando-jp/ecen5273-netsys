@@ -46,6 +46,8 @@ void sm_client_put()
 
                 // 3. generate packet buffer
                 ret = packet_generate();
+                printf("====\n");
+                packet_print_struct();
 
                 // Open file to send
                 file_open(cli_get_user_param_buf(), 0);
@@ -300,6 +302,8 @@ void sm_server_put()
 
                 // parse packet
                 packet_parse(sock_get_in_buf());
+                printf("======\n");
+                packet_print_struct();
 
                 // verify correct payload
                 crc32_calc = crc_generate(
@@ -312,8 +316,6 @@ void sm_server_put()
                     printf("CRC32 mismatch, corrupted packet!");
                     continue;
                 }
-                printf("======\n");
-                packet_print_struct();
 
                 // check if we got a command, if so, re ACK the message
                 if(strstr(packet_get_payload(), "put") != NULL)
