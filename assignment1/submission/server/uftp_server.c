@@ -62,7 +62,7 @@ int main(int argc, char *argv[])
 
         // verify that payload contents are correct
         crc32_calc = crc_generate(
-            packet_get_buf(), 
+            (char *)packet_get_struct(), 
             packet_get_packet_size_for_crc());
         if(crc32_calc != packet_get_crc32())
         {
