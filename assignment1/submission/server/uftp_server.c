@@ -82,8 +82,7 @@ int main(int argc, char *argv[])
         switch(ret)
         {
             case CMD_GET:
-                // perform get operation
-                printf("Performing GET command with param \"%s\"\n", cmd_params);
+                sm_server_get();
                 break;
 
             case CMD_PUT:

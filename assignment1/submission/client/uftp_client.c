@@ -84,12 +84,7 @@ int main(int argc, char *argv[])
         switch(ret)
         {
             case CMD_GET:
-                // perform get operation
-                // calculate payload size
-
-                // snprintf(payload, MAX_PAYLOAD, "get %s",user_param);
-                // ret = sock_sendto(payload, strlen(payload));
-                // printf("Sent %d bytes to %s\n", ret, ip_str);
+                sm_client_get();
                 break;
 
             case CMD_PUT:

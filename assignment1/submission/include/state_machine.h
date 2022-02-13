@@ -27,6 +27,8 @@ typedef enum event {
 
 
 void sm_client_put();
-void sm_server_put();
+void sm_client_get();
 
+void sm_server_put();
+void sm_server_get();
 #endif /*INC_STATE_MACINE_*/
