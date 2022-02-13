@@ -222,7 +222,7 @@ void sm_server_put()
     uint32_t crc32_calc;
     char dummy_array[100];
 
-    state_t previous_state = null_t;
+    state_t previous_state = null_t; if(previous_state != null_t) {};
     state_t current_state = sendAck_t;
 
     event_t event = evtNull_t;
@@ -255,21 +255,20 @@ void sm_server_put()
                 // we were just sending the final ACK, we are done
                 if(event == evtFileTransComplete_t)
                 {
-                    printf("sendAck: evtFileTransComplete\n");
+                    //printf("sendAck: evtFileTransComplete\n");
                     previous_state = sendAck_t;
                     current_state = logFileInfo_t; 
                 }
                 else if(event == evtPayloadReceived_t)
                 {
-                    printf("sendAck: evtPayloadReceived\n");
+                    //printf("sendAck: evtPayloadReceived\n");
                     // wait for next payload
                     previous_state = sendAck_t;
                     current_state = waitPayload_t;    
                 }
                 else if (event == evtNull_t)
                 {
-                    printf("sendAck: evtNull_t\n");
-
+                    //printf("sendAck: evtNull_t\n");
                     event = evtFileTransNotComplete_t;
                     previous_state = sendAck_t;
                     current_state = waitPayload_t;
@@ -309,10 +308,11 @@ void sm_server_put()
                     printf("CRC32 mismatch, corrupted packet!");
                     continue;
                 }
+                printf("======\n");
+                packet_print_struct();
 
                 // check if we got a command, if so, re ACK the message
-                ret = get_command(packet_get_payload(), dummy_array);
-                if(ret)
+                if(strstr(packet_get_payload(), "put") != NULL)
                 {
                     event = evtNull_t;
                     previous_state = waitPayload_t;
@@ -362,6 +362,7 @@ void sm_server_put()
                 break;
 
             case(logFileInfo_t):
+            printf("===PRINTING FILE STATS===\n");
                 file_open(cli_get_user_param_buf(), 0);
                 printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
 
@@ -369,7 +370,6 @@ void sm_server_put()
                 crc32_calc = crc_generate_file(file_get_fp());
                 printf("File CRC: %u\n", crc32_calc);
                 file_close();
-                printf("prev state %d\n", previous_state);
                 return;
 
                 break;
