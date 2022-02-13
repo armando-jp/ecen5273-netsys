@@ -59,7 +59,7 @@ void sm_client_put()
                 break;
 
             case(transmitPayload_t):
-                printf("In transmit payload\n");
+                // printf("In transmit payload\n");
 
                 if(!transmit_complete)
                 {
@@ -87,7 +87,7 @@ void sm_client_put()
                     // generate packet buffer
                     ret = packet_generate();
                     packet_write_total_size(ret);
-                    packet_print_struct();
+                    // packet_print_struct();
 
                     // prepare to transition to next state
                     event = evtAckNotRecv_t;
@@ -137,7 +137,7 @@ void sm_client_put()
                         printf("Sent PACKET\n");
 
                         // wait for any kind of response from server
-                        printf("Waiting for ACK from server\n");
+                        // printf("Waiting for ACK from server\n");
 
                         socket_init_timeout();
                         sock_enable_timeout();
@@ -309,7 +309,7 @@ void sm_server_put()
                     continue;
                 }
                 printf("======\n");
-                packet_print_struct();
+                // packet_print_struct();
 
                 // check if we got a command, if so, re ACK the message
                 if(strstr(packet_get_payload(), "put") != NULL)
