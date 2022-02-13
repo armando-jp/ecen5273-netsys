@@ -32,7 +32,7 @@ void sock_disable_timeout();
 /*******************************************************************************
 * Functions SENDING and RECEIVING
 *******************************************************************************/
-int sock_recv();
+int sock_recv(int use_timeout);
 int sock_sendto(char *buf, uint32_t length, bool is_client);
 
 #endif /*INC_SOCKET_H_*/

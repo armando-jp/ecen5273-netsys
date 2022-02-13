@@ -127,18 +127,22 @@ void sm_client_put()
                 while(event != evtAckRecv_t)
                 {
                     // break out of loop if some kind of response is received.
+                    ret = 0;
+                    sock_clear_input_buffer();
                     while(ret <= 0)
                     {
                         // send packet to server
-                        sock_clear_input_buffer();
                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
                         printf("Sent PACKET\n");
 
                         // wait for any kind of response from server
                         printf("Waiting for ACK from server\n");
+
                         socket_init_timeout();
                         sock_enable_timeout();
                         ret = sock_recv(1);
+                        printf("received %d bytes\n", ret);
+                        sock_disable_timeout();
                     }
 
                     // parse the received message
@@ -270,6 +274,7 @@ void sm_server_put()
                     socket_init_timeout();
                     sock_enable_timeout();
                     ret = sock_recv(1);
+                    sock_disable_timeout();
                 }
 
                 // parse packet
@@ -326,7 +331,6 @@ void sm_server_put()
                     previous_state = savePayload_t;
                     current_state = sendAck_t;   
                 }
-                break;
 
                 // if we were sending the final ack, go to log info,
                 // otherwise, prepare to send another payload packet.

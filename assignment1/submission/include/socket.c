@@ -31,8 +31,7 @@ struct timeval tv = {
     .tv_sec = TIMEOUT_SEC,
     .tv_usec = 0
 };
-fd_set readfds; // delcare a read set
-
+fd_set readfds, master; // delcare a read set
 
 /*******************************************************************************
 * Utility Functions
@@ -200,18 +199,21 @@ void sock_close_socket()
 *******************************************************************************/
 void socket_init_timeout()
 {
+    FD_ZERO(&master);
     FD_ZERO(&readfds);
-    FD_SET(sockfd, &readfds); // add socket to the read set
+    FD_SET(sockfd, &master);
+
     tv.tv_sec = TIMEOUT_SEC;
 }
 void sock_enable_timeout()
 {
+    readfds = master;
     select(sockfd+1, &readfds, NULL, NULL, &tv); 
 }
 
 void sock_disable_timeout()
 {
-    tv.tv_sec = 0;
+    FD_CLR(sockfd, &readfds);
 }
 
 /*******************************************************************************
