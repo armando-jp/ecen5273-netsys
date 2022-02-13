@@ -233,6 +233,7 @@ void sm_server_put()
     // int transmit_complete = 0;
     uint32_t crc32_calc;
     uint32_t last_sequence_number;
+    uint32_t total_packets = 0;
 
     state_t previous_state = null_t; if(previous_state != null_t) {};
     state_t current_state = sendAck_t;
@@ -263,7 +264,7 @@ void sm_server_put()
                 // packet_print_struct();
 
                 // send ACK packet 
-                printf("Sending ACK\n");
+                //printf("Sending ACK\n");
                 ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
 
                 // we were just sending the final ACK, we are done
@@ -273,13 +274,16 @@ void sm_server_put()
                     previous_state = sendAck_t;
                     current_state = logFileInfo_t; 
                 }
+                // we have just sucessfully received a packet
                 else if(event == evtPayloadReceived_t)
                 {
                     //printf("sendAck: evtPayloadReceived\n");
                     // wait for next payload
+                    total_packets++;
                     previous_state = sendAck_t;
                     current_state = waitPayload_t;    
                 }
+                // we just started, wait for first payload packet.
                 else if (event == evtNull_t)
                 {
                     //printf("sendAck: evtNull_t\n");
@@ -287,10 +291,10 @@ void sm_server_put()
                     previous_state = sendAck_t;
                     current_state = waitPayload_t;
                 }
-
-                // printf("prev state %d\n", previous_state);
-                // printf("state = %d\n", current_state);
-                // printf("event = %d\n", event);
+                else
+                {
+                    printf("HMM\n");
+                }
 
                 break;
 
@@ -301,7 +305,7 @@ void sm_server_put()
                 {
                     // wait for any kind of response from server
                     sock_clear_input_buffer();
-                    printf("Waiting for PAYLOAD from server\n");
+                    //printf("Waiting for PAYLOAD from server\n");
                     socket_init_timeout();
                     sock_enable_timeout();
                     ret = sock_recv(1);
@@ -326,15 +330,16 @@ void sm_server_put()
                     continue;
                 }
 
-                // check if we got a command, if so, re ACK the message
-                if(strstr(packet_get_payload(), "put") != NULL)
-                {
-                    event = evtNull_t;
-                    previous_state = waitPayload_t;
-                    current_state = sendAck_t;
-                }
+                // // check if we got a command, if so, re ACK the message
+                // if(strstr(packet_get_payload(), "put") != NULL)
+                // {
+                //     printf(">>>>FOUND A COMMAND\n");
+                //     event = evtNull_t;
+                //     previous_state = waitPayload_t;
+                //     current_state = sendAck_t;
+                // }
                 // Check if we got an ACK packet (means end of transmission)
-                else if ( strcmp(packet_get_payload(), "ACK") == 0 )
+                if ( strcmp(packet_get_payload(), "ACK") == 0 )
                 {
                     printf("ACK Received!\nEOF\n");
                     event = evtFileTransComplete_t;
@@ -346,6 +351,7 @@ void sm_server_put()
                 // we got the same packet as before. don't save and just send an ACK
                 else if(last_sequence_number == packet_get_sequence_number())
                 {
+                    printf("repeat sequence number\n");
                     event = evtPayloadReceived_t;
                     previous_state = waitPayload_t;
                     current_state = sendAck_t;
@@ -358,12 +364,11 @@ void sm_server_put()
                     previous_state = waitPayload_t;
                     current_state = savePayload_t;
                 }
-
-
                 break;
 
             case(savePayload_t):
                 // save payload to file
+                // printf("GOING TO WRITE TO FILE\n");
                 ret = file_write_chunk(
                     packet_get_payload(), 
                     packet_get_payload_size()
@@ -377,6 +382,7 @@ void sm_server_put()
                 }
                 else
                 {
+                    // printf("Wrote %d bytes to file\n", ret);
                     event = evtPayloadReceived_t;
                     previous_state = savePayload_t;
                     current_state = sendAck_t;   
@@ -386,6 +392,8 @@ void sm_server_put()
 
             case(logFileInfo_t):
                 printf("===PRINTING FILE STATS===\n");
+                printf("last sequence number received: %u\n", last_sequence_number);
+                printf("total packets received: %u\n", total_packets);
                 file_open(cli_get_user_param_buf(), 0);
                 printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
 
