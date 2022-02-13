@@ -69,7 +69,7 @@ int main(int argc, char *argv[])
             printf("CRC32 mismatch, corrupted packet!");
             continue;
         }
-        printf("CRC32 matched!\n");
+        // printf("CRC32 matched!\n");
 
         // process command
         ret = get_command(packet_get_payload(), cmd_params);
@@ -90,8 +90,8 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_DELETE:
-                 // 1. generate ACK packet.
-                printf("Generating ACK packet\n");
+                // 1. generate ACK packet.
+                // printf("Generating ACK packet\n");
                 packet_write_payload_size(sizeof("ACK"));
                 packet_write_payload("ACK", packet_get_payload_size());
                 packet_write_crc32(
@@ -122,7 +122,7 @@ int main(int argc, char *argv[])
 
             case CMD_LS:
                 // perform ls operation
-                printf("Performing LS command\n");
+                sm_server_ls();
                 break;
 
             // case CMD_EXIT:

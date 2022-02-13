@@ -845,7 +845,7 @@ void sm_server_get()
                 break;
 
             case(transmitPayload_t):
-                printf("In transmit payload\n");
+                // printf("In transmit payload\n");
         
                 if(!transmit_complete)
                 {
@@ -885,7 +885,7 @@ void sm_server_get()
                 {
                     file_close();
                     // generate ACK packet.
-                    printf("Generating ACK packet\n");
+                    // printf("Generating ACK packet\n");
                     packet_write_sequence_number(0);
                     packet_write_payload_size(sizeof("ACK"));
                     packet_write_payload("ACK", packet_get_payload_size());
@@ -1188,6 +1188,7 @@ void sm_server_put()
 void sm_server_ls()
 {
     int ret;
+    int final_ack = 0;
     int payload_size;
     int transmit_complete = 0;
     uint32_t crc32_calc;
@@ -1200,7 +1201,6 @@ void sm_server_ls()
     event_t event = evtNull_t;
 
     printf("Performing LS command\n");
-    file_open(cli_get_user_param_buf(), 1);
 
     while(true)
     {
@@ -1223,16 +1223,25 @@ void sm_server_ls()
                 // packet_print_struct();
 
                 // send ACK packet 
-                //printf("Sending ACK\n");
+                printf("Sending ACK\n");
                 ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
 
+                // we just started, create first payload.
+                if (event == evtNull_t)
+                {
+                    //printf("sendAck: evtNull_t\n");
+                    event = evtFileTransNotComplete_t;
+                    previous_state = sendAck_t;
+                    current_state = transmitPayload_t;
+                }
                 // we were just sending the final ACK, we are done
-                if(event == evtFileTransComplete_t)
+                else if(event == evtFileTransComplete_t)
                 {
                     //printf("sendAck: evtFileTransComplete\n");
-                    previous_state = sendAck_t;
+                    final_ack = 1;
                     return;
-                    current_state = logFileInfo_t; 
+                    previous_state = sendAck_t;
+                    current_state = waitAck_t; 
                 }
                 // we have just sucessfully received a packet
                 else if(event == evtPayloadReceived_t)
@@ -1243,14 +1252,7 @@ void sm_server_ls()
                     previous_state = sendAck_t;
                     current_state = waitPayload_t;    
                 }
-                // we just started, create first payload.
-                else if (event == evtNull_t)
-                {
-                    //printf("sendAck: evtNull_t\n");
-                    event = evtFileTransNotComplete_t;
-                    previous_state = sendAck_t;
-                    current_state = transmitPayload_t;
-                }
+
                 else
                 {
                     printf("HMM\n");
@@ -1262,6 +1264,7 @@ void sm_server_ls()
 
                 if(!transmit_complete)
                 {
+                    printf("Generating Payload\n");
                     // create the packet to send
                     if((payload_size = file_get_ls()) > 0)
                     {
@@ -1276,6 +1279,7 @@ void sm_server_ls()
                                     packet_get_packet_size_for_crc()
                                 )
                             );
+                            packet_print_struct();
                             ret = packet_generate();  
                             transmit_complete = 1;
                         }
@@ -1326,7 +1330,7 @@ void sm_server_ls()
                     {
                         // send packet to server
                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
-                        //printf("Sent PACKET\n");
+                        printf("Sent PACKET\n");
 
                         // wait for any kind of response from server
                         // printf("Waiting for ACK from server\n");
@@ -1359,7 +1363,7 @@ void sm_server_ls()
                     }
                     else
                     {
-                        // printf("Got ACK\n");
+                        printf("Got ACK\n");
                         event = evtAckRecv_t;
                     }
                 }
@@ -1368,8 +1372,13 @@ void sm_server_ls()
                 // otherwise, prepare to send another payload packet.
                 if(transmit_complete)
                 {
+                    if(final_ack)
+                    {
+                        return;
+                    }
+                    event = evtFileTransComplete_t;
                     previous_state = waitAck_t;
-                    return;
+                    current_state = sendAck_t;
                 }
                 else if(previous_state == transmitPayload_t)
                 {
