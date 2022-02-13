@@ -21,6 +21,7 @@ void sm_client_put()
 
     event_t event = evtNull_t;
     uint32_t sequence_number = 0;
+    uint32_t last_sequece_number = 0;
 
     while(true)
     {
@@ -68,7 +69,7 @@ void sm_client_put()
                 {
                     // Read a chunk from file
                     ret = file_read_chunk(packet_get_chunk_size());
-                    printf("file read returned %d bytes\n", ret);
+                    // printf("file read returned %d bytes\n", ret);
                     if(ret != packet_get_chunk_size())
                     {
                         transmit_complete = 1;
@@ -93,8 +94,6 @@ void sm_client_put()
                     // printf("====SENDING: PACKET");
                     // packet_print_struct();
 
-                    sequence_number++;
-
                     // prepare to transition to next state
                     event = evtAckNotRecv_t;
                     previous_state = transmitPayload_t;
@@ -103,7 +102,6 @@ void sm_client_put()
                 else
                 {
                     file_close();
-
                     // generate ACK packet.
                     printf("Generating ACK packet\n");
                     packet_write_sequence_number(0);
@@ -141,7 +139,7 @@ void sm_client_put()
                     {
                         // send packet to server
                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-                        printf("Sent PACKET\n");
+                        //printf("Sent PACKET\n");
 
                         // wait for any kind of response from server
                         // printf("Waiting for ACK from server\n");
@@ -174,7 +172,7 @@ void sm_client_put()
                     }
                     else
                     {
-                        printf("Got ACK\n");
+                        // printf("Got ACK\n");
                         event = evtAckRecv_t;
                     }
                 }
@@ -193,14 +191,21 @@ void sm_client_put()
                 }
                 else if(previous_state == transmitPayload_t)
                 {
+                    sequence_number++;
+                    last_sequece_number = sequence_number;
                     previous_state = waitAck_t;
                     current_state = transmitPayload_t;
+                }
+                else
+                {
+                    printf("HUH\n");
                 }
 
                 break;
 
             case(logFileInfo_t):
                 printf("===PRINTING FILE STATS===\n");
+                printf("Last sequence number: %d\n", last_sequece_number);
                 file_open(cli_get_user_param_buf(), 0);
                 printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
 
