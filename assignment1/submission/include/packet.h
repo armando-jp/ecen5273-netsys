@@ -39,6 +39,7 @@ void packet_write_sequence_number(uint32_t size);
 char *packet_get_buf();
 uint32_t packet_get_packet_size_for_crc();
 uint32_t packet_get_total_size();
+uint8_t *packet_get_struct();
 /*******************************************************************************
 * Utility functions
 *******************************************************************************/

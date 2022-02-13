@@ -33,20 +33,20 @@ void sm_client_put()
                 // 2. fill packet struct fields
                 packet_write_sequence_number(0);
                 packet_write_payload_size(cli_get_filtered_usr_cmd_size());
-                    packet_write_payload(
-                        cli_get_filtered_usr_cmd(), 
-                        packet_get_payload_size()
-                    );
-                    packet_write_crc32(
-                        crc_generate(
-                            packet_get_buf(), 
-                            packet_get_packet_size_for_crc()
-                        )
-                    );
+                packet_write_payload(
+                    cli_get_filtered_usr_cmd(), 
+                    packet_get_payload_size()
+                );
+                packet_write_crc32(
+                    crc_generate(
+                        packet_get_struct(), 
+                        packet_get_packet_size_for_crc()
+                    )
+                );
 
                 // 3. generate packet buffer
                 ret = packet_generate();
-                printf("====\n");
+                printf("====SENDING: CMD\n");
                 packet_print_struct();
 
                 // Open file to send
@@ -83,14 +83,15 @@ void sm_client_put()
                     );
                     packet_write_crc32(
                         crc_generate(
-                            packet_get_buf(), 
+                            packet_get_struct(), 
                             packet_get_packet_size_for_crc()
                         )
                     );
 
                     // generate packet buffer
                     ret = packet_generate();
-                    // packet_print_struct();
+                    printf("====SENDING: PACKET");
+                    packet_print_struct();
 
                     sequence_number++;
 
@@ -110,7 +111,7 @@ void sm_client_put()
                     packet_write_payload("ACK", packet_get_payload_size());
                     packet_write_crc32(
                         crc_generate(
-                            packet_get_buf(), 
+                            packet_get_struct(), 
                             packet_get_packet_size_for_crc()
                         )
                     );
@@ -248,7 +249,7 @@ void sm_server_put()
                 packet_write_payload("ACK", packet_get_payload_size());
                 packet_write_crc32(
                     crc_generate(
-                        packet_get_buf(), 
+                        packet_get_struct(), 
                         packet_get_packet_size_for_crc()
                     )
                 );
