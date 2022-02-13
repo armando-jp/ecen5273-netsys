@@ -92,7 +92,6 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_DELETE:
-                printf("In delete\n");
                 /***************************************************************
                  * Send CMD and get server ACK
                  **************************************************************/
@@ -121,14 +120,14 @@ int main(int argc, char *argv[])
                 {
                     // 4. send cmd packet to server
                     ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-                    printf("Sent CMD\n");
+                    // printf("Sent CMD\n");
 
                     // 5. wait for ack from server
-                    printf("Waiting for ACK from server\n");
+                    //printf("Waiting for ACK from server\n");
                     socket_init_timeout();
                     sock_enable_timeout();
                     ret = sock_recv(1);
-                    printf("RET = %d\n", ret);
+                    // printf("RET = %d\n", ret);
                 }
 
                 // 6. parse server response
@@ -136,8 +135,8 @@ int main(int argc, char *argv[])
 
                 // 7. verify that payload contents are correct (crc32 check)
                 crc32_calc = crc_generate(
-                    packet_get_payload(), 
-                    packet_get_payload_size()
+                    (char *) packet_get_struct(), 
+                    packet_get_packet_size_for_crc()
                 );
                 if(crc32_calc != packet_get_crc32())
                 {

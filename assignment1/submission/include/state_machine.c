@@ -62,7 +62,7 @@ void sm_client_get()
                 break;
 
             case(waitPayload_t):
-                printf("In wait payload\n");
+                // printf("In wait payload\n");
                 // loop until a packet is received
                 ret = 0;
                 while(ret <= 0)
@@ -207,7 +207,7 @@ void sm_client_get()
 
             case(savePayload_t):
                 // save payload to file
-                printf("GOING TO WRITE TO FILE\n");
+                // printf("GOING TO WRITE TO FILE\n");
                 ret = file_write_chunk(
                     packet_get_payload(), 
                     packet_get_payload_size()
@@ -526,7 +526,7 @@ void sm_client_ls()
 
     event_t event = evtNull_t;
     uint32_t sequence_number = 0;
-    uint32_t last_sequence_number = 0;
+    uint32_t last_sequence_number = 0xFFFF;
 
     while(true)
     {
@@ -578,7 +578,7 @@ void sm_client_ls()
                     {
                         // send packet to server
                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-                        printf("Sent CMD\n");
+                        // printf("Sent CMD\n");
 
                         // wait for any kind of response from server
                         // printf("Waiting for ACK from server\n");
@@ -611,7 +611,7 @@ void sm_client_ls()
                     }
                     else
                     {
-                        printf("Got ACK\n");
+                        // printf("Got ACK\n");
                         event = evtAckRecv_t;
                     }
                 }
@@ -638,7 +638,7 @@ void sm_client_ls()
                 }
                 else
                 {
-                    printf("HUH\n");
+                    printf("Error in waitAck\n");
                 }
 
                 break;
@@ -651,7 +651,7 @@ void sm_client_ls()
                 {
                     // wait for any kind of response from server
                     sock_clear_input_buffer();
-                    //printf("Waiting for PAYLOAD from server\n");
+                    // printf("Waiting for PAYLOAD from server\n");
                     socket_init_timeout();
                     sock_enable_timeout();
                     ret = sock_recv(1);
@@ -679,17 +679,17 @@ void sm_client_ls()
                 // check if we got an ACK
                 if ( strcmp(packet_get_payload(), "ACK") == 0 )
                 {
-                    printf("ACK Received!\nEOF\n");
+                    // printf("ACK Received!\nEOF\n");
                     event = evtFileTransComplete_t;
                     previous_state = waitPayload_t;
-                    current_state = sendAck_t;
+                    return;
                     // transmit_complete = 1;
                 }
 
                 // we got the same packet as before. don't save and just send an ACK
                 else if(last_sequence_number == packet_get_sequence_number())
                 {
-                    printf("repeat sequence number\n");
+                    printf("Repeat sequence number.\n");
                     event = evtPayloadReceived_t;
                     previous_state = waitPayload_t;
                     current_state = sendAck_t;
@@ -706,7 +706,8 @@ void sm_client_ls()
                 break;
 
             case(displayPayload_t):
-                file_print_ls_buf(packet_get_buf());
+            printf("Files on SERVER @ local directory:\n");
+                file_print_ls_buf(packet_get_payload());
                 event = evtPayloadReceived_t;
                 previous_state = displayPayload_t;
                 current_state = sendAck_t;
@@ -758,7 +759,7 @@ void sm_client_ls()
                 }
                 else
                 {
-                    printf("HMM\n");
+                    printf("Error in sendAck\n");
                 }
 
                 break;
