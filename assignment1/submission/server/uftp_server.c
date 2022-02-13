@@ -125,15 +125,28 @@ int main(int argc, char *argv[])
                 sm_server_ls();
                 break;
 
-            // case CMD_EXIT:
-            //     msg_app_closing();
-            //     return 0;
+            case CMD_EXIT:
+                // send ack
+                packet_write_payload_size(sizeof("ACK"));
+                packet_write_payload("ACK", packet_get_payload_size());
+                packet_write_crc32(
+                    crc_generate(
+                        (char *)packet_get_struct(), 
+                        packet_get_packet_size_for_crc()
+                    )
+                );
+                packet_generate();
+
+                // send ACK packet
+                ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
+                
+                // terminate gracefully
+                sock_close_socket();
+                msg_app_closing();
+                return 0;
         }
     }
-
-
-
+    
     sock_close_socket();
-
     return 0;
 }
