@@ -111,3 +111,9 @@ was received and that it will terminate. This ends the server application.
     3. Run either server_app or client_app.
     4. Repeat steps for second machine, but run the opposite application that
        was run on the first machine.
+
+[Commands to tar]
+    1. tarm-cf [file_name.tar] [file_1] [directory_1] ... [file_n] [directory_n]
+
+[Commmand to un-tar]
+    1. tar -xf [file_name.tar] -C /desired/path

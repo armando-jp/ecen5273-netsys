@@ -24,10 +24,10 @@ CFLAGS   := -Wall              # some warnings about bad code
 LDFLAGS  := -Llib              # -L is a linker flag
 LDLIBS   := -lrt -lz           # Left empty if no libs are needed
 
-all: client server
+all: client_app server_app
 
-client: ./client/uftp_client.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c ./include/state_machine.c
+client_app: ./client/uftp_client.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c ./include/state_machine.c
 	$(CC) -o client_app ./client/uftp_client.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c ./include/state_machine.c $(LDLIBS) $(CFLAGS)
 
-server: ./server/uftp_server.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c ./include/state_machine.c
+server_app: ./server/uftp_server.c ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c ./include/state_machine.c
 	$(CC) -o server_app ./server/uftp_server.c  ./include/msg.c ./include/utils.c ./include/cli.c ./include/socket.c ./include/timer.c ./include/file.c ./include/crc.c ./include/packet.c ./include/state_machine.c $(LDLIBS) $(CFLAGS)
