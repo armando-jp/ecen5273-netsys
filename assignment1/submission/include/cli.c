@@ -87,7 +87,7 @@ int16_t get_command(char *buf, char *param)
     }
         
     /* Switch on command */
-    switch (cmd) {              
+    switch (cmd) {       
 
         // For CMD_GET we expect
         // "get <file_name>"

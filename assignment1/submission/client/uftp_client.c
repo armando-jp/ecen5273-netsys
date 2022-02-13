@@ -155,7 +155,7 @@ int main(int argc, char *argv[])
                 break;
 
             case CMD_LS:
-
+                sm_client_ls();
                 break;
 
             case CMD_EXIT:

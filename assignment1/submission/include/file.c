@@ -3,6 +3,11 @@
 #include <stdint.h>
 #include <fcntl.h>
 #include <stdbool.h>
+#include <stdlib.h>
+#include <sys/dir.h>
+#include <sys/param.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "file.h"
 #include "crc.h"
@@ -169,4 +174,68 @@ int file_delete(char * file_name)
 /*******************************************************************************
  * Functions for getting directory contents (LS)
 *******************************************************************************/
-//extern int alphasort();
+static int file_select(const struct direct *entry)
+{
+    if((strcmp(entry->d_name, ".") == 0) || (strcmp(entry->d_name, "..") == 0))
+    {
+        return (0);
+    }
+    else
+    {
+        return (1);
+    }
+}
+
+int file_get_ls()
+{
+    int count;
+    int i;
+    struct direct **files;
+
+    file_clear_buf();
+
+    if(!getcwd(file_buf, sizeof(file_buf)))
+    {
+        printf("Error getting pathname\n");
+        return -1;
+    }
+    // printf("Pathname obtained: %s\n", file_buf);
+
+    count = scandir(file_buf, &files, file_select, alphasort);
+
+    // If no files found,make a non-selectable menu item
+    if(count <= 0)
+    {
+        printf("No files in this directory\n");
+        return -1;
+    }
+
+    // save file names info file_buf
+    file_clear_buf();
+    printf("Number of files = %d\n", count);
+    for (i=0; i < count; ++i)
+    {
+        strcat(file_buf, files[i]->d_name);
+        strncat(file_buf, " \n", 1);
+
+        //printf("%s  ", files[i]->d_name);
+    }
+    // printf("\n");
+
+    return strlen(file_buf);
+}
+
+void file_print_ls_buf(char *buf)
+{
+    // !!!
+    //THIS FUNCTION IS DESTRUCTIVE. file_buf[] WILL BE PERMANENTLY MODIFIED.
+    // !!!
+
+    char *ptr = strtok(buf, " ");
+    // assuming you have already sucessfully run file_get_ls()
+    while(ptr != NULL)
+    {
+        printf("* %s\n", ptr);
+        ptr = strtok(NULL, " ");
+    }
+}

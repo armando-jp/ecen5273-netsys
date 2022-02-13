@@ -11,6 +11,7 @@ typedef enum state {
     logFileInfo_t,
     waitPayload_t,
     savePayload_t,
+    displayPayload_t,
     null_t,
 } state_t;
 
@@ -28,7 +29,9 @@ typedef enum event {
 
 void sm_client_put();
 void sm_client_get();
+void sm_client_ls();
 
 void sm_server_put();
 void sm_server_get();
+void sm_server_ls();
 #endif /*INC_STATE_MACINE_*/
