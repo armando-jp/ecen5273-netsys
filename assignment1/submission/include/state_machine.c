@@ -39,7 +39,7 @@ void sm_client_put()
                     );
                     packet_write_crc32(
                         crc_generate(
-                            packet_get_payload(), 
+                            packet_get_buf(), 
                             packet_get_packet_size_for_crc()
                         )
                     );
@@ -81,7 +81,7 @@ void sm_client_put()
                     );
                     packet_write_crc32(
                         crc_generate(
-                            packet_get_payload(), 
+                            packet_get_buf(), 
                             packet_get_packet_size_for_crc()
                         )
                     );
@@ -108,7 +108,7 @@ void sm_client_put()
                     packet_write_payload("ACK", packet_get_payload_size());
                     packet_write_crc32(
                         crc_generate(
-                            packet_get_payload(), 
+                            packet_get_buf(), 
                             packet_get_packet_size_for_crc()
                         )
                     );
@@ -154,7 +154,7 @@ void sm_client_put()
 
                     // verify that payload contents are correct (crc32 check)
                     crc32_calc = crc_generate(
-                        packet_get_payload(), 
+                        packet_get_buf(), 
                         packet_get_packet_size_for_crc()
                     );
                     if(crc32_calc != packet_get_crc32())
@@ -246,7 +246,7 @@ void sm_server_put()
                 packet_write_payload("ACK", packet_get_payload_size());
                 packet_write_crc32(
                     crc_generate(
-                        packet_get_payload(), 
+                        packet_get_buf(), 
                         packet_get_packet_size_for_crc()
                     )
                 );
@@ -303,7 +303,7 @@ void sm_server_put()
 
                 // verify correct payload
                 crc32_calc = crc_generate(
-                    packet_get_payload(), 
+                    packet_get_buf(), 
                     packet_get_packet_size_for_crc()
                 );
                 if(crc32_calc != packet_get_crc32())
