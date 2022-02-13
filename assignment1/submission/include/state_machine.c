@@ -236,7 +236,7 @@ void sm_server_put()
         {
             case(sendAck_t):
                 // generate ACK packet.
-                printf("Generating ACK packet\n");
+                // printf("Generating ACK packet\n");
                 packet_write_payload_size(sizeof("ACK"));
                 packet_write_payload("ACK", packet_get_payload_size());
                 packet_write_crc32(
@@ -308,8 +308,8 @@ void sm_server_put()
                     printf("CRC32 mismatch, corrupted packet!");
                     continue;
                 }
-                printf("======\n");
-                // packet_print_struct();
+                // printf("======\n");
+                //packet_print_struct();
 
                 // check if we got a command, if so, re ACK the message
                 if(strstr(packet_get_payload(), "put") != NULL)
@@ -362,7 +362,7 @@ void sm_server_put()
                 break;
 
             case(logFileInfo_t):
-            printf("===PRINTING FILE STATS===\n");
+                printf("===PRINTING FILE STATS===\n");
                 file_open(cli_get_user_param_buf(), 0);
                 printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
 
