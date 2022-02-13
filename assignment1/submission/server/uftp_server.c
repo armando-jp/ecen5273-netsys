@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
 
         // parse input sock buffer into packet struct
         packet_parse(sock_get_in_buf());
-        packet_print_struct();
+        // packet_print_struct();
 
 
         // verify that payload contents are correct
