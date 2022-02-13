@@ -221,7 +221,7 @@ void sm_client_get()
                 }
                 else
                 {
-                    printf("Wrote %d bytes to file\n", ret);
+                    // printf("Wrote %d bytes to file\n", ret);
                     event = evtPayloadReceived_t;
                     previous_state = savePayload_t;
                     current_state = sendAck_t;   
