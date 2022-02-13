@@ -46,8 +46,8 @@ void sm_client_put()
 
                 // 3. generate packet buffer
                 ret = packet_generate();
-                printf("====SENDING: CMD\n");
-                packet_print_struct();
+                // printf("====SENDING: CMD\n");
+                // packet_print_struct();
 
                 // Open file to send
                 file_open(cli_get_user_param_buf(), 0);
@@ -90,8 +90,8 @@ void sm_client_put()
 
                     // generate packet buffer
                     ret = packet_generate();
-                    printf("====SENDING: PACKET");
-                    packet_print_struct();
+                    // printf("====SENDING: PACKET");
+                    // packet_print_struct();
 
                     sequence_number++;
 
@@ -254,8 +254,8 @@ void sm_server_put()
                     )
                 );
                 ret = packet_generate();
-                printf("======SENDING: ACK\n");
-                packet_print_struct();
+                // printf("======SENDING: ACK\n");
+                // packet_print_struct();
 
                 // send ACK packet 
                 printf("Sending ACK\n");
@@ -305,8 +305,8 @@ void sm_server_put()
 
                 // parse packet
                 packet_parse(sock_get_in_buf());
-                printf("======PAYLOAD\n");
-                packet_print_struct();
+                // printf("======PAYLOAD\n");
+                // packet_print_struct();
 
                 // verify correct payload
                 crc32_calc = crc_generate(
