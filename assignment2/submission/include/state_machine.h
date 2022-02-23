@@ -28,6 +28,6 @@ typedef enum event {
 
 void sm_server();
 void *sm_dispatch_thread(void *p_args);
-void sm_worker_thread();
+void *sm_worker_thread(void *p_args);
 
 #endif /*INC_STATE_MACINE_*/

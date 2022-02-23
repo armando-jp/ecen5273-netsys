@@ -9,8 +9,10 @@
 typedef struct {
     int new_fd;
     uint32_t thread_id;
+    char *p_payload;
 } thread_args_t;
 
 int threading_create_dispatcher(int new_fd);
+int threading_create_worker(int new_fd, char *in_buf, int size);
 
 #endif // INC_THREADING_

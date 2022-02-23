@@ -1,5 +1,6 @@
 #include <stdio.h>
 #include <pthread.h>
+#include <stdlib.h>
 
 #include "state_machine.h"
 #include "threading.h"
@@ -69,30 +70,67 @@ void *sm_dispatch_thread(void *p_args)
     static event_t current_event = evt_none;
 
     thread_args_t args = *(thread_args_t *)p_args;
-    char in_buf[100];
-    int ret;
+    int in_buf_size = 1000;
+    char in_buf[in_buf_size];
+    int payload_size;
 
     while(1)
     {
         switch(current_state)
         {
             case state_idle:
-                // printf("In dispatcher thread. Waiting for command from client\n");
-                printf("Dispatcher %d: waiting for message from fd=%d\n", args.thread_id, args.new_fd);
                 // do idle state stuff
-                ret = sock_read(args.new_fd, in_buf, 100);
-                printf("Dispatcher %d: GOT %d BYTES FROM CLIENT====\n", args.thread_id, ret);
-                printf("%s",in_buf);
-                printf("Dispatcher %d: ====\n", args.thread_id);
+                printf("Dispatcher %d: waiting for message from fd=%d\n", args.thread_id, args.new_fd);
+                payload_size = sock_read(args.new_fd, in_buf, in_buf_size, true);
 
-                printf("Dispatcher %d: terminating and closing connection to fd=%d\n", args.thread_id, args.new_fd);
-                sock_close(args.new_fd);
-                pthread_exit(0);
+                if(payload_size == -1)
+                {
+                    current_event = evt_timeout;
+                }
+                else if (payload_size == 1)
+                {
+                    printf("Dispatcher %d: error while receiving from client\n", args.thread_id);
+                }
+                else
+                {
+                    current_event = evt_pending_request;
+                    printf("Dispatcher %d: GOT %d BYTES FROM CLIENT====\n", args.thread_id, payload_size);
+                    printf("%s",in_buf);
+                    printf("Dispatcher %d: ====\n", args.thread_id);
+                }
+
+                // check if state machine needs to be progressed.
+                if(current_event == evt_timeout)
+                {
+                    printf("Dispatcher %d: TIMEOUT! Closing connection to client.\n", args.thread_id);
+                    sock_close(args.new_fd);
+                    pthread_exit(0);
+                }
+                else if(current_event == evt_pending_request)
+                {
+                    current_state = state_creating_thread;
+                }
 
             break;
 
             case state_creating_thread:
                 // create worker thread
+                if(threading_create_worker(args.new_fd, in_buf, payload_size) != 0)
+                {
+                    current_event = evt_thread_create_fail;
+                }
+                else
+                {
+                    printf("Dispatch %d: Success creating worker thread\n", args.new_fd);
+                    current_event = evt_thread_create_success;
+                }
+
+                if(current_event ==  evt_thread_create_fail)
+                {
+                    printf("Dispatch %d: Error creating worker thread\n", args.new_fd);
+                }
+
+                current_state = state_idle;
             break;
 
             default:
@@ -104,10 +142,12 @@ void *sm_dispatch_thread(void *p_args)
     }
 }
 
-void sm_worker_thread()
+void *sm_worker_thread(void *p_args)
 {
-    static state_t current_state = state_idle;
+    static state_t current_state = state_processing_request;
     static event_t current_event = evt_none;
+
+    thread_args_t args = *(thread_args_t *)p_args;
 
     while(1)
     {
@@ -115,6 +155,17 @@ void sm_worker_thread()
         {
             case state_processing_request:
                 // process the request
+                printf("WT %d: Printing my payload===\n", args.thread_id);
+                printf("%s", args.p_payload);
+                printf("===\n");
+
+                // determine if the request is a valid HTTP request.
+                // html_parse_msg()
+
+                // termiante
+                printf("WT %d: terminating\n", args.thread_id);
+                free(args.p_payload);
+                pthread_exit(0);
             break;
 
             default:

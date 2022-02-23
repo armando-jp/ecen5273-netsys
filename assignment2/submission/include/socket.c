@@ -167,14 +167,53 @@ int sock_wait_for_connection()
 /*******************************************************************************
  * Reading/Writing Functions
 *******************************************************************************/
-int sock_read(int new_fd, char *buf, uint32_t buf_size)
+int sock_read(int new_fd, char *buf, uint32_t buf_size, int use_timeout)
 {
     int numbytes = 0;
-    if((numbytes = recv(new_fd, buf, buf_size-1, 0)) == -1)
+    // struct containing timeout info
+    struct timeval tv = {
+        .tv_sec = MAX_TIMEOUT_SEC,
+        .tv_usec = 0
+    };
+    fd_set readfds, master; // delcare a read set
+
+    if(use_timeout)
     {
-        perror("recv\n");
-        return 1;
+        // initialize the timeout
+        FD_ZERO(&master);
+        FD_ZERO(&readfds);
+        FD_SET(new_fd, &master);
+        tv.tv_sec = MAX_TIMEOUT_SEC;
+
+        // enable the timeout
+        readfds = master;
+        select(new_fd+1, &readfds, NULL, NULL, &tv);
+
+        // perform the recv
+        if(FD_ISSET(new_fd, &readfds))
+        {
+            if((numbytes = recv(new_fd, buf, buf_size, 0)) == -1)
+            {
+                perror("recv\n");
+                return 1;
+            }
+            FD_CLR(sockfd, &readfds);
+        }
+        else // timeout occured
+        {
+            printf("Timeout!\n");
+            return -1;
+        }
     }
+    else // not using timeouts
+    {
+        if((numbytes = recv(new_fd, buf, buf_size-1, 0)) == -1)
+        {
+            perror("recv\n");
+            return 1;
+        }
+    }
+
     return numbytes;
 }
 
