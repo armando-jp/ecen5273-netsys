@@ -2,3 +2,4 @@ foo*
 *_out
 *_app
 tar_output
+*.o
