@@ -10,6 +10,7 @@ typedef struct {
     int new_fd;
     uint32_t thread_id;
     char *p_payload;
+    uint32_t payload_size;
 } thread_args_t;
 
 int threading_create_dispatcher(int new_fd);

@@ -4,7 +4,7 @@
 
 #include "state_machine.h"
 #include "threading.h"
-#include "html.h"
+#include "http.h"
 #include "socket.h"
 
 void sm_server()
@@ -160,7 +160,7 @@ void *sm_worker_thread(void *p_args)
                 printf("===\n");
 
                 // determine if the request is a valid HTTP request.
-                // html_parse_msg()
+                http_parse_request(args.p_payload, args.payload_size);
 
                 // termiante
                 printf("WT %d: terminating\n", args.thread_id);

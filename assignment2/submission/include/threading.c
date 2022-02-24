@@ -65,6 +65,7 @@ int threading_create_worker(int new_fd, char *in_buf, int size)
     worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS].new_fd = new_fd;
     worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS].thread_id = worker_thread_counter%MAX_NUMBER_OF_THREADS;
     worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS].p_payload = p_payload_copy;
+    worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS].payload_size = size;
 
     // create the worker thread
     if(pthread_create(
