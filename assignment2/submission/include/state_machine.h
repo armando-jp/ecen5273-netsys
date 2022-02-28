@@ -6,7 +6,8 @@ typedef enum state {
     state_idle,
     state_creating_connection,
     state_creating_thread,
-    state_processing_request
+    state_processing_request,
+    state_parse_request
 } state_t;
 
 // typedef enum for events
@@ -23,6 +24,7 @@ typedef enum event {
     evt_exit,
     evt_request_completed,
     evt_request_failed,
+    evt_message_received,
     evt_none
 } event_t;
 

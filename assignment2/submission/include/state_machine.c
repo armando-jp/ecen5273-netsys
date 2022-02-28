@@ -79,10 +79,11 @@ void *sm_dispatch_thread(void *p_args)
         switch(current_state)
         {
             case state_idle:
+
                 // do idle state stuff
                 printf("Dispatcher %d: waiting for message from fd=%d\n", args.thread_id, args.new_fd);
-                payload_size = sock_read(args.new_fd, in_buf, in_buf_size, true);
 
+                payload_size = sock_read(args.new_fd, in_buf, in_buf_size, true);
                 if(payload_size == -1)
                 {
                     current_event = evt_timeout;
@@ -93,7 +94,7 @@ void *sm_dispatch_thread(void *p_args)
                 }
                 else
                 {
-                    current_event = evt_pending_request;
+                    current_event = evt_message_received;
                     printf("Dispatcher %d: GOT %d BYTES FROM CLIENT====\n", args.thread_id, payload_size);
                     printf("%s",in_buf);
                     printf("Dispatcher %d: ====\n", args.thread_id);
@@ -106,9 +107,38 @@ void *sm_dispatch_thread(void *p_args)
                     sock_close(args.new_fd);
                     pthread_exit(0);
                 }
-                else if(current_event == evt_pending_request)
+                else if(current_event == evt_message_received)
                 {
+                    current_state = state_parse_request;
+                }
+
+            break;
+
+            case state_parse_request:
+                // determine if the request is a valid HTTP request.
+                if(http_parse_request(in_buf, payload_size) != NULL)
+                {
+                    current_event = evt_pending_request;
+                } 
+                else
+                {
+                    // invalid http request received
+                    current_event = evt_invalid_request;
+                }   
+
+                // process events
+                if(current_event == evt_pending_request)
+                {
+
+                    // a valid request was received. create a worker thread
                     current_state = state_creating_thread;
+                }
+                else if(current_event == evt_invalid_request)
+                {
+                    // invalid request was received. clear the input buffer 
+                    // and prepare for next transmission.
+                    printf("Dispatcher %d: Invalid request received.\n", args.thread_id);
+                    current_state = state_idle;
                 }
 
             break;
@@ -117,6 +147,7 @@ void *sm_dispatch_thread(void *p_args)
                 // create worker thread
                 if(threading_create_worker(args.new_fd, in_buf, payload_size) != 0)
                 {
+                    printf("Dispatch %d: Error creating worker thread\n", args.new_fd);
                     current_event = evt_thread_create_fail;
                 }
                 else
@@ -125,11 +156,10 @@ void *sm_dispatch_thread(void *p_args)
                     current_event = evt_thread_create_success;
                 }
 
-                if(current_event ==  evt_thread_create_fail)
-                {
-                    printf("Dispatch %d: Error creating worker thread\n", args.new_fd);
-                }
-
+                // TODO: VVV
+                // check if the keep-alive parameter is set.
+                // if it is, then continue to the idle state.
+                // otherwise, close this dispatcher thread.
                 current_state = state_idle;
             break;
 
@@ -159,8 +189,7 @@ void *sm_worker_thread(void *p_args)
                 printf("%s", args.p_payload);
                 printf("===\n");
 
-                // determine if the request is a valid HTTP request.
-                http_parse_request(args.p_payload, args.payload_size);
+
 
                 // termiante
                 printf("WT %d: terminating\n", args.thread_id);
