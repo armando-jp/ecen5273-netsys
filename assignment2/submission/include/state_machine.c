@@ -70,6 +70,7 @@ void *sm_dispatch_thread(void *p_args)
     static event_t current_event = evt_none;
 
     thread_args_t args = *(thread_args_t *)p_args;
+    http_req_results_t *p_results = NULL;
     int in_buf_size = 1000;
     char in_buf[in_buf_size];
     int payload_size;
@@ -116,8 +117,9 @@ void *sm_dispatch_thread(void *p_args)
 
             case state_parse_request:
                 // determine if the request is a valid HTTP request.
-                if(http_parse_request(in_buf, payload_size) != NULL)
+                if((p_results = http_parse_request(in_buf, payload_size)) != NULL)
                 {
+                    args.request = p_results;
                     current_event = evt_pending_request;
                 } 
                 else
@@ -129,7 +131,6 @@ void *sm_dispatch_thread(void *p_args)
                 // process events
                 if(current_event == evt_pending_request)
                 {
-
                     // a valid request was received. create a worker thread
                     current_state = state_creating_thread;
                 }
@@ -145,7 +146,7 @@ void *sm_dispatch_thread(void *p_args)
 
             case state_creating_thread:
                 // create worker thread
-                if(threading_create_worker(args.new_fd, in_buf, payload_size) != 0)
+                if(threading_create_worker(p_results) != 0)
                 {
                     printf("Dispatch %d: Error creating worker thread\n", args.new_fd);
                     current_event = evt_thread_create_fail;
@@ -177,7 +178,7 @@ void *sm_worker_thread(void *p_args)
     static state_t current_state = state_processing_request;
     static event_t current_event = evt_none;
 
-    thread_args_t args = *(thread_args_t *)p_args;
+    http_req_results_t *args = (http_req_results_t *)p_args;
 
     while(1)
     {
@@ -185,15 +186,22 @@ void *sm_worker_thread(void *p_args)
         {
             case state_processing_request:
                 // process the request
-                printf("WT %d: Printing my payload===\n", args.thread_id);
-                printf("%s", args.p_payload);
+                printf("WT: Printing my payload===\n");
+                
+                printf("KEEP ALIVE: %d\r\n", args->keep_alive);
+                printf("REQ METHOD: %d\r\n", args->req_method);
+                printf("HTTP VERSION: %d\r\n", args->req_version);
+                printf("REQ URI: %s\r\n", args->p_request_uri);
+                printf("CONTENT LENGTH: %d\r\n", args->content_length);
+                printf("PAYLOAD: %s\r\n", args->p_request_payload);
+
                 printf("===\n");
 
 
 
                 // termiante
-                printf("WT %d: terminating\n", args.thread_id);
-                free(args.p_payload);
+                printf("WT: terminating\n");
+                free(args);
                 pthread_exit(0);
             break;
 

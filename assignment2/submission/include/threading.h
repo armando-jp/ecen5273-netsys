@@ -12,10 +12,10 @@ typedef struct {
     uint32_t thread_id;
     char *p_payload;
     uint32_t payload_size;
-    http_req_results_t request;
+    http_req_results_t *request;
 } thread_args_t;
 
 int threading_create_dispatcher(int new_fd);
-int threading_create_worker(int new_fd, char *in_buf, int size);
+int threading_create_worker(http_req_results_t *p_results);
 
 #endif // INC_THREADING_

@@ -3,6 +3,7 @@
 #include <stdio.h>
 #include <string.h>
 #include <stdint.h>
+#include <ctype.h>
 
 const http_req_method_strct_t http_req_method_types[] =
 {
@@ -29,158 +30,22 @@ http_req_results_t *http_parse_request(char *buf, int buf_size)
     int ret;
     http_req_results_t *p_results = (http_req_results_t*) malloc(sizeof(http_req_results_t));
 
-    printf("===GOING TO PRINT TOKENS\n");
-
+    printf("===PARSING HTTP PACKET\n");
     ret = http_prase_msg(buf, p_results);
     if(ret == -1)
     {
         printf("Error in parse msg\r\n");
+        return NULL;
     }
-
-
-
-    // http_hex_dump(buf, buf_size);
-
-    // PRASE THE REQUEST LINE
-    // char *p_token = strsep(&buf, "\r\n");
-
-    // printf("REQ LINE: %s\r\n", p_req_line);
-    // http_parase_req_line(p_req_line, p_results);
 
     printf("COMMAND: %d, URI: %s, VERSION: %d\r\n", p_results->req_method, p_results->p_request_uri, p_results->req_version);
     printf("CONNECTION: %d\r\n", p_results->keep_alive);
-    // // PRASE THE HEADER FIELDS
-    // printf("BUF: %s\r\n", buf);
+    printf("CONTENT LENGTH: %d\r\n", p_results->content_length);
+    printf("MESSAGE BODY: %s\r\n", p_results->p_request_payload);
 
-    // if(strstr(buf, "\\r\\n\\r\\n") == 0)
-    // {
-    //     printf("FOUND \\r\\n\\r\\n\r\n");
-    // }
-    // else
-    // {
-    //     printf("DID NOT FIND \\r\\n\\r\\n\r\n");
-    // }
+    printf("===DONE PARSING HTTP PACKET\n");
 
-    
-    // while((p_token = strtok(buf, "\\r\\n\\r\\n")) != NULL)
-    // {
-    //     printf("PRINTING TOKEN: %s\r\n", p_token);
-    // }
-    // printf("PRINTING THE HEADER FIELDS: %s\r\n", p_token);
-
-    // //DISPLAY PAYLOAD
-    // p_token = strsep(&buf, "\\r\\n\\r\\n");
-    // printf("DISPLAYING PAYLOAD: %s\r\n", p_token);
-
-    // 
-    // while(token)
-    // {
-    //     printf("%s", token);
-    //     token = strsep(&buf, "\r\n");
-    // }
-    printf("===DONE PRINTING TOKENS\n");
-
-    // Now process each token.
-    // We know the first token is going to be the Request-Line
-    // The second line up until we get the blank, will be the Request header
-    // fields
-    // The final portion (if any) will be the request-message field.
-    // Iterate through these and toggle/set the appropriate parameters in the
-    // http_req_results_t struct. This will be handed back to the worker thread.
-    // The worker thread will use that information to craft it's response. (AKA,
-    // call a different function to create the response by passing the
-    // http_req_results_t variable) 
-    return NULL;
-}
-
-void http_parase_req_line(char *buf, http_req_results_t *p_results)
-{
-    if(buf == NULL)
-    {
-        printf("INVALID POINTER PASSED TO HTTP PARSE REQ LINE\r\n");
-        return;
-    }
-
-    char *p_token = NULL;
-    p_token = strtok(buf, " ");
-
-    // the first token should be the method type
-    for(int i = 0; i < _total_method_types; i++)
-    {
-        if(strcasecmp(p_token, http_req_method_types[i].text) == 0)
-        {
-            // printf("COMMAND: %s\r\n", http_req_method_types[i].text);
-            p_results->req_method = http_req_method_types[i].method_enum;
-            break;
-        }
-    }
-
-    // the second token should be the request URI
-    p_token = strtok(NULL, " ");
-    if(p_token != NULL)
-    {
-        // printf("REQUEST URI: %s\r\n", p_token);
-        memcpy(&p_results->p_request_uri, p_token, strlen(p_token));
-    }
-    
-    // the third token should be the HTTP version
-    p_token = strtok(NULL, " ");
-    if(p_token != NULL)
-    {
-        for(int i = 0; i < _total_version_types; i++)
-        {
-            if(strcmp(p_token, http_req_version_types[i].text) == 0)
-            {
-                // printf("HTTP VERSION: %s\r\n", p_token);
-                p_results->req_version = http_req_version_types[i].version_enum;
-                break;
-            }
-        }
-    }
-
-    // should be NULL
-    p_token = strtok(NULL, " ");
-    if(p_token != NULL)
-    {
-        printf("FOUND ANOTHER TOKEN?: %s\r\n", p_token);
-    }
-    else
-    {
-        printf("PARSE SUCCESS!\r\n");
-    }
-}
-
-void http_parse_header_lines(char *buf, http_req_results_t *p_results)
-{
-    char *token;
-    char *sub_token;
-    char *saveptr;
-
-    token = strtok_r(buf, "\r\n", &saveptr);
-    do
-    {
-
-        printf("TOKEN: %s\r\n", token);
-
-        if(strstr(token, "Connection:") != NULL)
-        {
-            if(strstr(token, "Keep-Alive") != NULL)
-            {
-                p_results->keep_alive = true;
-            }
-            else
-            {
-               p_results->keep_alive = false; 
-            }
-        }
-        // Check for content length
-
-        sub_token = strtok(token, ":");
-        do
-        {
-            printf("SUB-TOKEN: %s\r\n", sub_token);
-        } while((sub_token = strtok(NULL, ":")) != NULL);
-    } while((token = strtok_r(saveptr, "\r\n", &saveptr)) != NULL);
+    return p_results;
 }
 
 // parses packet into req_line, header field, and payload
@@ -206,6 +71,7 @@ int http_prase_msg(char *src_buf, http_req_results_t *p_results)
         // there is no payload
         p_payload = NULL;
         p_header = src_buf;
+        p_results->content_length = 0;
     }
     else // there is a payload. First split the header and payload.
     {
@@ -252,6 +118,122 @@ int http_prase_msg(char *src_buf, http_req_results_t *p_results)
     // printf("PAYLOAD: \r\n%s\r\n", p_payload);
 
     return 0;
+}
+
+int http_parase_req_line(char *buf, http_req_results_t *p_results)
+{
+    if(buf == NULL)
+    {
+        printf("INVALID POINTER PASSED TO HTTP PARSE REQ LINE\r\n");
+        return -1;
+    }
+
+    char *p_token = NULL;
+    p_token = strtok(buf, " ");
+
+    // the first token should be the method type
+    for(int i = 0; i < _total_method_types; i++)
+    {
+        if(strcasecmp(p_token, http_req_method_types[i].text) == 0)
+        {
+            // printf("COMMAND: %s\r\n", http_req_method_types[i].text);
+            p_results->req_method = http_req_method_types[i].method_enum;
+            break;
+        }
+    }
+
+    // the second token should be the request URI
+    p_token = strtok(NULL, " ");
+    if(p_token != NULL)
+    {
+        // printf("REQUEST URI: %s\r\n", p_token);
+        memcpy(&p_results->p_request_uri, p_token, strlen(p_token));
+    }
+    else
+    {
+        return -1;
+    }
+    
+    // the third token should be the HTTP version
+    p_token = strtok(NULL, " ");
+    if(p_token != NULL)
+    {
+        for(int i = 0; i < _total_version_types; i++)
+        {
+            if(strcmp(p_token, http_req_version_types[i].text) == 0)
+            {
+                // printf("HTTP VERSION: %s\r\n", p_token);
+                p_results->req_version = http_req_version_types[i].version_enum;
+                break;
+            }
+        }
+    }
+    else
+    {
+        return -1;
+    }
+
+    // should be NULL
+    p_token = strtok(NULL, " ");
+    if(p_token != NULL)
+    {
+        printf("FOUND ANOTHER TOKEN?: %s\r\n", p_token);
+        return -1;
+    }
+    else
+    {
+        printf("PARSE SUCCESS!\r\n");
+        return 0;
+    }
+
+    return 0;
+}
+
+void http_parse_header_lines(char *buf, http_req_results_t *p_results)
+{
+    char *token;
+    char *sub_token;
+    char *saveptr;
+
+    token = strtok_r(buf, "\r\n", &saveptr);
+    do
+    {
+
+        // printf("TOKEN: %s\r\n", token);
+
+        // Check if the header is Connection
+        if(strstr(token, "Connection:") != NULL)
+        {
+            if(strcasestr(token, "Keep-Alive") != NULL)
+            {
+                p_results->keep_alive = true;
+            }
+            else
+            {
+               p_results->keep_alive = false; 
+            }
+        }
+        // Check for header is Content length
+        else if(strstr(token, "Content-Length:") != NULL)
+        {
+            // get the subtoken
+            char *end;
+            sub_token = strtok(token, ":");
+            do
+            {
+                if((p_results->content_length = strtol(sub_token, &end, 10)) != 0)
+                {
+                    break;
+                }
+            } while ((sub_token = strtok(NULL, ":")) != NULL);
+        }
+
+        sub_token = strtok(token, ":");
+        do
+        {
+            // printf("SUB-TOKEN: %s\r\n", sub_token);
+        } while((sub_token = strtok(NULL, ":")) != NULL);
+    } while((token = strtok_r(saveptr, "\r\n", &saveptr)) != NULL);
 }
 
 

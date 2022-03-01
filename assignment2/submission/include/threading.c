@@ -50,29 +50,14 @@ int threading_create_dispatcher(int new_fd)
     return 0;
 }
 
-int threading_create_worker(int new_fd, char *in_buf, int size)
+int threading_create_worker(http_req_results_t *p_results)
 {
-    // start by creating a copy of the payload.
-    char *p_payload_copy = (char *) malloc(size);
-    if(p_payload_copy == NULL)
-    {
-        printf("threading: failed to dynamically allocate memory for worker thread.\n");
-        return 1;
-    }
-    memcpy(p_payload_copy, in_buf, size);
-
-    // prepare args struct for worker thread
-    worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS].new_fd = new_fd;
-    worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS].thread_id = worker_thread_counter%MAX_NUMBER_OF_THREADS;
-    worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS].p_payload = p_payload_copy;
-    worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS].payload_size = size;
-
     // create the worker thread
     if(pthread_create(
         &worker_thread_id[worker_thread_counter%MAX_NUMBER_OF_THREADS], 
         NULL, 
         sm_worker_thread,
-        (void*) &worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS]
+        (void*) p_results
     ) != 0)
     {
         printf("threading: error creating worker thread\n");
