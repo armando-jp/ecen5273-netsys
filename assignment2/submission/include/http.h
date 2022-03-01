@@ -64,6 +64,9 @@ typedef struct {
     // request-body
     char p_request_payload[MAX_REQUEST_PAYLOAD];
 
+    // Socket FD connector
+    int fd_connection;
+
 } http_req_results_t;
 
 http_req_results_t *http_parse_request(char *buf, int buf_size);

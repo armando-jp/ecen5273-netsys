@@ -217,6 +217,11 @@ int sock_read(int new_fd, char *buf, uint32_t buf_size, int use_timeout)
     return numbytes;
 }
 
+int sock_send(int new_fd, char *buf, uint32_t buf_size)
+{
+    send(new_fd, buf, strlen(buf), 0);
+}
+
 /*******************************************************************************
  * Getter/Setter Functions
 *******************************************************************************/

@@ -13,6 +13,7 @@ int sock_wait_for_connection();
 void sock_close(int fd);
 bool is_port(char *port_str);
 int sock_read(int new_fd, char *buf, uint32_t buf_size, int use_timeout);
+int sock_send(int new_fd, char *buf, uint32_t buf_size);
 int sock_get_new_fd();
 int sock_get_sockfd();
 

@@ -1,6 +1,7 @@
 #include <stdio.h>
 #include <pthread.h>
 #include <stdlib.h>
+#include <string.h>
 
 #include "state_machine.h"
 #include "threading.h"
@@ -132,6 +133,7 @@ void *sm_dispatch_thread(void *p_args)
                 if(current_event == evt_pending_request)
                 {
                     // a valid request was received. create a worker thread
+                    p_results->fd_connection = args.new_fd;
                     current_state = state_creating_thread;
                 }
                 else if(current_event == evt_invalid_request)
@@ -188,6 +190,7 @@ void *sm_worker_thread(void *p_args)
                 // process the request
                 printf("WT: Printing my payload===\n");
                 
+                printf("CONNECTION HANDLE: %d\r\n", args->fd_connection);
                 printf("KEEP ALIVE: %d\r\n", args->keep_alive);
                 printf("REQ METHOD: %d\r\n", args->req_method);
                 printf("HTTP VERSION: %d\r\n", args->req_version);
@@ -197,7 +200,10 @@ void *sm_worker_thread(void *p_args)
 
                 printf("===\n");
 
-
+                // send a dummy message
+                // CALL FUNCTION TO CREATE BUFFER W/ACTUAL MESSAGE CONTENTS
+                char *msg = "HTTP/1.1 200 GOOD\\r\\Content-Length: 92\\r\\n\\r\\n<!DOCTYPE html><html><body><h1>My First Heading</h1><p>My first paragraph.</p></body></html>";
+                sock_send(args->fd_connection, msg, strlen(msg));
 
                 // termiante
                 printf("WT: terminating\n");

@@ -237,6 +237,10 @@ void http_parse_header_lines(char *buf, http_req_results_t *p_results)
 }
 
 
+// char *http_create_response(http_req_results_t *p_results)
+// {
+    
+// }
 
 void http_hex_dump(char *buf, uint32_t buf_size)
 {
