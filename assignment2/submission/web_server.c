@@ -27,9 +27,6 @@ int main(int argc, char *argv[])
         return -1;
     }
 
-    printf("PORT: %s\n", p_port);
-
-
     printf("Binding to port %s\n", p_port);
     sock_bind_to_port(p_port);
 

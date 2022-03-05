@@ -1,4 +1,6 @@
 #include "http.h"
+#include "file.h"
+
 #include <stdlib.h>
 #include <stdio.h>
 #include <string.h>
@@ -29,8 +31,14 @@ http_req_results_t *http_parse_request(char *buf, int buf_size)
 {
     int ret;
     http_req_results_t *p_results = (http_req_results_t*) malloc(sizeof(http_req_results_t));
+    p_results->p_request_uri[0] = '\0';
+    p_results->content_length = 0;
+    p_results->fd_connection = 0;
+    p_results->keep_alive = 0;
+    p_results->p_request_payload[0] = '\0';
+    p_results->req_method = 0;
+    p_results->req_version = 0;
 
-    printf("===PARSING HTTP PACKET\n");
     ret = http_prase_msg(buf, p_results);
     if(ret == -1)
     {
@@ -38,12 +46,10 @@ http_req_results_t *http_parse_request(char *buf, int buf_size)
         return NULL;
     }
 
-    printf("COMMAND: %d, URI: %s, VERSION: %d\r\n", p_results->req_method, p_results->p_request_uri, p_results->req_version);
-    printf("CONNECTION: %d\r\n", p_results->keep_alive);
-    printf("CONTENT LENGTH: %d\r\n", p_results->content_length);
-    printf("MESSAGE BODY: %s\r\n", p_results->p_request_payload);
-
-    printf("===DONE PARSING HTTP PACKET\n");
+    // printf("COMMAND: %d, URI: %s, VERSION: %d\r\n", p_results->req_method, p_results->p_request_uri, p_results->req_version);
+    // printf("CONNECTION: %d\r\n", p_results->keep_alive);
+    // printf("CONTENT LENGTH: %d\r\n", p_results->content_length);
+    // printf("MESSAGE BODY: %s\r\n", p_results->p_request_payload);
 
     return p_results;
 }
@@ -111,7 +117,14 @@ int http_prase_msg(char *src_buf, http_req_results_t *p_results)
     http_parse_header_lines(p_header, p_results);
 
     // Just copy payload into results payload field.
-    memcpy(&p_results->p_request_payload, p_payload, strlen(p_payload));
+    if(p_payload != NULL)
+    {
+        memcpy(&p_results->p_request_payload, p_payload, strlen(p_payload));
+    }
+    else
+    {
+        p_results->p_request_payload[0] = '\0';
+    }
 
     // printf("REQ LINE:\r\n%s\r\n", p_req_line);
     // printf("HEADER FIELD:\r\n%s\r\n", p_header);
@@ -237,10 +250,95 @@ void http_parse_header_lines(char *buf, http_req_results_t *p_results)
 }
 
 
-// char *http_create_response(http_req_results_t *p_results)
-// {
-    
-// }
+char *http_create_response(http_req_results_t *p_results, int *size)
+{
+    int buf_offset = 0;
+    int file_size = 0;
+    char *file_buf;
+    char* buffer = (char*)malloc(sizeof(char) * MAX_HTTP_RESPONSE);
+
+    // create the start line
+    for(int i = 0; i < _total_version_types; i++)
+    {
+        if(p_results->req_version == http_req_version_types[i].version_enum)
+        {
+            buf_offset += sprintf((buffer+buf_offset), "%s ", http_req_version_types[i].text);
+            break;
+        }
+    }
+    buf_offset += sprintf((buffer+buf_offset), "%s", "200 OK\r\n");
+
+    // get payload if there is one
+    // we do this before writing header so we can get the content-length field
+    // ready in advance.
+    if(p_results->req_method == get)
+    {
+
+        //open file here to be copied into payload
+        FILE *fp = NULL;
+        if(strcmp("/", p_results->p_request_uri) == 0)
+        {
+            fp = file_open("./www/index.html", 0);
+        }
+        else
+        {
+            char uri[200];
+            sprintf(uri, "./www%s", p_results->p_request_uri);
+            printf("DP: %d WT %d: ATTEMPTING TO OPEN URI: %s\r\n", p_results->dp_thread_idx, p_results->thread_idx, uri);
+            fp = file_open(uri, 0);
+        }  
+        if(fp == NULL)
+        {
+            free(buffer);
+            return NULL;
+        }
+
+        file_buf = file_read_all(fp, &file_size);
+        if(file_buf == NULL)
+        {
+            file_close(fp);
+            free(buffer);
+            return NULL;
+        }
+        file_close(fp);
+    }
+
+    // CREATE MESSAGE HEADERS 
+    if(p_results->keep_alive)
+    {
+        buf_offset += sprintf((buffer+buf_offset), "Connection: Keep-Alive\r\n");
+    }
+    if(file_size > 0)
+    {
+        buf_offset += sprintf((buffer+buf_offset), "Content-Length: %d\r\n", file_size);
+    }
+
+    // WRITE PAYLOAD IF THERE IS ONE
+    if(p_results->req_method == get)
+    {
+        // insert blank line
+        buf_offset += sprintf((buffer+buf_offset), "\r\n");
+
+        for(int i = 0; i < file_size; i++)
+        {
+            buffer[i + buf_offset] = file_buf[i];
+        }
+        buf_offset += file_size;
+        free(file_buf);
+        // buf_offset += sprintf((buffer+buf_offset), "%s", file_buf);
+    }
+
+    // printf("MESSAGE:\r\n%s\r\n", buffer);
+    // printf("HEX FORMAT: \r\n");
+    // for(int i = 0; i < buf_offset; i++)
+    // {
+    //     printf("0x%02X ", buffer[i]);
+    // }
+    // printf("\r\nEND HEX FORMAT\r\n");
+
+    *size = buf_offset; 
+    return buffer;
+}
 
 void http_hex_dump(char *buf, uint32_t buf_size)
 {

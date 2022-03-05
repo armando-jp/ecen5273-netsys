@@ -3,7 +3,7 @@ SOURCES = $(wildcard *.c) $(wildcard include/*.c)
 OBJECTS = ${SOURCES:.c=.o}
 
 CC=gcc
-CFLAGS   := -Wall -D_GNU_SOURCE   # some warnings about bad code
+CFLAGS   := -Wall -D_GNU_SOURCE -g   # some warnings about bad code
 LDFLAGS  := -Llib              # -L is a linker flag
 LIBS   := -lrt -lz -lpthread   # Left empty if no libs are needed
 
