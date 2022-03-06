@@ -6,7 +6,7 @@
 
 #define MAX_REQUEST_PAYLOAD (1000)
 #define MAX_REQUEST_URI (100)
-#define MAX_HTTP_RESPONSE (5000)
+#define MAX_HTTP_RESPONSE (800000)
 
 // HTTP method variables
 typedef enum {
@@ -74,9 +74,9 @@ typedef struct {
 } http_req_results_t;
 
 http_req_results_t *http_parse_request(char *buf, int buf_size);
-int http_prase_msg(char *src_buf, http_req_results_t *p_results);
+int http_parase_msg(char *src_buf, http_req_results_t *p_results);
 int http_parase_req_line(char *buf, http_req_results_t *p_results);
-void http_parse_header_lines(char *buf, http_req_results_t *p_results);
+int http_parse_header_lines(char *buf, http_req_results_t *p_results);
 
 void http_hex_dump(char *buf, uint32_t buf_size);
 char *http_create_response(http_req_results_t *p_results, int* size);

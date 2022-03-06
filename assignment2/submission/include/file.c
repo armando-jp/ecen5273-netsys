@@ -50,10 +50,11 @@ void file_close(FILE *fp)
 /*******************************************************************************
  * Functions reading files
 *******************************************************************************/
-char *file_read_all(FILE *fp, int *size)
+char *file_read_all(FILE *fp, uint32_t *size, uint32_t *num_bytes_read)
 {
     char *buffer;
     long numbytes;
+    uint32_t ret;
 
     if(fp == NULL)
     {
@@ -71,9 +72,14 @@ char *file_read_all(FILE *fp, int *size)
     }
 
     // copy all contents into buffer
-    fread(buffer, sizeof(char), numbytes, fp);
-    // file_close(fp);
+    ret = fread(buffer, sizeof(char), numbytes, fp);
 
+    if(ret != numbytes)
+    {
+        printf("Failed to read all of file!\r\n");
+    }
+    // file_close(fp);
+    *num_bytes_read = ret;
     *size = numbytes;
     return buffer;
 }

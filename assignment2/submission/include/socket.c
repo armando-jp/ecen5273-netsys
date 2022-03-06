@@ -159,7 +159,6 @@ int sock_wait_for_connection()
         return 1;
     }
     inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof(s));
-    printf("SV: got connection from %s\n", s);
 
     return 0;
 }
@@ -219,12 +218,14 @@ int sock_read(int new_fd, char *buf, uint32_t buf_size, int use_timeout)
 
 int sock_send(int new_fd, char *buf, uint32_t buf_size)
 {
-    if(buf != NULL)
+    int ret = send(new_fd, buf, strlen(buf), 0);
+    if(ret == -1)
     {
-        return send(new_fd, buf, strlen(buf), 0);
+        perror("send: ");
+        return -1;
     }
 
-    return -1;
+    return ret;
     
 }
 

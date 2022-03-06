@@ -1,153 +1,98 @@
 Binding to port 60002
 SV: Waiting for connection
-SV: got connection from 198.11.30.51
+SV: got connection
 SV: Waiting for connection
-SV: got connection from 198.11.30.51
-DP 1: waiting for message from fd=5
 DP 0: waiting for message from fd=4
-SV: Waiting for connection
-DP 1: GOT 487 BYTES FROM CLIENT
-GET / HTTP/1.1
-Host: 198.59.7.11:60002
-Connection: keep-alive
-Pragma: no-cache
-Cache-Control: no-cache
-DNT: 1
-Upgrade-Insecure-Requests: 1
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36
-Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9
-Accept-Encoding: gzip, deflate
-Accept-Language: en-US,en;q=0.9
+DP 0: GOT 98 BYTES FROM CLIENT
+DP 0: MESSAGE START
+GET /images/apple_ex.png HTTP/1.1
+Host: localhost:60002
+User-Agent: curl/7.68.0
+Accept: */*
 
+
+DP 0: MESSAGE END
+DP 0: Attempting to parse HTTP request.
+PARSE REQUEST LINE SUCCESS!
+DP 0: Attempting to create worker thread.
+DP 0: Success creating worker thread
+DP 0: waiting for message from fd=4
+DT: 0 WT 0: CREATING HTTP Response msg
+DP: 0 WT 0: ATTEMPTING TO OPEN URI: ./www/images/apple_ex.png
+Read 34180 bytes of 34180
+DT: 0 WT 0: SENDING HTTP Response msg of size 34247 bytes
+DT: 0 WT 0: Sent HTTP msg
+DT: 0 WT 0: TERMINATING
+DP 0: Got EOF from client. Shutting down.
+SV: got connection
+SV: Waiting for connection
+DP 1: waiting for message from fd=5
+DP 1: GOT 98 BYTES FROM CLIENT
+DP 1: MESSAGE START
+GET /images/apple_ex.png HTTP/1.1
+Host: localhost:60002
+User-Agent: curl/7.68.0
+Accept: */*
+
+
+DP 1: MESSAGE END
 DP 1: Attempting to parse HTTP request.
-PARSE SUCCESS!
+PARSE REQUEST LINE SUCCESS!
 DP 1: Attempting to create worker thread.
 DP 1: Success creating worker thread
 DP 1: waiting for message from fd=5
 DT: 1 WT 0: CREATING HTTP Response msg
-DT: 1 WT 0: SENDING HTTP Response msg
+DP: 1 WT 0: ATTEMPTING TO OPEN URI: ./www/images/apple_ex.png
+Read 34180 bytes of 34180
+DT: 1 WT 0: SENDING HTTP Response msg of size 34247 bytes
 DT: 1 WT 0: Sent HTTP msg
 DT: 1 WT 0: TERMINATING
-DP 0: GOT 399 BYTES FROM CLIENT
-GET /fancybox/jquery.fancybox-1.3.4.pack.js HTTP/1.1
-Host: 198.59.7.11:60002
-Connection: keep-alive
-Pragma: no-cache
-Cache-Control: no-cache
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36
-DNT: 1
+DP 1: Got EOF from client. Shutting down.
+SV: got connection
+SV: Waiting for connection
+DP 2: waiting for message from fd=4
+DP 2: GOT 79 BYTES FROM CLIENT
+DP 2: MESSAGE START
+GET / HTTP/1.1
+Host: localhost:60002
+User-Agent: curl/7.68.0
 Accept: */*
-Referer: http://198.59.7.11:60002/
-Accept-Encoding: gzip, deflate
-Accept-Language: en-US,en;q=0.9
 
-DP 0: Attempting to parse HTTP request.
-PARSE SUCCESS!
-DP 0: Attempting to create worker thread.
-DP 1: GOT 401 BYTES FROM CLIENT
-GET /fancybox/jquery.mousewheel-3.0.4.pack.js HTTP/1.1
-Host: 198.59.7.11:60002
-Connection: keep-alive
-Pragma: no-cache
-Cache-Control: no-cache
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36
-DNT: 1
-Accept: */*
-Referer: http://198.59.7.11:60002/
-Accept-Encoding: gzip, deflate
-Accept-Language: en-US,en;q=0.9
 
-DP 1: Attempting to parse HTTP request.
-PARSE SUCCESS!
-DP 1: Attempting to create worker thread.
-DT: 1 WT 1: CREATING HTTP Response msg
-DP: 1 WT 1: ATTEMPTING TO OPEN URI: ./www/fancybox/jquery.mousewheel-3.0.4.pack.js
-DP 0: Success creating worker thread
-DP 0: waiting for message from fd=4
-DT: 1 WT 1: CREATING HTTP Response msg
-DP: 1 WT 1: ATTEMPTING TO OPEN URI: ./www/fancybox/jquery.mousewheel-3.0.4.pack.js
-SV: got connection from 198.11.30.51
-DP 2: waiting for message from fd=6
-threading: error detaching worker thread
-DP 1: Error creating worker thread
-DP 1: waiting for message from fd=5
-DP 2: GOT 389 BYTES FROM CLIENT
-GET /css/style.css HTTP/1.1
-Host: 198.59.7.11:60002
-Connection: keep-alive
-Pragma: no-cache
-Cache-Control: no-cache
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36
-DNT: 1
-Accept: text/css,*/*;q=0.1
-Referer: http://198.59.7.11:60002/
-Accept-Encoding: gzip, deflate
-Accept-Language: en-US,en;q=0.9
-
+DP 2: MESSAGE END
 DP 2: Attempting to parse HTTP request.
-PARSE SUCCESS!
+PARSE REQUEST LINE SUCCESS!
 DP 2: Attempting to create worker thread.
-DT: 2 WT 2: CREATING HTTP Response msg
-DP: 2 WT 2: ATTEMPTING TO OPEN URI: ./www/css/style.css
-SV: Waiting for connection
-DT: 1 WT 1: SENDING HTTP Response msg
 DP 2: Success creating worker thread
-DP 2: waiting for message from fd=6
-DT: 2 WT 2: SENDING HTTP Response msg
-SV: got connection from 198.11.30.51
-DP 3: waiting for message from fd=10
+DP 2: waiting for message from fd=4
+DT: 2 WT 0: CREATING HTTP Response msg
+Read 3348 bytes of 3348
+FAILED TO DETERMINE CONTENT TYPE
+DT: 2 WT 0: SENDING HTTP Response msg of size 3389 bytes
+DT: 2 WT 0: Sent HTTP msg
+DT: 2 WT 0: TERMINATING
+DP 2: Got EOF from client. Shutting down.
+SV: got connection
 SV: Waiting for connection
-DT: 1 WT 1: SENDING HTTP Response msg
-DP 3: GOT 410 BYTES FROM CLIENT
-GET /fancybox/jquery.fancybox-1.3.4.css HTTP/1.1
-Host: 198.59.7.11:60002
-Connection: keep-alive
-Pragma: no-cache
-Cache-Control: no-cache
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36
-DNT: 1
-Accept: text/css,*/*;q=0.1
-Referer: http://198.59.7.11:60002/
-Accept-Encoding: gzip, deflate
-Accept-Language: en-US,en;q=0.9
+DP 3: waiting for message from fd=5
+DP 3: GOT 79 BYTES FROM CLIENT
+DP 3: MESSAGE START
+GET / HTTP/1.1
+Host: localhost:60002
+User-Agent: curl/7.68.0
+Accept: */*
 
-DP 3: Attempting to parse HTTP request.
-PARSE SUCCESS!
-DP 3: Attempting to create worker thread.
-DT: 2 WT 2: Sent HTTP msg
-DT: 2 WT 2: TERMINATING
-DT: 1 WT 1: Sent HTTP msg
-DT: 1 WT 1: TERMINATING
-DT: 1 WT 1: Sent HTTP msg
-DT: 1 WT 1: TERMINATING
-DP 3: Success creating worker thread
-DP 3: waiting for message from fd=10
-DT: 3 WT 3: CREATING HTTP Response msg
-DP: 3 WT 3: ATTEMPTING TO OPEN URI: ./www/fancybox/jquery.fancybox-1.3.4.css
-DT: 3 WT 3: SENDING HTTP Response msg
-DT: 3 WT 3: Sent HTTP msg
-DT: 3 WT 3: TERMINATING
-DP 1: error got zero bytes from client
-DP 3: GOT 438 BYTES FROM CLIENT
-GET /graphics/mov.gif HTTP/1.1
-Host: 198.59.7.11:60002
-Connection: keep-alive
-Pragma: no-cache
-Cache-Control: no-cache
-User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/98.0.4758.102 Safari/537.36
-DNT: 1
-Accept: image/avif,image/webp,image/apng,image/svg+xml,image/*,*/*;q=0.8
-Referer: http://198.59.7.11:60002/
-Accept-Encoding: gzip, deflate
-Accept-Language: en-US,en;q=0.9
 
+DP 3: MESSAGE END
 DP 3: Attempting to parse HTTP request.
-PARSE SUCCESS!
+PARSE REQUEST LINE SUCCESS!
 DP 3: Attempting to create worker thread.
 DP 3: Success creating worker thread
-DP 3: waiting for message from fd=10
-DT: 3 WT 4: CREATING HTTP Response msg
-DP: 3 WT 4: ATTEMPTING TO OPEN URI: ./www/graphics/mov.gif
-DT: 3 WT 4: SENDING HTTP Response msg
-DT: 3 WT 4: Sent HTTP msg
-DT: 3 WT 4: TERMINATING
+DP 3: waiting for message from fd=5
+DT: 3 WT 0: CREATING HTTP Response msg
+Read 3348 bytes of 3348
+FAILED TO DETERMINE CONTENT TYPE
+DT: 3 WT 0: SENDING HTTP Response msg of size 3389 bytes
+DT: 3 WT 0: Sent HTTP msg
+DT: 3 WT 0: TERMINATING
+DP 3: Got EOF from client. Shutting down.
