@@ -218,7 +218,7 @@ int sock_read(int new_fd, char *buf, uint32_t buf_size, int use_timeout)
 
 int sock_send(int new_fd, char *buf, uint32_t buf_size)
 {
-    int ret = send(new_fd, buf, strlen(buf), 0);
+    int ret = send(new_fd, buf, buf_size, 0);
     if(ret == -1)
     {
         perror("send: ");

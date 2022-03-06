@@ -341,10 +341,10 @@ char *http_create_response(http_req_results_t *p_results, int *size)
     }
     
     // CREATE MESSAGE HEADERS 
-    if(p_results->keep_alive)
-    {
-        buf_offset += sprintf((buffer+buf_offset), "Connection: Keep-Alive\r\n");
-    }
+    // if(p_results->keep_alive)
+    // {
+    //     buf_offset += sprintf((buffer+buf_offset), "Connection: Keep-Alive\r\n");
+    // }
     if(file_size > 0)
     {
         buf_offset += sprintf((buffer+buf_offset), "Content-Length: %d\r\n", file_size);
