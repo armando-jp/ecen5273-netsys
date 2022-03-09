@@ -32,7 +32,7 @@ http_req_results_t *http_parse_request(char *p_buf, int buf_size)
 {
     http_req_results_t *p_results = NULL;
     p_results = (http_req_results_t*) malloc(sizeof(http_req_results_t));
-
+    memset(p_results->p_request_payload, 0, 1000);
     p_results->p_request_uri[0] = '\0';
     p_results->content_length = 0;
     p_results->fd_connection = 0;
@@ -72,10 +72,10 @@ int http_parase_msg(char *buffer, http_req_results_t *p_results)
     // printf("p_req_line: %s\r\n", p_req_line);
 
     // 2. get header and payload (if present)
-    if(strstr(buffer, "\\r\\n\\r\\n") == NULL)
+    if(strstr(buffer, "\r\n\r\n") == NULL)
     {
         // there is no payload
-        // "NO PAYLOAD FOUND\r\n");
+        printf("NO PAYLOAD FOUND\r\n");
         p_payload = NULL;
         p_header = buffer;
         p_results->content_length = 0;
@@ -83,7 +83,7 @@ int http_parase_msg(char *buffer, http_req_results_t *p_results)
     else // there is a payload. First split the header and payload.
     {
         int i = 0;
-        // printf("PAYLOAD FOUND\r\n");
+        printf("PAYLOAD FOUND\r\n");
         while(buffer[i] != 0)
         {
             if(buffer[i] == 0x0D)
@@ -178,7 +178,7 @@ printf("PARSING THIS LINE: %s\r\n", buf);
         {
             if(strstr(p_token, http_req_version_types[i].text) == 0)
             {
-                // printf("HTTP VERSION: %s\r\n", p_token);
+                printf("HTTP VERSION: %s\r\n", p_token);
                 p_results->req_version = http_req_version_types[i].version_enum;
                 break;
             }
@@ -212,6 +212,7 @@ int http_parse_header_lines(char *buf, http_req_results_t *p_results)
     token = strtok_r(buf, "\r\n", &saveptr);
     if(token == NULL)
     {
+        printf("http_parse_header_lines: DID NOT FIND ANY HEADER LINES\r\n");
         return -1;
     }
     do
@@ -277,7 +278,7 @@ char *http_create_response(http_req_results_t *p_results, int *size)
     // get payload if there is one
     // we do this before writing header so we can get the content-length field
     // ready in advance.
-    if(p_results->req_method == get)
+    if(p_results->req_method == get || p_results->req_method == post)
     {
 
         //open file here to be copied into payload
@@ -373,10 +374,15 @@ char *http_create_response(http_req_results_t *p_results, int *size)
     }
 
     // WRITE PAYLOAD IF THERE IS ONE
-    if(p_results->req_method == get)
+    if(p_results->req_method == get || p_results->req_method == post)
     {
         // insert blank line
         buf_offset += sprintf((buffer+buf_offset), "\r\n");
+
+        if(p_results->req_method == post)
+        {
+            buf_offset += sprintf((buffer+buf_offset), "<html><body><pre><h1>%s</h1></pre>", p_results->p_request_payload);
+        }
 
         for(uint32_t i = 0; i < file_size; i++)
         {

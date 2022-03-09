@@ -122,7 +122,13 @@ void *sm_dispatch_thread(void *p_args)
                     current_event = evt_message_received;
                     printf("DP %d: GOT %d BYTES FROM CLIENT\n", args.thread_id, payload_size);
                     printf("DP %d: MESSAGE START\n", args.thread_id);
-                    printf("%s\r\n",in_buf);
+                    printf("%s\r\n", in_buf);
+                    // for(int i = 0; i < payload_size; i++)
+                    // {
+                    //     printf("%c", in_buf[i]);
+                    // }
+                    // printf("\r\n");
+                    // http_hex_dump(in_buf, payload_size);
                     printf("DP %d: MESSAGE END\n", args.thread_id);
                 }
 
@@ -133,6 +139,7 @@ void *sm_dispatch_thread(void *p_args)
                 }
                 else if(current_event == evt_close_request || current_event == evt_timeout)
                 {
+                    printf("DP %d: TERMINATING\n", args.thread_id);
                     sock_close(args.new_fd);
                     pthread_exit(0);
                 }
@@ -198,6 +205,17 @@ void *sm_dispatch_thread(void *p_args)
                 // check if the keep-alive parameter is set.
                 // if it is, then continue to the idle state.
                 // otherwise, close this dispatcher thread.
+                if(p_results->keep_alive)
+                {
+                    printf("DP %d: Detected keep-alive argument. Setting timer\n", args.thread_id);
+                    is_timeout = true;
+                }
+                else
+                {
+                    printf("DP %d: Did not detect keep-alive.\n", args.thread_id);
+                    // sock_close(args.new_fd);
+                    // pthread_exit(0);
+                }
                 current_state = state_idle;
             break;
 
@@ -233,6 +251,10 @@ void *sm_worker_thread(void *p_args)
                 printf("REQ URI: %s\r\n", args->p_request_uri);
                 printf("CONNECTION HANDLE: %d\r\n", args->fd_connection);
                 printf("KEEP ALIVE: %s\r\n", args->keep_alive  ? "true" : "false");
+                if(args->p_request_payload != NULL)
+                {
+                    printf("PAYLOAD: %s\r\n", args->p_request_payload);
+                }
 
                 // CALL FUNCTION TO CREATE BUFFER W/ACTUAL MESSAGE CONTENTS
                 // printf("DT: %d WT %d: CREATING HTTP Response msg\r\n", args->dp_thread_idx, args->thread_idx);
