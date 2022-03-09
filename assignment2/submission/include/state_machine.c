@@ -227,15 +227,15 @@ void *sm_worker_thread(void *p_args)
         {
             case state_processing_request:
                 // process the request
-                // printf("DP %d WT %d: Printing my params\r\n", args->dp_thread_idx, args->thread_idx);
-                // printf("REQ METHOD: %d\r\n", args->req_method);
-                // printf("HTTP VERSION: %d\r\n", args->req_version);
-                // printf("REQ URI: %s\r\n", args->p_request_uri);
-                // printf("CONNECTION HANDLE: %d\r\n", args->fd_connection);
-                // printf("KEEP ALIVE: %s\r\n", args->keep_alive  ? "true" : "false");
+                printf("DP %d WT %d: Printing my params\r\n", args->dp_thread_idx, args->thread_idx);
+                printf("REQ METHOD: %d\r\n", args->req_method);
+                printf("HTTP VERSION: %d\r\n", args->req_version);
+                printf("REQ URI: %s\r\n", args->p_request_uri);
+                printf("CONNECTION HANDLE: %d\r\n", args->fd_connection);
+                printf("KEEP ALIVE: %s\r\n", args->keep_alive  ? "true" : "false");
 
                 // CALL FUNCTION TO CREATE BUFFER W/ACTUAL MESSAGE CONTENTS
-                printf("DT: %d WT %d: CREATING HTTP Response msg\r\n", args->dp_thread_idx, args->thread_idx);
+                // printf("DT: %d WT %d: CREATING HTTP Response msg\r\n", args->dp_thread_idx, args->thread_idx);
                 int msg_size = 0;
                 char *msg = http_create_response(args, &msg_size);
                 if(msg == NULL)
@@ -244,7 +244,7 @@ void *sm_worker_thread(void *p_args)
                 }
                 else
                 {
-                    printf("DT: %d WT %d: SENDING HTTP Response msg of size %d bytes\r\n", args->dp_thread_idx, args->thread_idx, msg_size);
+                    // printf("DT: %d WT %d: SENDING HTTP Response msg of size %d bytes\r\n", args->dp_thread_idx, args->thread_idx, msg_size);
                     //http_hex_dump(msg, msg_size);
                     if (sock_send(args->fd_connection, msg, msg_size) == -1)
                     {
@@ -259,12 +259,12 @@ void *sm_worker_thread(void *p_args)
                 // termiante
                 printf("DT: %d WT %d: TERMINATING\n", args->dp_thread_idx, args->thread_idx);
 
-                if(args != NULL)
+                if(msg != NULL)
                 {
-                    free(args);
+                    
+                    free(msg);
                 }
-
-                free(msg);
+                
                 pthread_exit(0);
             break;
 

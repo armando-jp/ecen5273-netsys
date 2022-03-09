@@ -6,6 +6,7 @@
 #include <string.h>
 #include <stdint.h>
 #include <ctype.h>
+#include <regex.h> 
 
 const http_req_method_strct_t http_req_method_types[] =
 {
@@ -27,9 +28,11 @@ const http_req_version_struct_t http_req_version_types[] =
 
 // returns pointer to struct on success
 // returns NULL otherwise (not a valid command)
-http_req_results_t *http_parse_request(char *buf, int buf_size)
+http_req_results_t *http_parse_request(char *p_buf, int buf_size)
 {
-    http_req_results_t *p_results = (http_req_results_t*) malloc(sizeof(http_req_results_t));
+    http_req_results_t *p_results = NULL;
+    p_results = (http_req_results_t*) malloc(sizeof(http_req_results_t));
+
     p_results->p_request_uri[0] = '\0';
     p_results->content_length = 0;
     p_results->fd_connection = 0;
@@ -37,10 +40,13 @@ http_req_results_t *http_parse_request(char *buf, int buf_size)
     p_results->p_request_payload[0] = '\0';
     p_results->req_method = 0;
     p_results->req_version = 0;
+    p_results->thread_idx = 0;
+    p_results->dp_thread_idx = 0;
 
-    if(http_parase_msg(buf, p_results) == -1)
+    if(http_parase_msg(p_buf, p_results) == -1)
     {
         printf("Error in parse msg\r\n");
+        free(p_results);
         return NULL;
     }
 
@@ -49,49 +55,51 @@ http_req_results_t *http_parse_request(char *buf, int buf_size)
 
 // parses packet into req_line, header field, and payload
 // returns three pointers to the new locations.
-int http_parase_msg(char *src_buf, http_req_results_t *p_results)
+int http_parase_msg(char *buffer, http_req_results_t *p_results)
 {
     char *p_req_line = NULL;
     char *p_header = NULL;
     char *p_payload = NULL;
 
-    // PHASE 1: Split raw message into request line, header, and payload.
-    // Split message and obtain request line
-    char *p_token = strsep(&src_buf, "\r\n");
+    // 1. split message and obtain request line
+    char *p_token = strsep(&buffer, "\r\n");
     if(p_token == NULL)
     {
+        printf("Error splitting req line from header\r\n");
         return -1;
     }
     p_req_line = p_token;
+    // printf("p_req_line: %s\r\n", p_req_line);
 
-    // Check if there is a payload. 
-    if(strstr(src_buf, "\\r\\n\\r\\n") == NULL)
+    // 2. get header and payload (if present)
+    if(strstr(buffer, "\\r\\n\\r\\n") == NULL)
     {
         // there is no payload
+        // "NO PAYLOAD FOUND\r\n");
         p_payload = NULL;
-        p_header = src_buf;
+        p_header = buffer;
         p_results->content_length = 0;
     }
     else // there is a payload. First split the header and payload.
     {
         int i = 0;
-
-        while(src_buf[i] != 0)
+        // printf("PAYLOAD FOUND\r\n");
+        while(buffer[i] != 0)
         {
-            if(src_buf[i] == 0x0D)
+            if(buffer[i] == 0x0D)
             {
-                if(src_buf[i+1] == 0x0A)
+                if(buffer[i+1] == 0x0A)
                 {
-                    if(src_buf[i+2] == 0x0D)
+                    if(buffer[i+2] == 0x0D)
                     {
-                        if(src_buf[i+3] == 0x0A)
+                        if(buffer[i+3] == 0x0A)
                         {
                             // terminate the string there
-                            src_buf[i+2] = 0;
-                            src_buf[i+3] = 0;
+                            buffer[i+2] = 0;
+                            buffer[i+3] = 0;
 
-                            p_header = src_buf;
-                            p_payload = &src_buf[i+4];
+                            p_header = buffer;
+                            p_payload = &buffer[i+4];
                         }
                     }
                 }
@@ -99,9 +107,6 @@ int http_parase_msg(char *src_buf, http_req_results_t *p_results)
             i++;
         }
     }
-
-
-    // PHASE 2: Extract data from request, header, and payload fields
 
     // Parse request line and update results variable.
     if(http_parase_req_line(p_req_line, p_results) == -1)
@@ -133,10 +138,10 @@ int http_parase_req_line(char *buf, http_req_results_t *p_results)
         printf("INVALID POINTER PASSED TO HTTP PARSE REQ LINE\r\n");
         return -1;
     }
-
+printf("PARSING THIS LINE: %s\r\n", buf);
     char *p_token = NULL;
-    p_token = strtok(buf, " ");
-
+    char *saveptr = NULL;
+    p_token = strtok_r(buf, " ", &saveptr);
     // the first token should be the method type
     for(int i = 0; i < _total_method_types; i++)
     {
@@ -149,24 +154,29 @@ int http_parase_req_line(char *buf, http_req_results_t *p_results)
     }
 
     // the second token should be the request URI
-    p_token = strtok(NULL, " ");
+    printf("BUF @URI: %s\r\n", buf);
+    p_token = strtok_r(NULL, " ", &saveptr);
     if(p_token != NULL)
     {
-        // printf("REQUEST URI: %s\r\n", p_token);
+        printf("REQUEST URI [PARSING REQ LINE]: %s\r\n", p_token);
         memcpy(&p_results->p_request_uri, p_token, strlen(p_token));
+        p_results->p_request_uri[strlen(p_token)] = '\0';
     }
     else
     {
+        printf("http_parase_req_line: FAILED TO GET REQ URI\r\n");
         return -1;
     }
     
     // the third token should be the HTTP version
-    p_token = strtok(NULL, " ");
+    printf("BUF @HTTP VERSION: %s\r\n", buf);
+    p_token = strtok_r(NULL, " ", &saveptr);
     if(p_token != NULL)
     {
+        printf("HTTP VERSION: %s\r\n", p_token);
         for(int i = 0; i < _total_version_types; i++)
         {
-            if(strcmp(p_token, http_req_version_types[i].text) == 0)
+            if(strstr(p_token, http_req_version_types[i].text) == 0)
             {
                 // printf("HTTP VERSION: %s\r\n", p_token);
                 p_results->req_version = http_req_version_types[i].version_enum;
@@ -176,11 +186,12 @@ int http_parase_req_line(char *buf, http_req_results_t *p_results)
     }
     else
     {
+        printf("http_parase_req_line: DID NOT FIND HTTP VERSION\r\n");
         return -1;
     }
 
     // should be NULL
-    p_token = strtok(NULL, " ");
+    p_token = strtok_r(NULL, " ", &saveptr);
     if(p_token != NULL)
     {
         printf("PARSE REQ LINE FOUND ANOTHER TOKEN?: %s\r\n", p_token);
@@ -196,6 +207,7 @@ int http_parse_header_lines(char *buf, http_req_results_t *p_results)
     char *token = NULL;
     char *sub_token = NULL;
     char *saveptr = NULL;
+    // char *saveptr2 = NULL;
 
     token = strtok_r(buf, "\r\n", &saveptr);
     if(token == NULL)
@@ -244,7 +256,6 @@ int http_parse_header_lines(char *buf, http_req_results_t *p_results)
     return 0;
 }
 
-
 char *http_create_response(http_req_results_t *p_results, int *size)
 {
     uint32_t buf_offset = 0;
@@ -289,7 +300,11 @@ char *http_create_response(http_req_results_t *p_results, int *size)
 
         if(fp == NULL)
         {
-            free(buffer);
+            if(buffer != NULL)
+            {
+                free(buffer);
+            }
+            
             printf("ERROR: Opening requested file: %s\r\n", p_results->p_request_uri);
             return NULL;
         }
@@ -300,14 +315,21 @@ char *http_create_response(http_req_results_t *p_results, int *size)
         if(file_buf == NULL)
         {
             file_close(fp);
-            free(buffer);
+            if(buffer != NULL)
+            {
+                free(buffer);
+            }
             return NULL;
         }
         file_close(fp);
     }
 
     // handle content types here
-    if(strstr(p_results->p_request_uri, ".html") != NULL)
+    if((p_results->p_request_uri[0] == 47) && (p_results->p_request_uri[1] == '\0'))
+    {
+        buf_offset += sprintf((buffer+buf_offset), "Content-Type: text/html\r\n");
+    }
+    else if(strstr(p_results->p_request_uri, ".html") != NULL)
     {
         buf_offset += sprintf((buffer+buf_offset), "Content-Type: text/html\r\n");
     }
@@ -337,7 +359,7 @@ char *http_create_response(http_req_results_t *p_results, int *size)
     }
     else
     {
-        printf("FAILED TO DETERMINE CONTENT TYPE\r\n");
+        printf("FAILED TO DETERMINE CONTENT TYPE OF %d\r\n", p_results->p_request_uri[0]);
     }
     
     // CREATE MESSAGE HEADERS 
@@ -361,7 +383,12 @@ char *http_create_response(http_req_results_t *p_results, int *size)
             buffer[i + buf_offset] = file_buf[i];
         }
         buf_offset += file_size;
-        free(file_buf);
+
+        if(file_buf != NULL)
+        {
+            free(file_buf);
+        }
+
     }
 
     *size = buf_offset; 

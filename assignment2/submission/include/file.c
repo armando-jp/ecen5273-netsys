@@ -11,6 +11,8 @@
 #include <sys/types.h>
 #include <unistd.h>
 
+#include "http.h"
+
 /*******************************************************************************
  * Utility functions
 *******************************************************************************/
@@ -29,6 +31,12 @@ int file_get_size(FILE *fp)
 *******************************************************************************/
 FILE *file_open(char* name, bool mode)
 {
+    if(name == NULL)
+    {
+        printf("file name is void\r\n");
+        return NULL;
+    }
+
     FILE *fp;
     if(mode == 0)
     {
@@ -37,6 +45,14 @@ FILE *file_open(char* name, bool mode)
     else
     {
         fp = fopen(name, "w+");
+    }
+
+    if(fp == NULL)
+    {
+        perror("file_open:");
+        printf("FAILED TO OPEN FILE %s\r\n", name);
+        http_hex_dump(name, strlen(name));
+        return NULL;
     }
 
     return fp;
