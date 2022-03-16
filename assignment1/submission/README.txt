@@ -113,7 +113,7 @@ was received and that it will terminate. This ends the server application.
        was run on the first machine.
 
 [Commands to tar]
-    1. tarm-cf [file_name.tar] [file_1] [directory_1] ... [file_n] [directory_n]
+    1. tarm -cf [file_name.tar] [file_1] [directory_1] ... [file_n] [directory_n]
 
 [Commmand to un-tar]
     1. tar -xf [file_name.tar] -C /desired/path
