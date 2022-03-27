@@ -42,6 +42,12 @@ http_req_results_t *http_parse_request(char *p_buf, int buf_size)
     p_results->req_version = 0;
     p_results->thread_idx = 0;
     p_results->dp_thread_idx = 0;
+    p_results->p_accept_str[0] = '\0';
+    p_results->p_original_http_request[0] = '\0';
+    p_results->p_request_host[0] = '\0';
+
+    memcpy(p_results->p_original_http_request, p_buf, buf_size);
+    p_results->original_http_request_size = buf_size;
 
     if(http_parase_msg(p_buf, p_results) == -1)
     {
@@ -138,7 +144,7 @@ int http_parase_req_line(char *buf, http_req_results_t *p_results)
         printf("INVALID POINTER PASSED TO HTTP PARSE REQ LINE\r\n");
         return -1;
     }
-printf("PARSING THIS LINE: %s\r\n", buf);
+    printf("PARSING THIS LINE: %s\r\n", buf);
     char *p_token = NULL;
     char *saveptr = NULL;
     p_token = strtok_r(buf, " ", &saveptr);
@@ -158,15 +164,51 @@ printf("PARSING THIS LINE: %s\r\n", buf);
     p_token = strtok_r(NULL, " ", &saveptr);
     if(p_token != NULL)
     {
+        // Save the original request URI
         printf("REQUEST URI [PARSING REQ LINE]: %s\r\n", p_token);
         memcpy(&p_results->p_request_uri, p_token, strlen(p_token));
         p_results->p_request_uri[strlen(p_token)] = '\0';
+
+        // Get service string (http or https...etc) and host.
+        if(strstr(p_token, "http://") != NULL)
+        {
+            memcpy(&p_results->p_request_host, p_token+7, strlen(p_token)-7);
+            p_results->p_request_host[strlen(p_token)-7] = '\0';
+            memcpy(p_results->p_service, "http", strlen("http"));
+        }
+        else if(strstr(p_token, "https://") != NULL)
+        {
+            memcpy(&p_results->p_request_host, p_token+8, strlen(p_token)-8);
+            p_results->p_request_host[strlen(p_token)-8] = '\0';
+            memcpy(p_results->p_service, "https", strlen("https"));
+        }
+        else
+        {
+            // if there was not service in the url, then copy URI 
+            memcpy(&p_results->p_request_host, &p_results->p_request_uri, strlen(p_results->p_request_uri));
+            memcpy(p_results->p_service, "http", strlen("http"));
+        }
+        // check if there is a final '/' and replace it with '\0'. If not, then
+        // that means the URI does not have it either and it needs to be added
+        // (to the URI).
+        if(p_results->p_request_host[strlen(p_results->p_request_host) - 1] == '/')
+        {
+            p_results->p_request_host[strlen(p_results->p_request_host) - 1] = '\0';
+        }
+        else
+        {
+            p_results->p_request_uri[strlen(p_results->p_request_uri)] = '/';
+            p_results->p_request_uri[strlen(p_results->p_request_uri) + 1] = '0';
+        }
+
     }
     else
     {
         printf("http_parase_req_line: FAILED TO GET REQ URI\r\n");
         return -1;
     }
+    printf("GOT URI: %s\r\nGOT HOST: %s\r\nGOT SERVICE: %s\r\n", 
+    p_results->p_request_uri, p_results->p_request_host, p_results->p_service);
     
     // the third token should be the HTTP version
     printf("BUF @HTTP VERSION: %s\r\n", buf);
@@ -213,7 +255,8 @@ int http_parse_header_lines(char *buf, http_req_results_t *p_results)
     if(token == NULL)
     {
         printf("http_parse_header_lines: DID NOT FIND ANY HEADER LINES\r\n");
-        return -1;
+        //return -1;
+        return 0; // only for proxy app
     }
     do
     {
@@ -243,6 +286,13 @@ int http_parse_header_lines(char *buf, http_req_results_t *p_results)
                 }
             } while ((sub_token = strtok(NULL, ":")) != NULL);
         }
+        else if(strstr(token, "Accept:") != NULL)
+        {
+            // get the subtoken
+            char *end = NULL;
+            sub_token = strtok(token, ":");
+            strcpy(p_results->p_accept_str, sub_token);
+        }
         else
         {
             sub_token = strtok(token, ":");
@@ -257,6 +307,14 @@ int http_parse_header_lines(char *buf, http_req_results_t *p_results)
     return 0;
 }
 
+/*******************************************************************************
+ * (1) Write the 'start line'. 
+ * (2) Get payload and size.
+ * (3) Write the 'content-type' header.
+ * (4) Write the 'content-length' header.
+ * (5) Write the payload field.
+ * (6) Return pointer to generated HTTP response message.
+ ******************************************************************************/
 char *http_create_response(http_req_results_t *p_results, int *size)
 {
     uint32_t buf_offset = 0;
@@ -264,7 +322,7 @@ char *http_create_response(http_req_results_t *p_results, int *size)
     char *file_buf = NULL;
     char* buffer = (char*)malloc(sizeof(char) * MAX_HTTP_RESPONSE);
 
-    // create the start line
+    // (1) Create the start line
     for(int i = 0; i < _total_version_types; i++)
     {
         if(p_results->req_version == http_req_version_types[i].version_enum)
@@ -275,9 +333,9 @@ char *http_create_response(http_req_results_t *p_results, int *size)
     }
     buf_offset += sprintf((buffer+buf_offset), "%s", "200 OK\r\n");
 
-    // get payload if there is one
-    // we do this before writing header so we can get the content-length field
-    // ready in advance.
+    // (2) Get payload (if there is one) and size.
+    //     This is done before writing the header field in order to get the data
+    //     needed for the 'content-length' header entry.
     if(p_results->req_method == get || p_results->req_method == post)
     {
 
@@ -325,7 +383,7 @@ char *http_create_response(http_req_results_t *p_results, int *size)
         file_close(fp);
     }
 
-    // handle content types here
+    // (3) Write the content type header field entry based on the file type.
     if((p_results->p_request_uri[0] == 47) && (p_results->p_request_uri[1] == '\0'))
     {
         buf_offset += sprintf((buffer+buf_offset), "Content-Type: text/html\r\n");
@@ -363,17 +421,13 @@ char *http_create_response(http_req_results_t *p_results, int *size)
         printf("FAILED TO DETERMINE CONTENT TYPE OF %d\r\n", p_results->p_request_uri[0]);
     }
     
-    // CREATE MESSAGE HEADERS 
-    // if(p_results->keep_alive)
-    // {
-    //     buf_offset += sprintf((buffer+buf_offset), "Connection: Keep-Alive\r\n");
-    // }
+    // (4) Write the 'content-length' header field entry (if there is a payload)
     if(file_size > 0)
     {
         buf_offset += sprintf((buffer+buf_offset), "Content-Length: %d\r\n", file_size);
     }
 
-    // WRITE PAYLOAD IF THERE IS ONE
+    // (5) Write the payload field (if there is a paylaod)
     if(p_results->req_method == get || p_results->req_method == post)
     {
         // insert blank line
@@ -409,4 +463,69 @@ void http_hex_dump(char *buf, uint32_t buf_size)
         printf("[%d] 0x%02X\r\n", i, buf[i]);
     }
     printf("\r\nEND HEX DUMP======\r\n");
+}
+
+/*******************************************************************************
+ * (1) Write the 'start line'. 
+ * (2) Write 'Accept' header
+ * (3) Write the 'content-type' header.
+ * (4) Write the 'content-length' header.
+ * (5) Write the payload field.
+ * (6) Return pointer to generated HTTP response message.
+ ******************************************************************************/
+char *http_create_forward_proxy(http_req_results_t *p_results, int *size)
+{
+    uint32_t buf_offset = 0;
+    uint32_t file_size = 0;
+    char *file_buf = NULL;
+    char* buffer = (char*)malloc(sizeof(char) * MAX_HTTP_RESPONSE);
+
+    // (1) Create the start line
+    buf_offset += sprintf((buffer+buf_offset), "GET ");
+    buf_offset += sprintf((buffer+buf_offset), "%s", p_results->p_request_uri);
+    for(int i = 0; i < _total_version_types; i++)
+    {
+        if(p_results->req_version == http_req_version_types[i].version_enum)
+        {
+            buf_offset += sprintf((buffer+buf_offset), "%s \r\n", http_req_version_types[i].text);
+            break;
+        }
+    }
+
+    // (2) Write accept header
+    buf_offset += sprintf((buffer+buf_offset), "Accept: %s\r\n", p_results->p_accept_str);
+
+    
+    // (4) Write the 'content-length' header field entry (if there is a payload)
+    if(file_size > 0)
+    {
+        buf_offset += sprintf((buffer+buf_offset), "Content-Length: %d\r\n", file_size);
+    }
+
+    // (5) Write the payload field (if there is a paylaod)
+    if(p_results->req_method == get || p_results->req_method == post)
+    {
+        // insert blank line
+        buf_offset += sprintf((buffer+buf_offset), "\r\n");
+
+        if(p_results->req_method == post)
+        {
+            buf_offset += sprintf((buffer+buf_offset), "<html><body><pre><h1>%s</h1></pre>", p_results->p_request_payload);
+        }
+
+        for(uint32_t i = 0; i < file_size; i++)
+        {
+            buffer[i + buf_offset] = file_buf[i];
+        }
+        buf_offset += file_size;
+
+        if(file_buf != NULL)
+        {
+            free(file_buf);
+        }
+
+    }
+
+    *size = buf_offset; 
+    return buffer;
 }

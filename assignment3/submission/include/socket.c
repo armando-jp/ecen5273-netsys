@@ -93,6 +93,15 @@ static void init_tcp()
     hints.ai_flags = AI_PASSIVE;
 }
 
+static void init_tcp_proxy()
+{
+    memset(&hints, 0, sizeof(hints));
+    hints.ai_family = AF_UNSPEC;
+    hints.ai_socktype = SOCK_STREAM;
+    // hints.ai_flags = AI_NUMERICSERV;
+    // hints.ai_flags = AI_PASSIVE;
+}
+
 int sock_bind_to_port(char * p_port)
 {
     init_tcp();
@@ -163,6 +172,57 @@ int sock_wait_for_connection()
     return 0;
 }
 
+int sock_connect_to_host(char *host, int port, char *service)
+{
+    if(port == -1)
+    {
+        port = 80;
+    }
+
+    char p_port[10];
+    sprintf(p_port, "%d", port);
+
+    init_tcp_proxy();
+    printf("sock_connect_to_host: host=%s, port=%s, service=%s\r\n", host, p_port, service);
+    printf("host_strlen=%ld, port_strlen=%ld, service_strlen=%ld\r\n", strlen(host), strlen(p_port), strlen(service));
+    if((rv = getaddrinfo(host, p_port, &hints, &p_servinfo)) != 0)
+    {
+        fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
+        return -1;
+    }
+
+    // loop through all results and bind to the first we can
+    for(p_addrinfo = p_servinfo; p_addrinfo != NULL; p_addrinfo = p_addrinfo->ai_next)
+    {
+        if((sockfd = socket(p_addrinfo->ai_family, p_addrinfo->ai_socktype, p_addrinfo->ai_protocol)) == -1)
+        {
+            perror("client: socket\n");
+            continue;
+        }
+
+        if(connect(sockfd, p_addrinfo->ai_addr, p_addrinfo->ai_addrlen) == -1)
+        {
+            close(sockfd);
+            perror("client: connect");
+            continue;
+        } 
+
+        break;
+    }
+
+    if(p_addrinfo == NULL)
+    {
+        fprintf(stderr, "client: failed to connect\n");
+        return -1;
+    }
+
+    inet_ntop(p_addrinfo->ai_family, get_in_addr((struct sockaddr *) p_addrinfo->ai_addr), s, sizeof(s));
+    printf("client: connecting to %s\n", s);
+
+    freeaddrinfo(p_servinfo);
+
+    return sockfd;
+}
 /*******************************************************************************
  * Reading/Writing Functions
 *******************************************************************************/

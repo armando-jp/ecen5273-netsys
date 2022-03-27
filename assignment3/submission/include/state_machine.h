@@ -7,7 +7,11 @@ typedef enum state {
     state_creating_connection,
     state_creating_thread,
     state_processing_request,
-    state_parse_request
+    state_parse_request,
+    state_create_http_msg,
+    state_send_msg_srv,
+    state_send_msg_cli,
+    state_wait_resp,
 } state_t;
 
 // typedef enum for events
@@ -31,5 +35,6 @@ typedef enum event {
 void sm_server();
 void *sm_dispatch_thread(void *p_args);
 void *sm_worker_thread(void *p_args);
+void *sm_worker_thread_proxy(void *p_args);
 
 #endif /*INC_STATE_MACINE_*/

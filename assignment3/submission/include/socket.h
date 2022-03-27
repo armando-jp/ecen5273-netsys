@@ -8,6 +8,7 @@
 #define MAX_TIMEOUT_SEC (10)
 
 int sock_bind_to_port(char * p_port);
+int sock_connect_to_host(char *host, int port, char *service);
 int sock_wait_for_connection();
 
 void sock_close(int fd);

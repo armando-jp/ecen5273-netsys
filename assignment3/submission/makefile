@@ -9,11 +9,11 @@ LIBS   := -lrt -lz -lpthread   # Left empty if no libs are needed
 
 
 
-all: web_server
+all: webproxy
 
-web_server: ${OBJECTS}
+webproxy: ${OBJECTS}
 	$(CC) $(LDFLAGS) $(CFLAGS) -o $@ ${OBJECTS} $(LIBS)
 
 clean:
-	-rm -f *.o include/*.o web_server
+	-rm -f *.o include/*.o webproxy
 

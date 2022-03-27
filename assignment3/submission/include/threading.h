@@ -16,5 +16,6 @@ typedef struct {
 
 int threading_create_dispatcher(int new_fd);
 int threading_create_worker(http_req_results_t *p_results, pthread_t *id);
+int threading_create_worker_proxy(http_req_results_t *p_results, pthread_t *id);
 
 #endif // INC_THREADING_
