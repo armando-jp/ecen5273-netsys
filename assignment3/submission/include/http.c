@@ -30,28 +30,34 @@ const http_req_version_struct_t http_req_version_types[] =
 // returns NULL otherwise (not a valid command)
 http_req_results_t *http_parse_request(char *p_buf, int buf_size)
 {
+    // Create HTTP struct
     http_req_results_t *p_results = NULL;
     p_results = (http_req_results_t*) malloc(sizeof(http_req_results_t));
+
+    // Initialize HTTP struct
     memset(p_results->p_request_payload, 0, 1000);
     p_results->p_request_uri[0] = '\0';
     p_results->content_length = 0;
-    p_results->fd_connection = 0;
+    p_results->fd_client = 0;
     p_results->keep_alive = 0;
     p_results->p_request_payload[0] = '\0';
     p_results->req_method = 0;
     p_results->req_version = 0;
     p_results->thread_idx = 0;
     p_results->dp_thread_idx = 0;
-    p_results->p_accept_str[0] = '\0';
     p_results->p_original_http_request[0] = '\0';
     p_results->p_request_host[0] = '\0';
+    p_results->original_http_request_size = 0;
+    p_results->port = 0;
 
+    // Write copy of original HTTP request tp HTTP struct.
     memcpy(p_results->p_original_http_request, p_buf, buf_size);
     p_results->original_http_request_size = buf_size;
 
+    // Attempt to parse the raw HTTP message
     if(http_parase_msg(p_buf, p_results) == -1)
     {
-        printf("Error in parse msg\r\n");
+        printf("http_parse_request: Error prasing msg\r\n");
         free(p_results);
         return NULL;
     }
@@ -67,21 +73,23 @@ int http_parase_msg(char *buffer, http_req_results_t *p_results)
     char *p_header = NULL;
     char *p_payload = NULL;
 
+    /***************************************************************************
+     * PHASE 1: Split HTTP request into 3 fields: Request, Header, and Payload
+     **************************************************************************/
     // 1. split message and obtain request line
     char *p_token = strsep(&buffer, "\r\n");
     if(p_token == NULL)
     {
-        printf("Error splitting req line from header\r\n");
+        printf("http_parase_msg: ERROR SPLITING REQ LINE\r\n");
         return -1;
     }
     p_req_line = p_token;
-    // printf("p_req_line: %s\r\n", p_req_line);
 
     // 2. get header and payload (if present)
     if(strstr(buffer, "\r\n\r\n") == NULL)
     {
         // there is no payload
-        printf("NO PAYLOAD FOUND\r\n");
+        printf("http_parase_msg: NO PAYLOAD FOUND\r\n");
         p_payload = NULL;
         p_header = buffer;
         p_results->content_length = 0;
@@ -114,21 +122,24 @@ int http_parase_msg(char *buffer, http_req_results_t *p_results)
         }
     }
 
-    // Parse request line and update results variable.
+    /***************************************************************************
+     * PHASE 2: Extract specific information from the three HTTP request fields.
+     **************************************************************************/
+    // (1) Prase request line
     if(http_parase_req_line(p_req_line, p_results) == -1)
     {
         printf("ERROR: http_parse_req_line()\r\n");
         return -1;
     }
 
-    // Parse header line(s) and update results variable.
+    // (2) Parse header field
     if(http_parse_header_lines(p_header, p_results) == -1)
     {
         printf("ERROR: http_parse_header_lines()\r\n");
         return -1;
     }
 
-    // Just copy payload into results payload field.
+    // (3) Copy payload (if there is one)
     if(p_payload != NULL)
     {
         memcpy(&p_results->p_request_payload, p_payload, strlen(p_payload));
@@ -139,29 +150,30 @@ int http_parase_msg(char *buffer, http_req_results_t *p_results)
 
 int http_parase_req_line(char *buf, http_req_results_t *p_results)
 {
-    if(buf == NULL)
-    {
-        printf("INVALID POINTER PASSED TO HTTP PARSE REQ LINE\r\n");
-        return -1;
-    }
-    printf("PARSING THIS LINE: %s\r\n", buf);
     char *p_token = NULL;
     char *saveptr = NULL;
+
+    if(buf == NULL)
+    {
+        printf("http_parase_req_line: INVALID POINTER ARG\r\n");
+        return -1;
+    }
+
+    // (1) Obtain the method type (GET, POST, etc.)
+    printf("http_parase_req_line: parsing this line(CMD)->%s\r\n", buf);
     p_token = strtok_r(buf, " ", &saveptr);
-    // the first token should be the method type
     for(int i = 0; i < _total_method_types; i++)
     {
         if(strcasecmp(p_token, http_req_method_types[i].text) == 0)
         {
-            // printf("COMMAND: %s\r\n", http_req_method_types[i].text);
             p_results->req_method = http_req_method_types[i].method_enum;
             break;
         }
     }
 
-    // the second token should be the request URI
-    printf("BUF @URI: %s\r\n", buf);
+    // (2) Get the request URI & service type & host
     p_token = strtok_r(NULL, " ", &saveptr);
+    printf("http_parase_req_line: parsing this line(URI)->%s\r\n", p_token);
     if(p_token != NULL)
     {
         // Save the original request URI
@@ -188,17 +200,26 @@ int http_parase_req_line(char *buf, http_req_results_t *p_results)
             memcpy(&p_results->p_request_host, &p_results->p_request_uri, strlen(p_results->p_request_uri));
             memcpy(p_results->p_service, "http", strlen("http"));
         }
+
         // check if there is a final '/' and replace it with '\0'. If not, then
         // that means the URI does not have it either and it needs to be added
         // (to the URI).
-        if(p_results->p_request_host[strlen(p_results->p_request_host) - 1] == '/')
+        char *ptr;
+        if((ptr = strchr(p_results->p_request_host, '/')) != NULL)
         {
-            p_results->p_request_host[strlen(p_results->p_request_host) - 1] = '\0';
+            ptr[0] = '\0';
         }
         else
         {
             p_results->p_request_uri[strlen(p_results->p_request_uri)] = '/';
             p_results->p_request_uri[strlen(p_results->p_request_uri) + 1] = '0';
+        }
+
+        //check if there is a ':' denoting a specific PORT.
+        if((ptr = strchr(p_results->p_request_host, ':')) != NULL)
+        {
+            ptr[0] = '\0';
+            p_results->port = atoi(ptr+1);
         }
 
     }
@@ -210,7 +231,7 @@ int http_parase_req_line(char *buf, http_req_results_t *p_results)
     printf("GOT URI: %s\r\nGOT HOST: %s\r\nGOT SERVICE: %s\r\n", 
     p_results->p_request_uri, p_results->p_request_host, p_results->p_service);
     
-    // the third token should be the HTTP version
+    // (3) Get HTTP version
     printf("BUF @HTTP VERSION: %s\r\n", buf);
     p_token = strtok_r(NULL, " ", &saveptr);
     if(p_token != NULL)
@@ -232,15 +253,16 @@ int http_parase_req_line(char *buf, http_req_results_t *p_results)
         return -1;
     }
 
-    // should be NULL
+    // (4) Check for errors in HTTP message 
+    // (extra tokens, things that should not be there, etc.)
     p_token = strtok_r(NULL, " ", &saveptr);
     if(p_token != NULL)
     {
-        printf("PARSE REQ LINE FOUND ANOTHER TOKEN?: %s\r\n", p_token);
+        printf("http_parase_req_line: FOUND ANOTHER TOKEN?->%s\r\n", p_token);
         return -1;
     }
 
-    printf("PARSE REQUEST LINE SUCCESS!\r\n");
+    printf("http_parase_req_line: SUCCESS!\r\n");
     return 0;
 }
 
@@ -249,7 +271,6 @@ int http_parse_header_lines(char *buf, http_req_results_t *p_results)
     char *token = NULL;
     char *sub_token = NULL;
     char *saveptr = NULL;
-    // char *saveptr2 = NULL;
 
     token = strtok_r(buf, "\r\n", &saveptr);
     if(token == NULL)
@@ -258,6 +279,7 @@ int http_parse_header_lines(char *buf, http_req_results_t *p_results)
         //return -1;
         return 0; // only for proxy app
     }
+
     do
     {
         // Check if the header is Connection
@@ -285,13 +307,6 @@ int http_parse_header_lines(char *buf, http_req_results_t *p_results)
                     break;
                 }
             } while ((sub_token = strtok(NULL, ":")) != NULL);
-        }
-        else if(strstr(token, "Accept:") != NULL)
-        {
-            // get the subtoken
-            char *end = NULL;
-            sub_token = strtok(token, ":");
-            strcpy(p_results->p_accept_str, sub_token);
         }
         else
         {
@@ -473,59 +488,56 @@ void http_hex_dump(char *buf, uint32_t buf_size)
  * (5) Write the payload field.
  * (6) Return pointer to generated HTTP response message.
  ******************************************************************************/
-char *http_create_forward_proxy(http_req_results_t *p_results, int *size)
-{
-    uint32_t buf_offset = 0;
-    uint32_t file_size = 0;
-    char *file_buf = NULL;
-    char* buffer = (char*)malloc(sizeof(char) * MAX_HTTP_RESPONSE);
+// char *http_create_forward_proxy(http_req_results_t *p_results, int *size)
+// {
+//     uint32_t buf_offset = 0;
+//     uint32_t file_size = 0;
+//     char *file_buf = NULL;
+//     char* buffer = (char*)malloc(sizeof(char) * MAX_HTTP_RESPONSE);
 
-    // (1) Create the start line
-    buf_offset += sprintf((buffer+buf_offset), "GET ");
-    buf_offset += sprintf((buffer+buf_offset), "%s", p_results->p_request_uri);
-    for(int i = 0; i < _total_version_types; i++)
-    {
-        if(p_results->req_version == http_req_version_types[i].version_enum)
-        {
-            buf_offset += sprintf((buffer+buf_offset), "%s \r\n", http_req_version_types[i].text);
-            break;
-        }
-    }
-
-    // (2) Write accept header
-    buf_offset += sprintf((buffer+buf_offset), "Accept: %s\r\n", p_results->p_accept_str);
+//     // (1) Create the start line
+//     buf_offset += sprintf((buffer+buf_offset), "GET ");
+//     buf_offset += sprintf((buffer+buf_offset), "%s", p_results->p_request_uri);
+//     for(int i = 0; i < _total_version_types; i++)
+//     {
+//         if(p_results->req_version == http_req_version_types[i].version_enum)
+//         {
+//             buf_offset += sprintf((buffer+buf_offset), "%s \r\n", http_req_version_types[i].text);
+//             break;
+//         }
+//     }
 
     
-    // (4) Write the 'content-length' header field entry (if there is a payload)
-    if(file_size > 0)
-    {
-        buf_offset += sprintf((buffer+buf_offset), "Content-Length: %d\r\n", file_size);
-    }
+//     // (4) Write the 'content-length' header field entry (if there is a payload)
+//     if(file_size > 0)
+//     {
+//         buf_offset += sprintf((buffer+buf_offset), "Content-Length: %d\r\n", file_size);
+//     }
 
-    // (5) Write the payload field (if there is a paylaod)
-    if(p_results->req_method == get || p_results->req_method == post)
-    {
-        // insert blank line
-        buf_offset += sprintf((buffer+buf_offset), "\r\n");
+//     // (5) Write the payload field (if there is a paylaod)
+//     if(p_results->req_method == get || p_results->req_method == post)
+//     {
+//         // insert blank line
+//         buf_offset += sprintf((buffer+buf_offset), "\r\n");
 
-        if(p_results->req_method == post)
-        {
-            buf_offset += sprintf((buffer+buf_offset), "<html><body><pre><h1>%s</h1></pre>", p_results->p_request_payload);
-        }
+//         if(p_results->req_method == post)
+//         {
+//             buf_offset += sprintf((buffer+buf_offset), "<html><body><pre><h1>%s</h1></pre>", p_results->p_request_payload);
+//         }
 
-        for(uint32_t i = 0; i < file_size; i++)
-        {
-            buffer[i + buf_offset] = file_buf[i];
-        }
-        buf_offset += file_size;
+//         for(uint32_t i = 0; i < file_size; i++)
+//         {
+//             buffer[i + buf_offset] = file_buf[i];
+//         }
+//         buf_offset += file_size;
 
-        if(file_buf != NULL)
-        {
-            free(file_buf);
-        }
+//         if(file_buf != NULL)
+//         {
+//             free(file_buf);
+//         }
 
-    }
+//     }
 
-    *size = buf_offset; 
-    return buffer;
-}
+//     *size = buf_offset; 
+//     return buffer;
+// }

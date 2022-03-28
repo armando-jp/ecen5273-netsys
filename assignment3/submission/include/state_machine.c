@@ -8,8 +8,11 @@
 #include "http.h"
 #include "socket.h"
 
-void sm_server()
+#define DEBUG_PRINT (0)
+
+void sm_server(int sockfd_listen)
 {
+    int new_fd;
     state_t current_state = state_idle;
     event_t current_event = evt_none;
 
@@ -19,7 +22,7 @@ void sm_server()
         {
             case state_idle:
                 printf("SV: Waiting for connection\n");
-                if(sock_wait_for_connection()) 
+                if((new_fd = sock_wait_for_connection(sockfd_listen)) == -1) 
                 {
                     current_event = evt_none;
                 }
@@ -38,7 +41,7 @@ void sm_server()
             break;
 
             case state_creating_thread:
-                if(threading_create_dispatcher(sock_get_new_fd()) != 0)
+                if(threading_create_dispatcher(new_fd) != 0)
                 {
                     current_event = evt_thread_create_fail;
                 }
@@ -51,7 +54,7 @@ void sm_server()
                 {
                     printf("SV: Error creating dispatcher thread\n");
                     printf("SV: Closing new_fd\n");
-                    sock_close(sock_get_new_fd());
+                    sock_close(sockfd_listen);
                 }
                 current_state = state_idle;
 
@@ -68,28 +71,28 @@ void sm_server()
 
 void *sm_dispatch_thread(void *p_args)
 {
-    // state machine variables
-    state_t current_state = state_idle;
-    event_t current_event = evt_none;
-
     // get parameters passed to thread
     thread_args_t args = *(thread_args_t *)p_args;
 
-    // struct to store threads for workers
-    http_req_results_t *p_results = NULL;
-
+    // variable to enable timeout
+    bool is_timeout = false;
     // variables to store socket reads
     int in_buf_size = 1000;
     char in_buf[in_buf_size];
-    int payload_size;
+    int recvbytes;
 
-    // variable to enable timeout
-    bool is_timeout = false;
+
+    // struct to store worker arg
+    http_req_results_t *p_worker_args = NULL;
 
     // worker thread variables
     pthread_t worker_thread_id[MAX_NUMBER_OF_THREADS];
     http_req_results_t worker_args[MAX_NUMBER_OF_THREADS];
     uint8_t worker_thread_counter = 0;
+
+    // state machine variables
+    state_t current_state = state_idle;
+    event_t current_event = evt_none;
 
     while(1)
     {
@@ -111,9 +114,9 @@ void *sm_dispatch_thread(void *p_args)
                  * (2) Progress state machine.
                  **************************************************************/
                 memset(in_buf, 0, in_buf_size);
-                printf("DP %d: waiting for message from fd=%d\n", args.thread_id, args.new_fd);
-                payload_size = sock_read(args.new_fd, in_buf, in_buf_size, is_timeout);
-                if(payload_size == -1)
+                printf("DP %d: waiting for message from fd=%d\n", args.thread_id, args.fd_client);
+                recvbytes = sock_read(args.fd_client, in_buf, in_buf_size, is_timeout);
+                if(recvbytes == -1)
                 {
                     if(is_timeout)
                     {
@@ -125,7 +128,7 @@ void *sm_dispatch_thread(void *p_args)
                         printf("DP %d: Unexpected error during recv.\n", args.thread_id);
                     }
                 }
-                else if(payload_size == 0)
+                else if(recvbytes == 0)
                 {
                     current_event = evt_close_request;
                     printf("DP %d: Got EOF from client. Shutting down.\n", args.thread_id);
@@ -133,16 +136,13 @@ void *sm_dispatch_thread(void *p_args)
                 else
                 {
                     current_event = evt_message_received;
-                    printf("DP %d: GOT %d BYTES FROM CLIENT\n", args.thread_id, payload_size);
+                    printf("DP %d: GOT %d BYTES FROM CLIENT (HTTP REQUEST)\n", args.thread_id, recvbytes);
+#if DEBUG_PRINT
                     printf("DP %d: MESSAGE START\n", args.thread_id);
                     printf("%s\r\n", in_buf);
-                    // for(int i = 0; i < payload_size; i++)
-                    // {
-                    //     printf("%c", in_buf[i]);
-                    // }
-                    // printf("\r\n");
-                    // http_hex_dump(in_buf, payload_size);
+                    http_hex_dump(in_buf, recvbytes);
                     printf("DP %d: MESSAGE END\n", args.thread_id);
+#endif
                 }
 
                 // check if state machine needs to be progressed.
@@ -152,8 +152,8 @@ void *sm_dispatch_thread(void *p_args)
                 }
                 else if(current_event == evt_close_request || current_event == evt_timeout)
                 {
-                    printf("DP %d: TERMINATING\n", args.thread_id);
-                    sock_close(args.new_fd);
+                    printf("DP %d: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.\r\n", args.thread_id);
+                    sock_close(args.fd_client);
                     pthread_exit(0);
                 }
 
@@ -169,7 +169,7 @@ void *sm_dispatch_thread(void *p_args)
                  * (2) Progress state machine.
                  **************************************************************/
                 printf("DP %d: Attempting to parse HTTP request.\n", args.thread_id);
-                if((p_results = http_parse_request(in_buf, payload_size)) != NULL)
+                if((p_worker_args = http_parse_request(in_buf, recvbytes)) != NULL)
                 {
                     current_event = evt_pending_request;
                 } 
@@ -183,7 +183,7 @@ void *sm_dispatch_thread(void *p_args)
                 if(current_event == evt_pending_request)
                 {
                     // a valid request was received. create a worker thread
-                    p_results->fd_connection = args.new_fd;
+                    p_worker_args->fd_client = args.fd_client;
                     current_state = state_creating_thread;
                 }
                 else if(current_event == evt_invalid_request)
@@ -208,7 +208,7 @@ void *sm_dispatch_thread(void *p_args)
                 printf("DP %d: Attempting to create worker thread.\n", args.thread_id);
 
                 // create worker thread params
-                worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS] = *p_results;
+                worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS] = *p_worker_args;
                 worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS].thread_idx = worker_thread_counter%MAX_NUMBER_OF_THREADS;
                 worker_args[worker_thread_counter%MAX_NUMBER_OF_THREADS].dp_thread_idx = args.thread_id;
 
@@ -230,7 +230,7 @@ void *sm_dispatch_thread(void *p_args)
                 }
 
                 // Check if keep_alive parameter is set.
-                if(p_results->keep_alive)
+                if(p_worker_args->keep_alive)
                 {
                     printf("DP %d: Detected keep-alive argument. Setting timer\n", args.thread_id);
                     is_timeout = true;
@@ -283,7 +283,7 @@ void *sm_worker_thread(void *p_args)
                 printf("REQ METHOD: %d\r\n", args->req_method);
                 printf("HTTP VERSION: %d\r\n", args->req_version);
                 printf("REQ URI: %s\r\n", args->p_request_uri);
-                printf("CONNECTION HANDLE: %d\r\n", args->fd_connection);
+                printf("CONNECTION HANDLE: %d\r\n", args->fd_client);
                 printf(
                     "KEEP ALIVE: %s\r\n", 
                     args->keep_alive  ? "true" : "false"
@@ -304,7 +304,7 @@ void *sm_worker_thread(void *p_args)
                 else
                 {
                     // (2) Send HTTP response message.
-                    if (sock_send(args->fd_connection, msg, msg_size) == -1)
+                    if (sock_send(args->fd_client, msg, msg_size) == -1)
                     {
                         printf("DT: %d WT %d: Failed to send HTTP msg\r\n", args->dp_thread_idx, args->thread_idx);
                     }
@@ -340,8 +340,8 @@ void *sm_worker_thread_proxy(void *p_args)
 
     state_t current_state = state_processing_request;
     http_req_results_t *args = (http_req_results_t *)p_args;
-    int sockfd;
-    int in_buf_size = 10000;
+    int fd_server;
+    int in_buf_size = 40000;
     char in_buf[in_buf_size];
     int numbytes = 0;
 
@@ -351,90 +351,91 @@ void *sm_worker_thread_proxy(void *p_args)
         {
             case state_processing_request:
                 /***************************************************************
-                 * (2) Open new TCP connection to server. 
-                 * (3) Send HTTP packet to server.
-                 * (4) Wait for HTTP response from server.
-                 * (5) Forward HTTP response from server, to client.
-                 * (6) Terminate worker thread.
+                 * (1) Open new TCP connection to server. 
+                 * (2) Send HTTP packet to server.
+                 * (3) Wait for HTTP response from server.
+                 * (4) Forward HTTP response from server, to client.
+                 * (5) Terminate worker thread.
                  **************************************************************/
 
                 // DEBUG PRINTS: START /////////////////////////////////////////
+#if DEBUG_PRINT
                 printf(
                     "DP %d WT %d: Printing my params\r\n", 
                     args->dp_thread_idx, 
                     args->thread_idx
                 );
-                printf("REQ METHOD: %d\r\n", args->req_method);
-                printf("HTTP VERSION: %d\r\n", args->req_version);
-                printf("REQ URI: %s\r\n", args->p_request_uri);
-                printf("CONNECTION HANDLE: %d\r\n", args->fd_connection);
-                printf("ACCEPT TYPES: %s\r\n", args->p_accept_str);
+                printf("\tREQ METHOD: %d\r\n", args->req_method);
+                printf("\tHTTP VERSION: %d\r\n", args->req_version);
+                printf("\tREQ URI: %s\r\n", args->p_request_uri);
+                printf("\tCONNECTION HANDLE: %d\r\n", args->fd_client);
                 printf(
-                    "KEEP ALIVE: %s\r\n", 
+                    "\tKEEP ALIVE: %s\r\n", 
                     args->keep_alive  ? "true" : "false"
                 );
                 if(args->p_request_payload != NULL)
                 {
-                    printf("PAYLOAD: %s\r\n", args->p_request_payload);
+                    printf("\tPAYLOAD: %s\r\n", args->p_request_payload);
                 }
-                printf("ORIGINAL HTTP REQUEST: \r\n%s\r\n", args->p_original_http_request);
+                printf("\tORIGINAL HTTP REQUEST: \r\n%s\r\n", args->p_original_http_request);
+#endif
                 // DEBUG PRINTS: END ///////////////////////////////////////////
 
-                // (2) Open new TCP connection to server. 
-                if((sockfd = sock_connect_to_host(args->p_request_host, -1, args->p_service)) == -1)
+                // (1) Open new TCP connection to server. 
+                if((fd_server = sock_connect_to_host(args->p_request_host, args->port, args->p_service)) == -1)
                 {
                     printf("DT: %d WT %d: Failed to connect to server\r\n", args->dp_thread_idx, args->thread_idx);
+                    printf("DT: %d WT %d: TERMINATING\n", args->dp_thread_idx, args->thread_idx);
+                    pthread_exit(0);
                 }
 
-                // (3) Send HTTP GET request packet to server.
-                printf("Sending the following HTTP request:\r\n%s\r\n", args->p_original_http_request);
-                if (sock_send(sockfd, args->p_original_http_request, args->original_http_request_size) == -1)
+                // (2) Send HTTP GET request packet to server.
+                printf("DT: %d WT %d: Forwarding original HTTP request from client to server\r\n", args->dp_thread_idx, args->thread_idx);
+                if (sock_send(fd_server, args->p_original_http_request, args->original_http_request_size) == -1)
                 {
                     printf("DT: %d WT %d: Failed to send HTTP msg\r\n", args->dp_thread_idx, args->thread_idx);
                 }
                 else
                 {
-                    printf("DT: %d WT %d: Sent HTTP msg\r\n", args->dp_thread_idx, args->thread_idx);
+                    printf("DT: %d WT %d: Sent HTTP request to server.\r\n", args->dp_thread_idx, args->thread_idx);
                 }
 
-                // (4) Wait for HTTP response from server.
-                numbytes = sock_read(sockfd, in_buf, in_buf_size, false);
+                // (3) Wait for HTTP response from server.
+                numbytes = sock_read(fd_server, in_buf, in_buf_size, false);
                 if(numbytes == -1)
                 {
                     printf("DT: %d WT %d: Unexpected error during recv.\n", args->dp_thread_idx, args->thread_idx);
                 }
                 else if(numbytes == 0)
                 {
-                    printf("DT: %d WT %d: Got EOF from client. Shutting down.\n", args->dp_thread_idx, args->thread_idx);
+                    printf("DT: %d WT %d: Got EOF from SERVER. Shutting down.\n", args->dp_thread_idx, args->thread_idx);
                 }
                 else
                 {
-                    printf("DT: %d WT %d: GOT %d BYTES FROM CLIENT\n", args->dp_thread_idx, args->thread_idx, numbytes);
+                    printf("DT: %d WT %d: GOT %d BYTES FROM SERVER\n", args->dp_thread_idx, args->thread_idx, numbytes);
+#if DEBUG_PRINT
                     printf("DT: %d WT %d: MESSAGE START\n", args->dp_thread_idx, args->thread_idx);
-                    // printf("%s\r\n", in_buf);
-                    // for(int i = 0; i < payload_size; i++)
-                    // {
-                    //     printf("%c", in_buf[i]);
-                    // }
-                    // printf("\r\n");
-                    // http_hex_dump(in_buf, payload_size);
+                    printf("%s\r\n", in_buf);
                     printf("DT: %d WT %d: MESSAGE END\n", args->dp_thread_idx, args->thread_idx);
+#endif
                 }
-                // (5) Forward HTTP response from server, to client.
+                // (4) Forward HTTP response from server, to client.
                 if(numbytes > 0)
                 {
-                    if (sock_send(args->fd_connection, in_buf, numbytes) == -1)
+                    if (sock_send(args->fd_client, in_buf, numbytes) == -1)
                     {
                         printf("DT: %d WT %d: Failed to send HTTP msg\r\n", args->dp_thread_idx, args->thread_idx);
                     }
                     else
                     {
-                        printf("DT: %d WT %d: Sent HTTP msg\r\n", args->dp_thread_idx, args->thread_idx);
+                        printf("DT: %d WT %d: Forwarded HTTP response to client.\r\n", args->dp_thread_idx, args->thread_idx);
                     }
                 }
 
-                // (6) Termiante worker thread.
+                // (5) Termiante worker thread.
                 printf("DT: %d WT %d: TERMINATING\n", args->dp_thread_idx, args->thread_idx);
+                // if(p_args != NULL)
+                //     free(p_args);
                 pthread_exit(0);
             break;
 

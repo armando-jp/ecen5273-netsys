@@ -32,7 +32,7 @@ typedef enum event {
     evt_none
 } event_t;
 
-void sm_server();
+void sm_server(int fd_socket);
 void *sm_dispatch_thread(void *p_args);
 void *sm_worker_thread(void *p_args);
 void *sm_worker_thread_proxy(void *p_args);

@@ -20,14 +20,13 @@
 /*******************************************************************************
  * Important variables
 *******************************************************************************/
-static int sockfd;
-static int new_fd;
+// static int sockfd;
+// static int new_fd;
 static struct addrinfo hints;
 static struct addrinfo *p_servinfo;
 static struct addrinfo *p_addrinfo;
 static struct sockaddr_storage their_addr;
 static socklen_t sin_size;
-static struct sigaction sa;
 static char s[INET6_ADDRSTRLEN];
 static int rv;
 static int yes = 1;
@@ -104,12 +103,13 @@ static void init_tcp_proxy()
 
 int sock_bind_to_port(char * p_port)
 {
+    int sockfd;
     init_tcp();
 
     if((rv = getaddrinfo(NULL, p_port, &hints, &p_servinfo)) != 0)
     {
         fprintf(stderr, "getaddrinfo: %s\n", gai_strerror(rv));
-        return 1;
+        return -1;
     }
 
     // loop through all results and bind to the first we can
@@ -124,7 +124,7 @@ int sock_bind_to_port(char * p_port)
         if(setsockopt(sockfd, SOL_SOCKET, SO_REUSEADDR, &yes, sizeof(int)) == -1)
         {
             perror("setsockopt\n");
-            return 1;
+            return -1;
         }
 
         if(bind(sockfd, p_addrinfo->ai_addr, p_addrinfo->ai_addrlen) == -1)
@@ -137,20 +137,20 @@ int sock_bind_to_port(char * p_port)
         break;
     }
 
-    freeaddrinfo(p_servinfo);
+    // freeaddrinfo(p_servinfo);
 
     if(p_servinfo == NULL)
     {
         fprintf(stderr, "server: failed to bind\n");
-        return 1;
+        return -1;
     }
 
     if(listen(sockfd, MAX_PENDING_CONNECTIONS) == -1)
     {
         perror("listen\n");
-        return 1;
+        return -1;
     }
-    return 0;
+    return sockfd;
 }
 
 void sock_close(int fd)
@@ -158,23 +158,26 @@ void sock_close(int fd)
     close(fd);
 }
 
-int sock_wait_for_connection()
+int sock_wait_for_connection(int sockfd)
 {
+    int new_fd;
     sin_size = sizeof(their_addr);
     new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);
     if(new_fd == -1)
     {
         perror("accept");
-        return 1;
+        return -1;
     }
     inet_ntop(their_addr.ss_family, get_in_addr((struct sockaddr *)&their_addr), s, sizeof(s));
 
-    return 0;
+    return new_fd;
 }
 
 int sock_connect_to_host(char *host, int port, char *service)
 {
-    if(port == -1)
+    int sockfd;
+
+    if(port == 0)
     {
         port = 80;
     }
@@ -196,14 +199,14 @@ int sock_connect_to_host(char *host, int port, char *service)
     {
         if((sockfd = socket(p_addrinfo->ai_family, p_addrinfo->ai_socktype, p_addrinfo->ai_protocol)) == -1)
         {
-            perror("client: socket\n");
+            perror("sock_connect_to_host: socket\n");
             continue;
         }
 
         if(connect(sockfd, p_addrinfo->ai_addr, p_addrinfo->ai_addrlen) == -1)
         {
             close(sockfd);
-            perror("client: connect");
+            perror("sock_connect_to_host: connect");
             continue;
         } 
 
@@ -212,14 +215,15 @@ int sock_connect_to_host(char *host, int port, char *service)
 
     if(p_addrinfo == NULL)
     {
-        fprintf(stderr, "client: failed to connect\n");
+        fprintf(stderr, "sock_connect_to_host: failed to connect\n");
+        // freeaddrinfo(p_servinfo);
         return -1;
     }
 
     inet_ntop(p_addrinfo->ai_family, get_in_addr((struct sockaddr *) p_addrinfo->ai_addr), s, sizeof(s));
-    printf("client: connecting to %s\n", s);
+    printf("sock_connect_to_host: connecting to %s\n", s);
 
-    freeaddrinfo(p_servinfo);
+    // freeaddrinfo(p_servinfo);
 
     return sockfd;
 }
@@ -256,7 +260,7 @@ int sock_read(int new_fd, char *buf, uint32_t buf_size, int use_timeout)
                 perror("recv\n");
                 return 1;
             }
-            FD_CLR(sockfd, &readfds);
+            FD_CLR(new_fd, &readfds);
         }
         else // timeout occured
         {
@@ -278,26 +282,17 @@ int sock_read(int new_fd, char *buf, uint32_t buf_size, int use_timeout)
 
 int sock_send(int new_fd, char *buf, uint32_t buf_size)
 {
-    int ret = send(new_fd, buf, buf_size, 0);
-    if(ret == -1)
+    ssize_t n;
+    const char *p = buf;
+
+    while (buf_size > 0)
     {
-        perror("send: ");
-        return -1;
+        n = send(new_fd, p, buf_size, 0);
+        if (n <= 0)
+            return -1;
+        p += n;
+        buf_size -= n;
     }
-
-    return ret;
+    return 0;
     
-}
-
-/*******************************************************************************
- * Getter/Setter Functions
-*******************************************************************************/
-int sock_get_new_fd()
-{
-    return new_fd;
-}
-
-int sock_get_sockfd()
-{
-    return sockfd;
 }

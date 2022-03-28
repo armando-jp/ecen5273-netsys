@@ -10,11 +10,11 @@
 #define MAX_NUMBER_OF_THREADS (100)
 
 typedef struct {
-    int new_fd;
+    int fd_client;
     uint32_t thread_id;
 } thread_args_t;
 
-int threading_create_dispatcher(int new_fd);
+int threading_create_dispatcher(int client_fd);
 int threading_create_worker(http_req_results_t *p_results, pthread_t *id);
 int threading_create_worker_proxy(http_req_results_t *p_results, pthread_t *id);
 

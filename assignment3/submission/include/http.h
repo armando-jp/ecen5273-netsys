@@ -5,9 +5,10 @@
 #include <stdint.h>
 
 #define MAX_REQUEST_PAYLOAD (1000)
-#define MAX_REQUEST_URI (100)
-#define MAX_HTTP_RESPONSE (800000)
-#define MAX_ACCEPT_STR (100)
+#define MAX_REQUEST_URI     (100)
+#define MAX_HTTP_RESPONSE   (800000)
+#define MAX_ACCEPT_STR      (100)
+
 // HTTP method variables
 typedef enum {
     get,
@@ -57,26 +58,26 @@ typedef struct {
     http_req_version_t req_version;
     char p_request_uri[MAX_REQUEST_URI];
 
-    // Proxy Variables
-    char p_request_host[MAX_REQUEST_URI]; //e.x 'www.google.com'
-    char p_service[10];                   //e.x 'http'
-
     // request-header
     bool keep_alive;
     int content_length;
-    char p_accept_str[MAX_ACCEPT_STR];
 
     // request-body
     char p_request_payload[MAX_REQUEST_PAYLOAD];
 
-    // Socket FD connector
-    int fd_connection;
-
-    // other
+    // Thread related variables
     int thread_idx;
     int dp_thread_idx;
+    int fd_client;
+
+    // A straight up copy of the original HTTP request.
     char p_original_http_request[1000];
     int original_http_request_size;
+
+    // Proxy Variables
+    char p_request_host[MAX_REQUEST_URI]; //e.x 'www.google.com'
+    char p_service[10];                   //e.x 'http'
+    int port;
 
 } http_req_results_t;
 

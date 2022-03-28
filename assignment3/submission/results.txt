@@ -1,0 +1,540 @@
+Binding to port 60002
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+DP 0: waiting for message from fd=4
+DP 0: GOT 467 BYTES FROM CLIENT (HTTP REQUEST)
+DP 0: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/ HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/
+GOT URI: http://netsys.cs.colorado.edu/
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 0: Attempting to create worker thread.
+DP 0: Success creating worker thread
+DP 0: Detected keep-alive argument. Setting timer
+DP 0: waiting for message from fd=4
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 0 WT 0: Forwarding original HTTP request from client to server
+DT: 0 WT 0: Sent HTTP request to server.
+DT: 0 WT 0: GOT 3666 BYTES FROM SERVER
+DT: 0 WT 0: Forwarded HTTP response to client.
+DT: 0 WT 0: TERMINATING
+DP 0: GOT 383 BYTES FROM CLIENT (HTTP REQUEST)
+DP 0: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js
+REQUEST URI [PARSING REQ LINE]: http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js
+GOT URI: http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js
+GOT HOST: ajax.googleapis.com
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 0: Attempting to create worker thread.
+DP 0: Success creating worker thread
+DP 0: Detected keep-alive argument. Setting timer
+DP 0: waiting for message from fd=4
+sock_connect_to_host: host=ajax.googleapis.com, port=80, service=http
+host_strlen=19, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 142.250.72.42
+DT: 0 WT 1: Forwarding original HTTP request from client to server
+DT: 0 WT 1: Sent HTTP request to server.
+DT: 0 WT 1: GOT 2836 BYTES FROM SERVER
+DT: 0 WT 1: Forwarded HTTP response to client.
+DT: 0 WT 1: TERMINATING
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+DP 1: waiting for message from fd=5
+DP 1: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
+DP 1: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/fancybox/jquery.mousewheel-3.0.4.pack.js HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/fancybox/jquery.mousewheel-3.0.4.pack.js
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/fancybox/jquery.mousewheel-3.0.4.pack.js
+SV: Waiting for connection
+GOT URI: http://netsys.cs.colorado.edu/fancybox/jquery.mousewheel-3.0.4.pack.js
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+SV: got connection
+DP 1: Attempting to create worker thread.
+SV: Waiting for connection
+DP 4: waiting for message from fd=10
+DP 1: Success creating worker thread
+DP 1: Detected keep-alive argument. Setting timer
+DP 1: waiting for message from fd=5
+DP 5: waiting for message from fd=11
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+DP 5: GOT 424 BYTES FROM CLIENT (HTTP REQUEST)
+DP 5: Attempting to parse HTTP request.
+DP 3: waiting for message from fd=9
+DP 3: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
+DP 3: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/css/style.css HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/css/style.css
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/css/style.css
+GOT URI: http://netsys.cs.colorado.edu/css/style.css
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 5: Attempting to create worker thread.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.pack.js HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.pack.js
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.pack.js
+GOT URI: http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.pack.js
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 3: Attempting to create worker thread.
+DP 3: Success creating worker thread
+DP 3: Detected keep-alive argument. Setting timer
+DP 3: waiting for message from fd=9
+DP 5: Success creating worker thread
+DP 5: Detected keep-alive argument. Setting timer
+DP 5: waiting for message from fd=11
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+DP 2: waiting for message from fd=8
+DP 2: GOT 445 BYTES FROM CLIENT (HTTP REQUEST)
+DP 2: Attempting to parse HTTP request.
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.css HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.css
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.css
+GOT URI: http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.css
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 2: Attempting to create worker thread.
+DP 2: Success creating worker thread
+DP 2: Detected keep-alive argument. Setting timer
+DP 2: waiting for message from fd=8
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 2 WT 0: Forwarding original HTTP request from client to server
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 1 WT 0: Forwarding original HTTP request from client to server
+DT: 2 WT 0: Sent HTTP request to server.
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 5 WT 0: Forwarding original HTTP request from client to server
+DT: 1 WT 0: Sent HTTP request to server.
+DT: 5 WT 0: Sent HTTP request to server.
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 3 WT 0: Forwarding original HTTP request from client to server
+DT: 3 WT 0: Sent HTTP request to server.
+DT: 5 WT 0: GOT 1448 BYTES FROM SERVER
+DT: 5 WT 0: Forwarded HTTP response to client.
+DT: 5 WT 0: TERMINATING
+DT: 2 WT 0: GOT 7240 BYTES FROM SERVER
+DT: 2 WT 0: Forwarded HTTP response to client.
+DT: 2 WT 0: TERMINATING
+DT: 1 WT 0: GOT 1595 BYTES FROM SERVER
+DT: 1 WT 0: Forwarded HTTP response to client.
+DT: 1 WT 0: TERMINATING
+DT: 3 WT 0: GOT 15942 BYTES FROM SERVER
+DT: 3 WT 0: Forwarded HTTP response to client.
+DT: 3 WT 0: TERMINATING
+DP 4: Got EOF from client. Shutting down.
+DP 4: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+DP 3: Got EOF from client. Shutting down.
+DP 3: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+DP 1: Got EOF from client. Shutting down.
+DP 1: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+Timeout!
+DP 0: TIMEOUT! Closing connection to client.
+DP 0: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+SV: got connection
+SV: Waiting for connection
+DP 6: waiting for message from fd=12
+DP 6: GOT 415 BYTES FROM CLIENT (HTTP REQUEST)
+DP 6: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/jquery-1.4.3.min.js HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/jquery-1.4.3.min.js
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/jquery-1.4.3.min.js
+GOT URI: http://netsys.cs.colorado.edu/jquery-1.4.3.min.js
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 6: Attempting to create worker thread.
+DP 6: Success creating worker thread
+DP 6: Detected keep-alive argument. Setting timer
+DP 6: waiting for message from fd=12
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 6 WT 0: Forwarding original HTTP request from client to server
+DT: 6 WT 0: Sent HTTP request to server.
+DT: 6 WT 0: GOT 7240 BYTES FROM SERVER
+DT: 6 WT 0: Forwarded HTTP response to client.
+DT: 6 WT 0: TERMINATING
+Timeout!
+DP 5: TIMEOUT! Closing connection to client.
+DP 5: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+Timeout!
+DP 2: TIMEOUT! Closing connection to client.
+DP 2: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+DP 7: waiting for message from fd=4
+DP 8: waiting for message from fd=8
+DP 7: GOT 435 BYTES FROM CLIENT (HTTP REQUEST)
+DP 7: Attempting to parse HTTP request.
+DP 8: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
+DP 8: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/graphics/html.gif HTTP/1.1
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/graphics/html.gif
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/graphics/html.gif
+GOT URI: http://netsys.cs.colorado.edu/graphics/html.gif
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/images/welcome.png HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/images/welcome.png
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/images/welcome.png
+GOT URI: http://netsys.cs.colorado.edu/images/welcome.png
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 7: Attempting to create worker thread.
+DP 8: Attempting to create worker thread.
+DP 7: Success creating worker thread
+DP 7: Detected keep-alive argument. Setting timer
+DP 7: waiting for message from fd=4
+DP 8: Success creating worker thread
+DP 8: Detected keep-alive argument. Setting timer
+DP 8: waiting for message from fd=8
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 8 WT 0: Forwarding original HTTP request from client to server
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 7 WT 0: Forwarding original HTTP request from client to server
+DT: 8 WT 0: Sent HTTP request to server.
+DT: 7 WT 0: Sent HTTP request to server.
+DT: 7 WT 0: GOT 678 BYTES FROM SERVER
+DT: 7 WT 0: Forwarded HTTP response to client.
+DT: 7 WT 0: TERMINATING
+DT: 8 WT 0: GOT 7240 BYTES FROM SERVER
+DT: 8 WT 0: Forwarded HTTP response to client.
+DT: 8 WT 0: TERMINATING
+DP 7: Got EOF from client. Shutting down.
+DP 7: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+Timeout!
+DP 6: TIMEOUT! Closing connection to client.
+DP 6: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+DP 9: waiting for message from fd=9
+DP 9: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
+DP 9: Attempting to parse HTTP request.
+DP 10: waiting for message from fd=4
+PAYLOAD FOUND
+DP 10: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
+DP 10: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/graphics/txt.gif HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/graphics/txt.gif
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/graphics/txt.gif
+GOT URI: http://netsys.cs.colorado.edu/graphics/txt.gif
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 10: Attempting to create worker thread.
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/graphics/mov.gif HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/graphics/mov.gif
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/graphics/mov.gif
+DP 11: waiting for message from fd=12
+DP 11: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
+DP 11: Attempting to parse HTTP request.
+GOT URI: http://netsys.cs.colorado.edu/graphics/mov.gif
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+PAYLOAD FOUND
+DP 9: Attempting to create worker thread.
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/graphics/pdf.gif HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/graphics/pdf.gif
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/graphics/pdf.gif
+GOT URI: http://netsys.cs.colorado.edu/graphics/pdf.gif
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 10: Success creating worker thread
+DP 10: Detected keep-alive argument. Setting timer
+DP 10: waiting for message from fd=4
+DP 11: Attempting to create worker thread.
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+DP 11: Success creating worker thread
+DP 11: Detected keep-alive argument. Setting timer
+DP 11: waiting for message from fd=12
+DP 9: Success creating worker thread
+DP 9: Detected keep-alive argument. Setting timer
+DP 9: waiting for message from fd=9
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 10 WT 0: Forwarding original HTTP request from client to server
+DT: 10 WT 0: Sent HTTP request to server.
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 11 WT 0: Forwarding original HTTP request from client to server
+DT: 11 WT 0: Sent HTTP request to server.
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 9 WT 0: Forwarding original HTTP request from client to server
+DT: 9 WT 0: Sent HTTP request to server.
+DT: 11 WT 0: GOT 677 BYTES FROM SERVER
+DT: 11 WT 0: Forwarded HTTP response to client.
+DT: 11 WT 0: TERMINATING
+DT: 9 WT 0: GOT 681 BYTES FROM SERVER
+DT: 9 WT 0: Forwarded HTTP response to client.
+DT: 9 WT 0: TERMINATING
+DT: 10 WT 0: GOT 677 BYTES FROM SERVER
+DT: 10 WT 0: Forwarded HTTP response to client.
+DT: 10 WT 0: TERMINATING
+Timeout!
+DP 8: TIMEOUT! Closing connection to client.
+DP 8: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+DP 9: Got EOF from client. Shutting down.
+DP 9: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+DP 10: Got EOF from client. Shutting down.
+DP 10: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+DP 11: Got EOF from client. Shutting down.
+DP 11: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+SV: got connection
+SV: Waiting for connection
+DP 12: waiting for message from fd=17
+DP 12: GOT 481 BYTES FROM CLIENT (HTTP REQUEST)
+DP 12: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/images/wine3.jpg HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/images/wine3.jpg
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/images/wine3.jpg
+GOT URI: http://netsys.cs.colorado.edu/images/wine3.jpg
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 12: Attempting to create worker thread.
+DP 12: Success creating worker thread
+DP 12: Detected keep-alive argument. Setting timer
+DP 12: waiting for message from fd=17
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 12 WT 0: Forwarding original HTTP request from client to server
+DT: 12 WT 0: Sent HTTP request to server.
+DT: 12 WT 0: GOT 7240 BYTES FROM SERVER
+DT: 12 WT 0: Forwarded HTTP response to client.
+DT: 12 WT 0: TERMINATING
+DP 12: Got EOF from client. Shutting down.
+DP 12: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+SV: got connection
+SV: Waiting for connection
+DP 13: waiting for message from fd=4
+DP 13: GOT 467 BYTES FROM CLIENT (HTTP REQUEST)
+DP 13: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/ HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/
+GOT URI: http://netsys.cs.colorado.edu/
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 13: Attempting to create worker thread.
+DP 13: Success creating worker thread
+DP 13: Detected keep-alive argument. Setting timer
+DP 13: waiting for message from fd=4
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 13 WT 0: Forwarding original HTTP request from client to server
+DT: 13 WT 0: Sent HTTP request to server.
+DT: 13 WT 0: GOT 3666 BYTES FROM SERVER
+DT: 13 WT 0: Forwarded HTTP response to client.
+DT: 13 WT 0: TERMINATING
+DP 13: GOT 383 BYTES FROM CLIENT (HTTP REQUEST)
+DP 13: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js
+REQUEST URI [PARSING REQ LINE]: http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js
+GOT URI: http://ajax.googleapis.com/ajax/libs/jquery/1.4/jquery.min.js
+GOT HOST: ajax.googleapis.com
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 13: Attempting to create worker thread.
+DP 13: Success creating worker thread
+DP 13: Detected keep-alive argument. Setting timer
+DP 13: waiting for message from fd=4
+sock_connect_to_host: host=ajax.googleapis.com, port=80, service=http
+host_strlen=19, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 142.250.72.42
+DT: 13 WT 1: Forwarding original HTTP request from client to server
+DT: 13 WT 1: Sent HTTP request to server.
+SV: got connection
+SV: Waiting for connection
+DP 14: waiting for message from fd=9
+DT: 13 WT 1: GOT 2836 BYTES FROM SERVER
+DT: 13 WT 1: Forwarded HTTP response to client.
+DT: 13 WT 1: TERMINATING
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+DP 14: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
+DP 14: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/fancybox/jquery.mousewheel-3.0.4.pack.js HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/fancybox/jquery.mousewheel-3.0.4.pack.js
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/fancybox/jquery.mousewheel-3.0.4.pack.js
+GOT URI: http://netsys.cs.colorado.edu/fancybox/jquery.mousewheel-3.0.4.pack.js
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 14: Attempting to create worker thread.
+DP 14: Success creating worker thread
+DP 14: Detected keep-alive argument. Setting timer
+DP 14: waiting for message from fd=9
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+DP 15: waiting for message from fd=24
+DP 15: GOT 424 BYTES FROM CLIENT (HTTP REQUEST)
+DP 15: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/css/style.css HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/css/style.css
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/css/style.css
+GOT URI: http://netsys.cs.colorado.edu/css/style.css
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 15: Attempting to create worker thread.
+DP 16: waiting for message from fd=25
+DP 15: Success creating worker thread
+DP 15: Detected keep-alive argument. Setting timer
+DP 15: waiting for message from fd=24
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 14 WT 0: Forwarding original HTTP request from client to server
+DT: 14 WT 0: Sent HTTP request to server.
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 15 WT 0: Forwarding original HTTP request from client to server
+DT: 15 WT 0: Sent HTTP request to server.
+DT: 14 WT 0: GOT 1595 BYTES FROM SERVER
+DT: 14 WT 0: Forwarded HTTP response to client.
+DT: 14 WT 0: TERMINATING
+DT: 15 WT 0: GOT 2640 BYTES FROM SERVER
+DT: 15 WT 0: Forwarded HTTP response to client.
+DT: 15 WT 0: TERMINATING
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+DP 16: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
+DP 16: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.pack.js HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.pack.js
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.pack.js
+GOT URI: http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.pack.js
+GOT HOST: netsys.cs.colorado.edu
+GOT SERVICE: http
+BUF @HTTP VERSION: GET
+HTTP VERSION: HTTP/1.1
+HTTP VERSION: HTTP/1.1
+http_parase_req_line: SUCCESS!
+DP 16: Attempting to create worker thread.
+DP 17: waiting for message from fd=26
+DP 16: Success creating worker thread
+DP 16: Detected keep-alive argument. Setting timer
+DP 16: waiting for message from fd=25
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+DP 18: waiting for message from fd=29
+DP 18: GOT 445 BYTES FROM CLIENT (HTTP REQUEST)
+DP 18: Attempting to parse HTTP request.
+PAYLOAD FOUND
+http_parase_req_line: parsing this line(CMD)->GET http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.css HTTP/1.1
+http_parase_req_line: parsing this line(URI)->http://netsys.cs.colorado.edu/fancybox/jquery.fancybox-1.3.4.css
+REQUEST URI [PARSING REQ LINE]: http://netsys.cs.colorado.edu/fancybox/jquery.fanc

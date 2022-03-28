@@ -149,7 +149,7 @@ void sock_close(int fd)
     close(fd);
 }
 
-int sock_wait_for_connection()
+int sock_wait_for_connection(int sockfd)
 {
     sin_size = sizeof(their_addr);
     new_fd = accept(sockfd, (struct sockaddr *)&their_addr, &sin_size);

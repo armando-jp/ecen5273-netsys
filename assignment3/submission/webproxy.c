@@ -28,12 +28,18 @@ int main(int argc, char *argv[])
     }
 
     printf("Binding to port %s\n", p_port);
-    sock_bind_to_port(p_port);
+    int sockfd = sock_bind_to_port(p_port);
 
-    sm_server();
+    if(sockfd != -1)
+    {
+        sm_server(sockfd);
+    }
+    else
+    {
+        printf("Failed to bind to port %s\r\n", p_port);
+    }
 
-    printf("Closing connection\n");
-    sock_close(sock_get_sockfd());
+    printf("Program terminating\r\n");
 
 
     return 0;
