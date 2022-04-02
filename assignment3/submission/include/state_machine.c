@@ -8,7 +8,8 @@
 #include "http.h"
 #include "socket.h"
 
-#define DEBUG_PRINT (0)
+#define DEBUG_PRINT_DISPATCHER (0)
+#define DEBUG_PRINT_WORKER     (0)
 
 void sm_server(int sockfd_listen)
 {
@@ -77,7 +78,7 @@ void *sm_dispatch_thread(void *p_args)
     // variable to enable timeout
     bool is_timeout = false;
     // variables to store socket reads
-    int in_buf_size = 1000;
+    int in_buf_size = MAX_IN_BUF_SIZE;
     char in_buf[in_buf_size];
     int recvbytes;
 
@@ -137,10 +138,10 @@ void *sm_dispatch_thread(void *p_args)
                 {
                     current_event = evt_message_received;
                     printf("DP %d: GOT %d BYTES FROM CLIENT (HTTP REQUEST)\n", args.thread_id, recvbytes);
-#if DEBUG_PRINT
+#if DEBUG_PRINT_DISPATCHER
                     printf("DP %d: MESSAGE START\n", args.thread_id);
                     printf("%s\r\n", in_buf);
-                    http_hex_dump(in_buf, recvbytes);
+                    // http_hex_dump(in_buf, recvbytes);
                     printf("DP %d: MESSAGE END\n", args.thread_id);
 #endif
                 }
@@ -288,10 +289,10 @@ void *sm_worker_thread(void *p_args)
                     "KEEP ALIVE: %s\r\n", 
                     args->keep_alive  ? "true" : "false"
                 );
-                if(args->p_request_payload != NULL)
-                {
-                    printf("PAYLOAD: %s\r\n", args->p_request_payload);
-                }
+                // if(args->p_request_payload != NULL)
+                // {
+                //     printf("PAYLOAD: %s\r\n", args->p_request_payload);
+                // }
                 // DEBUG PRINTS: END ///////////////////////////////////////////
 
                 // (1) Generate HTTP response message.
@@ -341,7 +342,7 @@ void *sm_worker_thread_proxy(void *p_args)
     state_t current_state = state_processing_request;
     http_req_results_t *args = (http_req_results_t *)p_args;
     int fd_server;
-    int in_buf_size = 40000;
+    int in_buf_size = MAX_IN_BUF_SIZE;
     char in_buf[in_buf_size];
     int numbytes = 0;
 
@@ -359,25 +360,8 @@ void *sm_worker_thread_proxy(void *p_args)
                  **************************************************************/
 
                 // DEBUG PRINTS: START /////////////////////////////////////////
-#if DEBUG_PRINT
-                printf(
-                    "DP %d WT %d: Printing my params\r\n", 
-                    args->dp_thread_idx, 
-                    args->thread_idx
-                );
-                printf("\tREQ METHOD: %d\r\n", args->req_method);
-                printf("\tHTTP VERSION: %d\r\n", args->req_version);
-                printf("\tREQ URI: %s\r\n", args->p_request_uri);
-                printf("\tCONNECTION HANDLE: %d\r\n", args->fd_client);
-                printf(
-                    "\tKEEP ALIVE: %s\r\n", 
-                    args->keep_alive  ? "true" : "false"
-                );
-                if(args->p_request_payload != NULL)
-                {
-                    printf("\tPAYLOAD: %s\r\n", args->p_request_payload);
-                }
-                printf("\tORIGINAL HTTP REQUEST: \r\n%s\r\n", args->p_original_http_request);
+#if DEBUG_PRINT_WORKER
+                // http_display_parsing_results(args);
 #endif
                 // DEBUG PRINTS: END ///////////////////////////////////////////
 
@@ -401,6 +385,7 @@ void *sm_worker_thread_proxy(void *p_args)
                 }
 
                 // (3) Wait for HTTP response from server.
+                memset(in_buf, 0, in_buf_size);
                 numbytes = sock_read(fd_server, in_buf, in_buf_size, false);
                 if(numbytes == -1)
                 {
@@ -413,24 +398,85 @@ void *sm_worker_thread_proxy(void *p_args)
                 else
                 {
                     printf("DT: %d WT %d: GOT %d BYTES FROM SERVER\n", args->dp_thread_idx, args->thread_idx, numbytes);
-#if DEBUG_PRINT
+#if DEBUG_PRINT_WORKER
                     printf("DT: %d WT %d: MESSAGE START\n", args->dp_thread_idx, args->thread_idx);
                     printf("%s\r\n", in_buf);
                     printf("DT: %d WT %d: MESSAGE END\n", args->dp_thread_idx, args->thread_idx);
 #endif
                 }
                 // (4) Forward HTTP response from server, to client.
-                if(numbytes > 0)
+                int sent = 0;
+                printf("DT: %d WT %d: Forwarding %d bytes from server to client\r\n", args->dp_thread_idx, args->thread_idx, numbytes);
+                sent = sock_send(args->fd_client, in_buf, numbytes);
+                if(sent == -1)
                 {
-                    if (sock_send(args->fd_client, in_buf, numbytes) == -1)
-                    {
-                        printf("DT: %d WT %d: Failed to send HTTP msg\r\n", args->dp_thread_idx, args->thread_idx);
-                    }
-                    else
-                    {
-                        printf("DT: %d WT %d: Forwarded HTTP response to client.\r\n", args->dp_thread_idx, args->thread_idx);
-                    }
+                    printf("DT: %d WT %d: Failed to send HTTP msg\r\n", args->dp_thread_idx, args->thread_idx);
                 }
+                else
+                {
+                    printf("DT: %d WT %d: Forwarded %d HTTP bytes response to client. \r\n", args->dp_thread_idx, args->thread_idx, sent);
+                }
+
+                // (4.5) Check if we still need to send more bytes 'cause of
+                // payload
+                // determine how many bytes are in the payload by parsing what
+                // was received, and continue receiving until the entire payload
+                // has been received.
+                http_req_results_t *received = http_parse_request(in_buf, numbytes);
+                if(received != NULL)
+                {
+                    http_display_parsing_results(received);
+                    int remaining_content_bytes = received->content_length;
+
+                    printf("DT: %d WT %d: HTTP response contains a payload of %d bytes.\r\n", 
+                        args->dp_thread_idx, 
+                        args->thread_idx, 
+                        received->content_length);
+                    printf("DT: %d WT %d: So far we have obtained %d bytes. Still need %d bytes of payload.\r\n", 
+                        args->dp_thread_idx, 
+                        args->thread_idx, 
+                        received->actual_content_length, 
+                        remaining_content_bytes - received->actual_content_length);
+
+                    uint32_t new_recv = 0;
+                    remaining_content_bytes -= received->actual_content_length;
+                    while(remaining_content_bytes > 0)
+                    {
+                        memset(in_buf, 0, in_buf_size);
+                        printf("DT: %d WT %d: About to receive more bytes from server\r\n",
+                            args->dp_thread_idx, 
+                            args->thread_idx);
+
+                        new_recv = sock_read(fd_server, in_buf, in_buf_size, false);
+                        if(new_recv == 0)
+                        {
+                            break;
+                        }
+                        sent = sock_send(args->fd_client, in_buf, new_recv);
+
+                        if(sent == -1)
+                        {
+                            printf("DT: %d WT %d: Failed to send HTTP msg\r\n", args->dp_thread_idx, args->thread_idx);
+                        }
+                        else
+                        {
+                            printf("DT: %d WT %d: Forwarded %d HTTP bytes response to client. \r\n", args->dp_thread_idx, args->thread_idx, sent);
+                        }
+
+                        numbytes += new_recv;
+                        remaining_content_bytes -= new_recv;
+
+                        printf("DT: %d WT %d: Received and sent additional %d bytes. Still need: %d\r\n",
+                            args->dp_thread_idx, 
+                            args->thread_idx, 
+                            new_recv, 
+                            remaining_content_bytes);                        
+                    }
+
+                    free(received);
+                }
+
+
 
                 // (5) Termiante worker thread.
                 printf("DT: %d WT %d: TERMINATING\n", args->dp_thread_idx, args->thread_idx);

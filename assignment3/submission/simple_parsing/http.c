@@ -1,5 +1,5 @@
 #include "http.h"
-#include "file.h"
+// #include "file.h"
 
 #include <stdlib.h>
 #include <stdio.h>
@@ -30,11 +30,8 @@ const http_req_version_struct_t http_req_version_types[] =
 // returns NULL otherwise (not a valid command)
 http_req_results_t *http_parse_request(char *p_buf, int buf_size)
 {
-    if(p_buf == NULL)
-    {
-        return NULL;
-    }
     // Create variables for parsing
+    uint16_t payload_size = 0;
     uint16_t idx_start = 0;
     uint16_t idx_end = 0;
     char req[100];
@@ -47,19 +44,14 @@ http_req_results_t *http_parse_request(char *p_buf, int buf_size)
     // Create HTTP struct
     http_req_results_t *p_results = NULL;
     p_results = (http_req_results_t*) malloc(sizeof(http_req_results_t));
-    if(p_results == NULL)
-    {
-        printf("FAILED TO MALLOC FOR http_req_results_t\r\n");
-        return NULL;
-    }
 
     // Initialize HTTP struct
-    //memset(p_results->p_request_payload, 0, MAX_REQUEST_PAYLOAD);
+    memset(p_results->p_request_payload, 0, 1000);
     p_results->p_request_uri[0] = '\0';
     p_results->content_length = 0;
     p_results->fd_client = 0;
     p_results->keep_alive = 0;
-    //p_results->p_request_payload[0] = '\0';
+    p_results->p_request_payload[0] = '\0';
     p_results->req_method = 0;
     p_results->req_version = 0;
     p_results->thread_idx = 0;
@@ -68,7 +60,10 @@ http_req_results_t *http_parse_request(char *p_buf, int buf_size)
     p_results->p_request_host[0] = '\0';
     p_results->original_http_request_size = 0;
     p_results->port = 0;
-    p_results->actual_content_length = 0;
+
+    // Write copy of original HTTP request to HTTP struct.
+    memcpy(p_results->p_original_http_request, p_buf, buf_size);
+    p_results->original_http_request_size = buf_size;
 
     // (1) get req line
     if(http_get_req(p_buf, buf_size, &idx_start, &idx_end, p_results) != 0)
@@ -92,9 +87,14 @@ http_req_results_t *http_parse_request(char *p_buf, int buf_size)
         http_get_payload(p_buf, buf_size, &idx_start, &idx_end, p_results);
     }
 
-    // (6) Write copy of original HTTP request to HTTP struct.
-    memcpy(p_results->p_original_http_request, p_buf, buf_size);
-    p_results->original_http_request_size = buf_size;
+
+    // // Attempt to parse the raw HTTP message
+    // if(http_parase_msg(p_buf, p_results) == -1)
+    // {
+    //     printf("http_parse_request: Error prasing msg\r\n");
+    //     free(p_results);
+    //     return NULL;
+    // }
 
     return p_results;
 }
@@ -174,10 +174,10 @@ int http_parase_msg(char *buffer, http_req_results_t *p_results)
     }
 
     // (3) Copy payload (if there is one)
-    // if(p_payload != NULL)
-    // {
-    //     memcpy(&p_results->p_request_payload, p_payload, MAX_REQUEST_PAYLOAD);
-    // }
+    if(p_payload != NULL)
+    {
+        memcpy(&p_results->p_request_payload, p_payload, strlen(p_payload));
+    }
 
     return 0;
 }
@@ -364,163 +364,159 @@ int http_parse_header_lines(char *buf, http_req_results_t *p_results)
  * (5) Write the payload field.
  * (6) Return pointer to generated HTTP response message.
  ******************************************************************************/
-char *http_create_response(http_req_results_t *p_results, int *size)
-{
-    uint32_t buf_offset = 0;
-    uint32_t file_size = 0;
-    char *file_buf = NULL;
-    char* buffer = (char*)malloc(sizeof(char) * MAX_HTTP_RESPONSE);
+// char *http_create_response(http_req_results_t *p_results, int *size)
+// {
+//     uint32_t buf_offset = 0;
+//     uint32_t file_size = 0;
+//     char *file_buf = NULL;
+//     char* buffer = (char*)malloc(sizeof(char) * MAX_HTTP_RESPONSE);
 
-    // (1) Create the start line
-    for(int i = 0; i < _total_version_types; i++)
-    {
-        if(p_results->req_version == http_req_version_types[i].version_enum)
-        {
-            buf_offset += sprintf((buffer+buf_offset), "%s ", http_req_version_types[i].text);
-            break;
-        }
-    }
-    buf_offset += sprintf((buffer+buf_offset), "%s", "200 OK\r\n");
+//     // (1) Create the start line
+//     for(int i = 0; i < _total_version_types; i++)
+//     {
+//         if(p_results->req_version == http_req_version_types[i].version_enum)
+//         {
+//             buf_offset += sprintf((buffer+buf_offset), "%s ", http_req_version_types[i].text);
+//             break;
+//         }
+//     }
+//     buf_offset += sprintf((buffer+buf_offset), "%s", "200 OK\r\n");
 
-    // (2) Get payload (if there is one) and size.
-    //     This is done before writing the header field in order to get the data
-    //     needed for the 'content-length' header entry.
-    if(p_results->req_method == get || p_results->req_method == post)
-    {
+//     // (2) Get payload (if there is one) and size.
+//     //     This is done before writing the header field in order to get the data
+//     //     needed for the 'content-length' header entry.
+//     if(p_results->req_method == get || p_results->req_method == post)
+//     {
 
-        //open file here to be copied into payload
-        FILE *fp = NULL;
-        if((p_results->p_request_uri[0]) == '\0')
-        {
-            printf("ERROR: opening request URI. Got '\\0'\r\n");
-        }
-        else if(strcmp("/", p_results->p_request_uri) == 0)
-        {
-            fp = file_open("./www/index.html", 0);
-        }
-        else
-        {
-            char uri[200];
-            sprintf(uri, "./www%s", p_results->p_request_uri);
-            printf("DP: %d WT %d: ATTEMPTING TO OPEN URI: %s\r\n", p_results->dp_thread_idx, p_results->thread_idx, uri);
-            fp = file_open(uri, 0);
-        }  
+//         //open file here to be copied into payload
+//         FILE *fp = NULL;
+//         if((p_results->p_request_uri[0]) == '\0')
+//         {
+//             printf("ERROR: opening request URI. Got '\\0'\r\n");
+//         }
+//         else if(strcmp("/", p_results->p_request_uri) == 0)
+//         {
+//             fp = file_open("./www/index.html", 0);
+//         }
+//         else
+//         {
+//             char uri[200];
+//             sprintf(uri, "./www%s", p_results->p_request_uri);
+//             printf("DP: %d WT %d: ATTEMPTING TO OPEN URI: %s\r\n", p_results->dp_thread_idx, p_results->thread_idx, uri);
+//             fp = file_open(uri, 0);
+//         }  
 
-        if(fp == NULL)
-        {
-            if(buffer != NULL)
-            {
-                free(buffer);
-            }
+//         if(fp == NULL)
+//         {
+//             if(buffer != NULL)
+//             {
+//                 free(buffer);
+//             }
             
-            printf("ERROR: Opening requested file: %s\r\n", p_results->p_request_uri);
-            return NULL;
-        }
+//             printf("ERROR: Opening requested file: %s\r\n", p_results->p_request_uri);
+//             return NULL;
+//         }
 
-        uint32_t num_bytes_read;
-        file_buf = file_read_all(fp, &file_size, &num_bytes_read);
-        printf("Read %d bytes of %d\r\n", num_bytes_read, file_size);
-        if(file_buf == NULL)
-        {
-            file_close(fp);
-            if(buffer != NULL)
-            {
-                free(buffer);
-            }
-            return NULL;
-        }
-        file_close(fp);
-    }
+//         uint32_t num_bytes_read;
+//         file_buf = file_read_all(fp, &file_size, &num_bytes_read);
+//         printf("Read %d bytes of %d\r\n", num_bytes_read, file_size);
+//         if(file_buf == NULL)
+//         {
+//             file_close(fp);
+//             if(buffer != NULL)
+//             {
+//                 free(buffer);
+//             }
+//             return NULL;
+//         }
+//         file_close(fp);
+//     }
 
-    // (3) Write the content type header field entry based on the file type.
-    if((p_results->p_request_uri[0] == 47) && (p_results->p_request_uri[1] == '\0'))
-    {
-        buf_offset += sprintf((buffer+buf_offset), "Content-Type: text/html\r\n");
-    }
-    else if(strstr(p_results->p_request_uri, ".html") != NULL)
-    {
-        buf_offset += sprintf((buffer+buf_offset), "Content-Type: text/html\r\n");
-    }
-    else if(strstr(p_results->p_request_uri, ".png") != NULL)
-    {
-        buf_offset += sprintf((buffer+buf_offset), "Content-Type: image/png\r\n");
-    }
-    else if(strstr(p_results->p_request_uri, ".gif") != NULL)
-    {
-        buf_offset += sprintf((buffer+buf_offset), "Content-Type: image/gif\r\n");
-    }
-    else if(strstr(p_results->p_request_uri, ".txt") != NULL)
-    {
-        buf_offset += sprintf((buffer+buf_offset), "Content-Type: image/plain\r\n");
-    }
-    else if(strstr(p_results->p_request_uri, ".jpg") != NULL)
-    {
-        buf_offset += sprintf((buffer+buf_offset), "Content-Type: image/jpg\r\n");
-    }
-    else if(strstr(p_results->p_request_uri, ".css") != NULL)
-    {
-        buf_offset += sprintf((buffer+buf_offset), "Content-Type: text/css\r\n");
-    }
-    else if(strstr(p_results->p_request_uri, ".js") != NULL)
-    {
-        buf_offset += sprintf((buffer+buf_offset), "Content-Type: application/javascript\r\n");
-    }
-    else
-    {
-        printf("FAILED TO DETERMINE CONTENT TYPE OF %d\r\n", p_results->p_request_uri[0]);
-    }
+//     // (3) Write the content type header field entry based on the file type.
+//     if((p_results->p_request_uri[0] == 47) && (p_results->p_request_uri[1] == '\0'))
+//     {
+//         buf_offset += sprintf((buffer+buf_offset), "Content-Type: text/html\r\n");
+//     }
+//     else if(strstr(p_results->p_request_uri, ".html") != NULL)
+//     {
+//         buf_offset += sprintf((buffer+buf_offset), "Content-Type: text/html\r\n");
+//     }
+//     else if(strstr(p_results->p_request_uri, ".png") != NULL)
+//     {
+//         buf_offset += sprintf((buffer+buf_offset), "Content-Type: image/png\r\n");
+//     }
+//     else if(strstr(p_results->p_request_uri, ".gif") != NULL)
+//     {
+//         buf_offset += sprintf((buffer+buf_offset), "Content-Type: image/gif\r\n");
+//     }
+//     else if(strstr(p_results->p_request_uri, ".txt") != NULL)
+//     {
+//         buf_offset += sprintf((buffer+buf_offset), "Content-Type: image/plain\r\n");
+//     }
+//     else if(strstr(p_results->p_request_uri, ".jpg") != NULL)
+//     {
+//         buf_offset += sprintf((buffer+buf_offset), "Content-Type: image/jpg\r\n");
+//     }
+//     else if(strstr(p_results->p_request_uri, ".css") != NULL)
+//     {
+//         buf_offset += sprintf((buffer+buf_offset), "Content-Type: text/css\r\n");
+//     }
+//     else if(strstr(p_results->p_request_uri, ".js") != NULL)
+//     {
+//         buf_offset += sprintf((buffer+buf_offset), "Content-Type: application/javascript\r\n");
+//     }
+//     else
+//     {
+//         printf("FAILED TO DETERMINE CONTENT TYPE OF %d\r\n", p_results->p_request_uri[0]);
+//     }
     
-    // (4) Write the 'content-length' header field entry (if there is a payload)
-    if(file_size > 0)
-    {
-        buf_offset += sprintf((buffer+buf_offset), "Content-Length: %d\r\n", file_size);
-    }
+//     // (4) Write the 'content-length' header field entry (if there is a payload)
+//     if(file_size > 0)
+//     {
+//         buf_offset += sprintf((buffer+buf_offset), "Content-Length: %d\r\n", file_size);
+//     }
 
-    // (5) Write the payload field (if there is a paylaod)
-    if(p_results->req_method == get || p_results->req_method == post)
-    {
-        // insert blank line
-        buf_offset += sprintf((buffer+buf_offset), "\r\n");
+//     // (5) Write the payload field (if there is a paylaod)
+//     if(p_results->req_method == get || p_results->req_method == post)
+//     {
+//         // insert blank line
+//         buf_offset += sprintf((buffer+buf_offset), "\r\n");
 
-        if(p_results->req_method == post)
-        {
-            // buf_offset += sprintf((buffer+buf_offset), "<html><body><pre><h1>%s</h1></pre>", p_results->p_request_payload);
-        }
+//         if(p_results->req_method == post)
+//         {
+//             buf_offset += sprintf((buffer+buf_offset), "<html><body><pre><h1>%s</h1></pre>", p_results->p_request_payload);
+//         }
 
-        for(uint32_t i = 0; i < file_size; i++)
-        {
-            buffer[i + buf_offset] = file_buf[i];
-        }
-        buf_offset += file_size;
+//         for(uint32_t i = 0; i < file_size; i++)
+//         {
+//             buffer[i + buf_offset] = file_buf[i];
+//         }
+//         buf_offset += file_size;
 
-        if(file_buf != NULL)
-        {
-            free(file_buf);
-        }
+//         if(file_buf != NULL)
+//         {
+//             free(file_buf);
+//         }
 
-    }
+//     }
 
-    *size = buf_offset; 
-    return buffer;
-}
+//     *size = buf_offset; 
+//     return buffer;
+// }
 
-void http_hex_dump(char *buf, uint32_t buf_size)
-{
-    printf("\r\nSTART HEX DUMP======\r\n");
-    for(uint32_t i = 0; i < buf_size; i ++)
-    {
-        printf("[%d] 0x%02X\r\n", i, buf[i]);
-    }
-    printf("\r\nEND HEX DUMP======\r\n");
-}
+// void http_hex_dump(char *buf, uint32_t buf_size)
+// {
+//     printf("\r\nSTART HEX DUMP======\r\n");
+//     for(uint32_t i = 0; i < buf_size; i ++)
+//     {
+//         printf("[%d] 0x%02X\r\n", i, buf[i]);
+//     }
+//     printf("\r\nEND HEX DUMP======\r\n");
+// }
 
 // new stuff
 void http_display_parsing_results(http_req_results_t *p_results)
 {
-    if(p_results == NULL)
-    {
-        return;
-    }
     printf("START: DISPLAY PARSING RESULTS\r\n");
 
     printf("REQUEST FIELDS\r\n");
@@ -534,15 +530,15 @@ void http_display_parsing_results(http_req_results_t *p_results)
     printf("\tHost: %s\r\n", p_results->p_request_host);
     printf("\tPort: %d\r\n", p_results->port);
 
-    // printf("PAYLOAD\r\n");
-    // if(p_results->content_length > 0)
-    // {
-    //     printf("%s\r\n", p_results->p_request_payload);
-    // }
-    // else
-    // {
-    //     printf("\t<NO PAYLOAD>\r\n");
-    // }
+    printf("PAYLOAD\r\n");
+    if(p_results->content_length > 0)
+    {
+        printf("%s\r\n", p_results->p_request_payload);
+    }
+    else
+    {
+        printf("\t<NO PAYLOAD>\r\n");
+    }
     
     printf("END: DISPLAY PARSING RESULTS\r\n");
 
@@ -561,7 +557,7 @@ int http_get_req(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, uint16
         {
             if(i+1 < buffer_size)
             {
-                if(p_buffer[i+1] == '\n')
+                if(p_buffer[i+1] == '\n');
                 {
                     *p_end = i;
                     break;
@@ -606,13 +602,13 @@ int http_get_req(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, uint16
         {
             // memcpy(&p_results->p_request_host, p_token+8, strlen(p_token)-8);
             // p_results->p_request_host[strlen(p_token)-8] = '\0';
-            strcpy(p_results->p_service, "https");
+            memcpy(p_results->p_service, "https", strlen("https"));
         }
         else
         {
             // memcpy(&p_results->p_request_host, p_token+7, strlen(p_token)-7);
             // p_results->p_request_host[strlen(p_token)-7] = '\0';
-            strcpy(p_results->p_service, "http");
+            memcpy(p_results->p_service, "http", strlen("http"));
         }
     }
     else
@@ -636,7 +632,7 @@ int http_get_headers(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, ui
         {
             if(i+1 < buffer_size)
             {
-                if(p_buffer[i+1] == '\n')
+                if(p_buffer[i+1] == '\n');
                 {
                     if(i+2 < buffer_size)
                     {
@@ -662,10 +658,9 @@ int http_get_headers(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, ui
     }
 
     // (2) do a memcpy cause what we're about to do might be destructive
-    uint16_t size_of_header = (*p_end-*p_start) + 1;
+    uint16_t size_of_header = *p_end-*p_start;
     char header[size_of_header];
     memcpy(header, (p_buffer+*p_start), size_of_header);
-    header[size_of_header-1] = '\0';
 
     // (3) declare some useful variables for parsing header
     char *save_ptr = NULL;
@@ -682,10 +677,6 @@ int http_get_headers(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, ui
         // printf("header %d = %s\r\n", i, line);
         // start: add logic here to identify special headers and save their value
         val = strtok(line, ": ");
-        if(val == NULL)
-        {
-            break;
-        }
         if(strstr(val, "Content-Length") != NULL || strstr(val, "content-length") != NULL || strstr(val, "Content-length") != NULL)
         {
             val = strtok(NULL, "\r\n");
@@ -699,9 +690,7 @@ int http_get_headers(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, ui
         else if(strstr(val, "Host") != NULL || strstr(val, "host") != NULL)
         {
             val = strtok(NULL, "\r\n");
-            // add 1 to val because we always get a space infront of the host name.
-            memcpy(p_results->p_request_host, val+1, strlen(val)-1);
-            p_results->p_request_host[strlen(val)-1] = '\0';
+            memcpy(p_results->p_request_host, val, strlen(val));
         }
         else
         {
@@ -712,7 +701,7 @@ int http_get_headers(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, ui
         line = strtok_r(NULL, "\r\n", &save_ptr);
         i++;
     }
-    return 0;
+
 }
 
 
@@ -723,9 +712,6 @@ void http_get_payload(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, u
     {
         *p_start = *p_start + 1;
     }
-    // *p_end = *p_start + p_results->content_length;
-    // memcpy(p_results->p_request_payload, p_buffer+*p_start, (*p_end -
-    // *p_start));
-    *p_end = buffer_size - *p_start;
-    p_results->actual_content_length = (*p_end - *p_start);
+    *p_end = *p_start + p_results->content_length;
+    memcpy(p_results->p_request_payload, p_buffer+*p_start, (*p_end-*p_start));
 }

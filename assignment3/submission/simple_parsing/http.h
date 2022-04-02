@@ -4,12 +4,10 @@
 #include <stdbool.h>
 #include <stdint.h>
 
-#define MAX_IN_BUF_SIZE      (1024)
-// #define MAX_REQUEST_PAYLOAD  (300)
-#define MAX_ORIGINAL_REQUEST (1024)
-#define MAX_REQUEST_URI      (128)
-#define MAX_HTTP_RESPONSE    (512)
-#define MAX_ACCEPT_STR       (256)
+#define MAX_REQUEST_PAYLOAD (1000)
+#define MAX_REQUEST_URI     (100)
+#define MAX_HTTP_RESPONSE   (800000)
+#define MAX_ACCEPT_STR      (100)
 
 // HTTP method variables
 typedef enum {
@@ -63,10 +61,9 @@ typedef struct {
     // request-header
     bool keep_alive;
     int content_length;
-    int actual_content_length;
 
     // request-body
-    // char p_request_payload[MAX_REQUEST_PAYLOAD];
+    char p_request_payload[MAX_REQUEST_PAYLOAD];
 
     // Thread related variables
     int thread_idx;
@@ -74,7 +71,7 @@ typedef struct {
     int fd_client;
 
     // A straight up copy of the original HTTP request.
-    char p_original_http_request[MAX_ORIGINAL_REQUEST];
+    char p_original_http_request[1000];
     int original_http_request_size;
 
     // Proxy Variables

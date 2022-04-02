@@ -3,118 +3,133 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <stdbool.h>
+#include <stdint.h>
 
-#define MAX_REQUEST_PAYLOAD (1000)
-#define MAX_REQUEST_URI (100)
-#define MAX_HTTP_RESPONSE (800000)
+#include "http.h"
 
-// HTTP method variables
-typedef enum {
-    get,
-    head,
-    post,
-    put,
-    delete,
-    connect,
-    options,
-    trace,
-    _total_method_types
-} http_req_method_t;
+char in_buffer2[1000]  = "GET http://netsys.cs.colorado.edu/ HTTP/1.1\r\nHost: netsys.cs.colorado.edu\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\nCookie: _ga=GA1.2.1924393814.1639172945\r\nUpgrade-Insecure-Requests: 1\r\nPragma: no-cache\r\nCache-Control: no-cache\r\n\r\n";
+char in_buffer[1000] = "PUT http://netsys.cs.colorado.edu/ HTTP/1.1\r\nHost: netsys.cs.colorado.edu\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:98.0) Gecko/20100101 Firefox/98.0\r\nContent-Length: 23\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8\r\nAccept-Language: en-US,en;q=0.5\r\nAccept-Encoding: gzip, deflate\r\nConnection: keep-alive\r\nCookie: _ga=GA1.2.1924393814.1639172945\r\nUpgrade-Insecure-Requests: 1\r\nPragma: no-cache\r\nCache-Control: no-cache\r\n\r\nHI I AM THE PAYLOAD WOO\r\n";
 
-typedef struct {
-    http_req_method_t method_enum;
-    char *text;
-} http_req_method_strct_t;
-
-// HTTP version variables
-typedef enum {
-    http_1v0,
-    http_1v1,
-    _total_version_types
-} http_req_version_t;
-
-typedef struct {
-    // request-line
-    http_req_method_t req_method;
-    http_req_version_t req_version;
-    char p_request_uri[MAX_REQUEST_URI];
-
-    // request-header
-    bool keep_alive;
-    int content_length;
-
-    // request-body
-    char p_request_payload[MAX_REQUEST_PAYLOAD];
-
-    // Socket FD connector
-    int fd_connection;
-
-    // other
-    int thread_idx;
-    int dp_thread_idx;
-
-} http_req_results_t;
-
-char *buff = "GET / HTTP/1.1\r\nHost: 198.59.7.11:60002\r\nConnection: keep-alive\r\nPragma: no-cache\r\nCache-Control: no-cache\r\nDNT: 1\r\nUpgrade-Insecure-Requests: 1\r\nUser-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/99.0.4844.51 Safari/537.36\r\nAccept: text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,image/apng,*/*;q=0.8,application/signed-exchange;v=b3;q=0.9\r\nAccept-Encoding: gzip, deflate\r\nAccept-Language: en-US,en;q=0.9\r\n\r\nI AM THE PAYLOAD";
-char *buffer = NULL;
-
+// void http_get_req(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, uint16_t *p_end);
+// void http_get_headers(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, uint16_t *p_end);
+// void http_get_header_values(char *p_buffer, uint16_t buffer_size, uint16_t *payload_size);
+// void http_get_payload(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, uint16_t *p_end, uint16_t payload_size);
 
 int main()
 {
-    http_req_results_t *p_results = NULL;
-    p_results = (http_req_results_t *)malloc(sizeof(http_req_results_t));
-
-    buffer = (char *)malloc(strlen(buff));
-    memcpy(buffer, buff, strlen(buff));
-
-    char *p_req_line = NULL;
-    char *p_headers = NULL;
-    char *p_payload = NULL;
-
-    char *p_result = NULL;
-
-    // // PHASE 1: Split raw message into request line, header, and payload.
-    // // Get REQ LINE
-    // char *p_token = strsep(&buffer, "\r\n");
-    // if(p_token == NULL)
-    // {
-    //     printf("COULD NOT SPLIT TO GET REQ LINE\r\n");
-    //     return -1;
-    // }
-    // p_req_line = p_token;
-
-    // 1. CHECK IF PAYLOAD EXISTS. IF SO, SAVE THE POINTER.
-    if((p_payload = strstr(buffer, "\r\n\r\n")) != NULL)
+    http_req_results_t *p_results = http_parse_request(in_buffer, 1000);
+    if(p_results == NULL)
     {
-        printf("buffer contains a payload section\r\n");
-        //now extract the payload
-        printf("PAYLOAD FOUND: %s\r\n", p_payload);
+        printf("something went wrong\r\n");
     }
     else
     {
-        printf("buffer does not contain a payload\r\n");
+        http_display_parsing_results(p_results);  
     }
 
-    // 2. SPLIT THE STRING BY \r\n. FIRST TIME WILL BE FOR REQ LINE
-    //    SUBSEQUENT SPLITS WILL BE FOR HEADERS.
-    while((p_result = strsep(&buffer, "\r\n")) != NULL)
-    {
-        // CHECK IF TOKEN IS EMPTY
-        if(strlen(p_result) == 0)
-        {
-            continue;
-        }
-
-
-        printf("STRSTR GOT %s OF LENGTH %ld\r\n", p_result, strlen(p_result));
-
-        if(strchr(p_result, ':') != NULL)
-        {
-            printf("this string contains ':' -> %s\r\n", p_result);
-        }
-
-        printf("\r\n");
-    }
+    free(p_results);
 
     return 0;
 }
+
+// void http_get_req(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, uint16_t *p_end)
+// {
+//     // assume req line starts from index 0.
+//     *p_start = 0;
+
+//     for(int i = *p_start; i < buffer_size; i++)
+//     {
+//         if(p_buffer[i] == '\r')
+//         {
+//             if(i+1 < buffer_size)
+//             {
+//                 if(p_buffer[i+1] == '\n');
+//                 {
+//                     *p_end = i;
+//                     return;
+//                 }
+//             }
+//         }
+//     }
+// }
+
+// void http_get_headers(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, uint16_t *p_end)
+// {
+//     // assume p_start is where req line ended (p_end)
+//     *p_start = (*p_end) + 1;
+
+//     for(int i = *p_start; i < buffer_size; i++)
+//     {
+//         if(p_buffer[i] == '\r')
+//         {
+//             if(i+1 < buffer_size)
+//             {
+//                 if(p_buffer[i+1] == '\n');
+//                 {
+//                     if(i+2 < buffer_size)
+//                     {
+//                         if(p_buffer[i+2] == '\r')
+//                         {
+//                             if(i+3 < buffer_size)
+//                             {
+//                                 if(p_buffer[i+3] == '\n')
+//                                 {
+//                                     *p_end = i+3;
+//                                     return;
+//                                 }
+//                             }
+//                         }
+//                     }
+//                 }
+//             }
+//         }
+//     }
+// }
+
+// // pass variable containing headers
+// void http_get_header_values(char *p_buffer, uint16_t buffer_size, uint16_t *payload_size)
+// {
+//     char p_buffer_cpy[buffer_size];
+//     memcpy(p_buffer_cpy, p_buffer, buffer_size);
+
+//     char *save_ptr = NULL;
+//     char *line = NULL;
+//     char *val = NULL;
+//     int i = 1;
+
+//     line = strtok_r(p_buffer_cpy, "\r\n", &save_ptr);
+//     while(line != NULL)
+//     {
+//         printf("header %d = %s\r\n", i, line);
+//         // start: add logic here to identify special headers and save their value
+//         val = strtok(line, ": ");
+//         printf("\tkey: %s\r\n", val);
+//         if(strstr(val, "Content-Length") != NULL || strstr(val, "content-length") != NULL || strstr(val, "Content-length") != NULL)
+//         {
+//             printf("found content length\r\n");
+//             val = strtok(NULL, "\r\n");
+//             printf("\tval: %s\r\n", val);
+//             *payload_size = strtol(val, NULL, 10);
+//         }
+//         else
+//         {
+//             val = strtok(NULL, "\r\n");
+//             printf("\tval: %s\r\n", val);
+//         }
+//         // end
+
+//         line = strtok_r(NULL, "\r\n", &save_ptr);
+//         i++;
+//     }
+// }
+
+
+// void http_get_payload(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, uint16_t *p_end, uint16_t payload_size)
+// {
+//     *p_start = (*p_end)+1;
+//     while(*p_start == '\r' || *p_start == '\n')
+//     {
+//         *p_start = *p_start + 1;
+//     }
+//     *p_end = *p_start + payload_size;
+// }
