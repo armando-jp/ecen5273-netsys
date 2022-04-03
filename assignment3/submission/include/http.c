@@ -658,6 +658,7 @@ int http_get_headers(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, ui
     }
     if(*p_end == 0)
     {
+        printf("http_get_headers: failed to find the beginning and end of the header section\r\n");
         return -1;
     }
 
@@ -679,7 +680,7 @@ int http_get_headers(char *p_buffer, uint16_t buffer_size, uint16_t *p_start, ui
     line = strtok_r(header, "\r\n", &save_ptr);
     while(line != NULL)
     {
-        // printf("header %d = %s\r\n", i, line);
+        printf("header %d = %s\r\n", i, line);
         // start: add logic here to identify special headers and save their value
         val = strtok(line, ": ");
         if(val == NULL)

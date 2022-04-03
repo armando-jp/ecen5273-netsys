@@ -9,7 +9,7 @@
 #include "socket.h"
 
 #define DEBUG_PRINT_DISPATCHER (0)
-#define DEBUG_PRINT_WORKER     (0)
+#define DEBUG_PRINT_WORKER     (1)
 
 void sm_server(int sockfd_listen)
 {
@@ -399,9 +399,9 @@ void *sm_worker_thread_proxy(void *p_args)
                 {
                     printf("DT: %d WT %d: GOT %d BYTES FROM SERVER\n", args->dp_thread_idx, args->thread_idx, numbytes);
 #if DEBUG_PRINT_WORKER
-                    printf("DT: %d WT %d: MESSAGE START\n", args->dp_thread_idx, args->thread_idx);
-                    printf("%s\r\n", in_buf);
-                    printf("DT: %d WT %d: MESSAGE END\n", args->dp_thread_idx, args->thread_idx);
+                    // printf("DT: %d WT %d: MESSAGE START\n", args->dp_thread_idx, args->thread_idx);
+                    // printf("%s\r\n", in_buf);
+                    // printf("DT: %d WT %d: MESSAGE END\n", args->dp_thread_idx, args->thread_idx);
 #endif
                 }
                 // (4) Forward HTTP response from server, to client.

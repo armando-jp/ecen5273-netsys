@@ -43,65 +43,128 @@ DT: 0 WT 0: About to receive more bytes from server
 DP 0: GOT 383 BYTES FROM CLIENT (HTTP REQUEST)
 DP 0: Attempting to parse HTTP request.
 DP 0: Attempting to create worker thread.
-SV: got connection
 DP 0: Success creating worker thread
 DP 0: Did not detect keep-alive.
 DP 0: waiting for message from fd=4
 sock_connect_to_host: host=ajax.googleapis.com, port=80, service=http
 host_strlen=19, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 142.250.72.74
+DT: 0 WT 1: Forwarding original HTTP request from client to server
+DT: 0 WT 1: Sent HTTP request to server.
+DT: 0 WT 1: GOT 1023 BYTES FROM SERVER
+DT: 0 WT 1: Forwarding 1023 bytes from server to client
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+START: DISPLAY PARSING RESULTS
+REQUEST FIELDS
+	Method: 0
+	URI: 200
+	Version: 0
+HEADER FIELDS
+	Keep-Alive: 0
+	Content-Length: 27266
+	Host: 
+	Port: 0
+END: DISPLAY PARSING RESULTS
+DT: 0 WT 1: HTTP response contains a payload of 27266 bytes.
+DT: 0 WT 1: So far we have obtained -797 bytes. Still need 28063 bytes of payload.
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 27040
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 26017
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 24994
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 23971
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 22948
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 21925
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 20902
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 19879
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 18856
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 17833
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 16810
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 15787
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 881 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 881 bytes. Still need: 14906
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 13883
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 12860
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 11837
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 10814
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 9791
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 8768
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 7745
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 6722
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 5699
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 719 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 719 bytes. Still need: 4980
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 3957
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 2934
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 1911
+DT: 0 WT 1: About to receive more bytes from server
+DT: 0 WT 1: Forwarded 1001 HTTP bytes response to client. 
+DT: 0 WT 1: Received and sent additional 1001 bytes. Still need: 910
+DT: 0 WT 1: About to receive more bytes from server
+SV: got connection
+SV: Waiting for connection
 DP 1: waiting for message from fd=5
 DP 1: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
 DP 1: Attempting to parse HTTP request.
 DP 1: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
 DP 1: Success creating worker thread
 DP 1: Did not detect keep-alive.
 DP 1: waiting for message from fd=5
-SV: Waiting for connection
-SV: got connection
-DP 2: waiting for message from fd=9
-SV: Waiting for connection
-DP 2: GOT 424 BYTES FROM CLIENT (HTTP REQUEST)
-DP 2: Attempting to parse HTTP request.
-DP 2: Attempting to create worker thread.
 sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
 host_strlen=22, port_strlen=2, service_strlen=4
-SV: got connection
-DP 3: waiting for message from fd=10
-DP 3: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 3: Attempting to parse HTTP request.
-DP 3: Attempting to create worker thread.
-DP 2: Success creating worker thread
-DP 2: Did not detect keep-alive.
-DP 2: waiting for message from fd=9
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-SV: Waiting for connection
-SV: got connection
-DP 3: Success creating worker thread
-DP 3: Did not detect keep-alive.
-DP 3: waiting for message from fd=10
-DP 4: waiting for message from fd=13
-DP 4: GOT 445 BYTES FROM CLIENT (HTTP REQUEST)
-DP 4: Attempting to parse HTTP request.
-DP 4: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 4: Success creating worker thread
-DP 4: Did not detect keep-alive.
-DP 4: waiting for message from fd=13
-SV: Waiting for connection
 sock_connect_to_host: connecting to 198.59.7.17
 DT: 1 WT 0: Forwarding original HTTP request from client to server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 3 WT 0: Forwarding original HTTP request from client to server
 DT: 1 WT 0: Sent HTTP request to server.
-DT: 3 WT 0: Sent HTTP request to server.
 DT: 1 WT 0: GOT 1023 BYTES FROM SERVER
 DT: 1 WT 0: Forwarding 1023 bytes from server to client
-DT: 3 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 3 WT 0: Forwarding 1023 bytes from server to client
 DT: 1 WT 0: Forwarded 1023 HTTP bytes response to client. 
 START: DISPLAY PARSING RESULTS
 REQUEST FIELDS
@@ -117,24 +180,45 @@ END: DISPLAY PARSING RESULTS
 DT: 1 WT 0: HTTP response contains a payload of 1279 bytes.
 DT: 1 WT 0: So far we have obtained 391 bytes. Still need 888 bytes of payload.
 DT: 1 WT 0: About to receive more bytes from server
+DT: 1 WT 0: Forwarded 572 HTTP bytes response to client. 
+DT: 1 WT 0: Received and sent additional 572 bytes. Still need: 316
+DT: 1 WT 0: About to receive more bytes from server
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+DP 2: waiting for message from fd=8
+DP 3: waiting for message from fd=10
+DP 2: GOT 424 BYTES FROM CLIENT (HTTP REQUEST)
+DP 2: Attempting to parse HTTP request.
+DP 2: Attempting to create worker thread.
+DP 4: waiting for message from fd=11
+DP 2: Success creating worker thread
+DP 2: Did not detect keep-alive.
+DP 2: waiting for message from fd=8
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+DP 4: GOT 445 BYTES FROM CLIENT (HTTP REQUEST)
+DP 4: Attempting to parse HTTP request.
+DP 3: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
+DP 3: Attempting to parse HTTP request.
+DP 4: Attempting to create worker thread.
+DP 4: Success creating worker thread
+DP 4: Did not detect keep-alive.
+DP 4: waiting for message from fd=11
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+DP 3: Attempting to create worker thread.
+DP 3: Success creating worker thread
+DP 3: Did not detect keep-alive.
+DP 3: waiting for message from fd=10
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
 sock_connect_to_host: connecting to 198.59.7.17
 DT: 2 WT 0: Forwarding original HTTP request from client to server
 DT: 2 WT 0: Sent HTTP request to server.
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 15624
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 3 WT 0: HTTP response contains a payload of 15624 bytes.
-DT: 3 WT 0: So far we have obtained 387 bytes. Still need 15237 bytes of payload.
-DT: 3 WT 0: About to receive more bytes from server
 DT: 2 WT 0: GOT 1023 BYTES FROM SERVER
 DT: 2 WT 0: Forwarding 1023 bytes from server to client
 DT: 2 WT 0: Forwarded 1023 HTTP bytes response to client. 
@@ -152,44 +236,20 @@ END: DISPLAY PARSING RESULTS
 DT: 2 WT 0: HTTP response contains a payload of 2338 bytes.
 DT: 2 WT 0: So far we have obtained 419 bytes. Still need 1919 bytes of payload.
 DT: 2 WT 0: About to receive more bytes from server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 14214
-DT: 3 WT 0: About to receive more bytes from server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 13191
-DT: 3 WT 0: About to receive more bytes from server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 4 WT 0: Forwarding original HTTP request from client to server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 12168
-DT: 3 WT 0: About to receive more bytes from server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 11145
-DT: 3 WT 0: About to receive more bytes from server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 10122
-DT: 3 WT 0: About to receive more bytes from server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 9099
-DT: 3 WT 0: About to receive more bytes from server
-DT: 4 WT 0: Sent HTTP request to server.
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 8076
-DT: 3 WT 0: About to receive more bytes from server
-DT: 4 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 4 WT 0: Forwarding 1023 bytes from server to client
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 7053
-DT: 3 WT 0: About to receive more bytes from server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 6030
-DT: 3 WT 0: About to receive more bytes from server
 DT: 2 WT 0: Forwarded 1023 HTTP bytes response to client. 
 DT: 2 WT 0: Received and sent additional 1023 bytes. Still need: 896
 DT: 2 WT 0: About to receive more bytes from server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 5007
-DT: 3 WT 0: About to receive more bytes from server
+DT: 2 WT 0: Forwarded 594 HTTP bytes response to client. 
+DT: 2 WT 0: Received and sent additional 594 bytes. Still need: 302
+DT: 2 WT 0: About to receive more bytes from server
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 4 WT 0: Forwarding original HTTP request from client to server
+DT: 4 WT 0: Sent HTTP request to server.
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 3 WT 0: Forwarding original HTTP request from client to server
+DT: 3 WT 0: Sent HTTP request to server.
+DT: 4 WT 0: GOT 1023 BYTES FROM SERVER
+DT: 4 WT 0: Forwarding 1023 bytes from server to client
 DT: 4 WT 0: Forwarded 1023 HTTP bytes response to client. 
 START: DISPLAY PARSING RESULTS
 REQUEST FIELDS
@@ -205,30 +265,6 @@ END: DISPLAY PARSING RESULTS
 DT: 4 WT 0: HTTP response contains a payload of 8852 bytes.
 DT: 4 WT 0: So far we have obtained 417 bytes. Still need 8435 bytes of payload.
 DT: 4 WT 0: About to receive more bytes from server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 3984
-DT: 3 WT 0: About to receive more bytes from server
-DT: 1 WT 0: Forwarded 572 HTTP bytes response to client. 
-sock_connect_to_host: connecting to 142.250.72.10
-DT: 0 WT 1: Forwarding original HTTP request from client to server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 2961
-DT: 3 WT 0: About to receive more bytes from server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 1938
-DT: 3 WT 0: About to receive more bytes from server
-DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 915
-DT: 3 WT 0: About to receive more bytes from server
-DT: 1 WT 0: Received and sent additional 572 bytes. Still need: 316
-DT: 1 WT 0: About to receive more bytes from server
-DT: 3 WT 0: Forwarded 597 HTTP bytes response to client. 
-DT: 3 WT 0: Received and sent additional 597 bytes. Still need: 318
-DT: 3 WT 0: About to receive more bytes from server
-DT: 2 WT 0: Forwarded 594 HTTP bytes response to client. 
-DT: 2 WT 0: Received and sent additional 594 bytes. Still need: 302
-DT: 2 WT 0: About to receive more bytes from server
-DT: 0 WT 1: Sent HTTP request to server.
 DT: 4 WT 0: Forwarded 1023 HTTP bytes response to client. 
 DT: 4 WT 0: Received and sent additional 1023 bytes. Still need: 7412
 DT: 4 WT 0: About to receive more bytes from server
@@ -253,139 +289,129 @@ DT: 4 WT 0: About to receive more bytes from server
 DT: 4 WT 0: Forwarded 971 HTTP bytes response to client. 
 DT: 4 WT 0: Received and sent additional 971 bytes. Still need: 303
 DT: 4 WT 0: About to receive more bytes from server
-DT: 0 WT 1: GOT 1023 BYTES FROM SERVER
-DT: 0 WT 1: Forwarding 1023 bytes from server to client
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: GOT 1023 BYTES FROM SERVER
+DT: 3 WT 0: Forwarding 1023 bytes from server to client
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
 START: DISPLAY PARSING RESULTS
 REQUEST FIELDS
 	Method: 0
 	URI: 200
 	Version: 0
 HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 27266
+	Keep-Alive: 1
+	Content-Length: 15624
 	Host: 
 	Port: 0
 END: DISPLAY PARSING RESULTS
-DT: 0 WT 1: HTTP response contains a payload of 27266 bytes.
-DT: 0 WT 1: So far we have obtained -799 bytes. Still need 28065 bytes of payload.
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 27042
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 26019
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 24996
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 23973
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 22950
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 21927
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 20904
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 19881
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 18858
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 17835
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 16812
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 15789
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 881 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 881 bytes. Still need: 14908
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 13885
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 12862
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 11839
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 10816
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 9793
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 8770
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 7747
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 6724
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 5701
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 4678
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 3655
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 2632
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 1023 bytes. Still need: 1609
-DT: 0 WT 1: About to receive more bytes from server
-DT: 0 WT 1: Forwarded 698 HTTP bytes response to client. 
-DT: 0 WT 1: Received and sent additional 698 bytes. Still need: 911
-DT: 0 WT 1: About to receive more bytes from server
+DT: 3 WT 0: HTTP response contains a payload of 15624 bytes.
+DT: 3 WT 0: So far we have obtained 387 bytes. Still need 15237 bytes of payload.
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 14214
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 13191
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 12168
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 11145
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 10122
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 9099
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 8076
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 7053
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 6030
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 5007
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 3984
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 2961
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 1938
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 1023 bytes. Still need: 915
+DT: 3 WT 0: About to receive more bytes from server
+DT: 3 WT 0: Forwarded 597 HTTP bytes response to client. 
+DT: 3 WT 0: Received and sent additional 597 bytes. Still need: 318
+DT: 3 WT 0: About to receive more bytes from server
 DP 3: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
 DP 3: Attempting to parse HTTP request.
+DP 4: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
+DP 4: Attempting to parse HTTP request.
 DP 3: Attempting to create worker thread.
-DP 1: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 1: Attempting to parse HTTP request.
-DP 1: Attempting to create worker thread.
+DP 4: Attempting to create worker thread.
+DP 2: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
+DP 2: Attempting to parse HTTP request.
+DP 2: Attempting to create worker thread.
 DP 3: Success creating worker thread
 DP 3: Did not detect keep-alive.
 DP 3: waiting for message from fd=10
+DP 1: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
+DP 1: Attempting to parse HTTP request.
+DP 4: Success creating worker thread
+DP 4: Did not detect keep-alive.
+DP 4: waiting for message from fd=11
+DP 2: Success creating worker thread
+DP 2: Did not detect keep-alive.
+DP 2: waiting for message from fd=8
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+DP 1: Attempting to create worker thread.
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
 DP 1: Success creating worker thread
 DP 1: Did not detect keep-alive.
 DP 1: waiting for message from fd=5
 sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
 host_strlen=22, port_strlen=2, service_strlen=4
-DP 2: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 2: Attempting to parse HTTP request.
-DP 2: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 2: Success creating worker thread
-DP 2: Did not detect keep-alive.
-DP 2: waiting for message from fd=9
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 4: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 4: Attempting to parse HTTP request.
-DP 4: Attempting to create worker thread.
-DP 4: Success creating worker thread
-DP 4: Did not detect keep-alive.
-DP 4: waiting for message from fd=13
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
 sock_connect_to_host: connecting to 198.59.7.17
 DT: 2 WT 1: Forwarding original HTTP request from client to server
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 1 WT 1: Forwarding original HTTP request from client to server
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 3 WT 1: Forwarding original HTTP request from client to server
+DT: 1 WT 1: Sent HTTP request to server.
+DT: 3 WT 1: Sent HTTP request to server.
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 4 WT 1: Forwarding original HTTP request from client to server
+DT: 4 WT 1: Sent HTTP request to server.
 DT: 2 WT 1: Sent HTTP request to server.
+DT: 4 WT 1: GOT 681 BYTES FROM SERVER
+DT: 4 WT 1: Forwarding 681 bytes from server to client
+DT: 4 WT 1: Forwarded 681 HTTP bytes response to client. 
+START: DISPLAY PARSING RESULTS
+REQUEST FIELDS
+	Method: 0
+	URI: 200
+	Version: 0
+HEADER FIELDS
+	Keep-Alive: 1
+	Content-Length: 379
+	Host: 
+	Port: 0
+END: DISPLAY PARSING RESULTS
+DT: 4 WT 1: HTTP response contains a payload of 379 bytes.
+DT: 4 WT 1: So far we have obtained 77 bytes. Still need 302 bytes of payload.
+DT: 4 WT 1: About to receive more bytes from server
 DT: 2 WT 1: GOT 677 BYTES FROM SERVER
 DT: 2 WT 1: Forwarding 677 bytes from server to client
 DT: 2 WT 1: Forwarded 677 HTTP bytes response to client. 
@@ -403,29 +429,6 @@ END: DISPLAY PARSING RESULTS
 DT: 2 WT 1: HTTP response contains a payload of 375 bytes.
 DT: 2 WT 1: So far we have obtained 73 bytes. Still need 302 bytes of payload.
 DT: 2 WT 1: About to receive more bytes from server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 1 WT 1: Forwarding original HTTP request from client to server
-DT: 1 WT 1: Sent HTTP request to server.
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 3 WT 1: Forwarding original HTTP request from client to server
-DT: 3 WT 1: Sent HTTP request to server.
-DT: 1 WT 1: GOT 677 BYTES FROM SERVER
-DT: 1 WT 1: Forwarding 677 bytes from server to client
-DT: 1 WT 1: Forwarded 677 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 375
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 1 WT 1: HTTP response contains a payload of 375 bytes.
-DT: 1 WT 1: So far we have obtained 73 bytes. Still need 302 bytes of payload.
-DT: 1 WT 1: About to receive more bytes from server
 DT: 3 WT 1: GOT 1023 BYTES FROM SERVER
 DT: 3 WT 1: Forwarding 1023 bytes from server to client
 DT: 3 WT 1: Forwarded 1023 HTTP bytes response to client. 
@@ -449,6 +452,8 @@ DT: 3 WT 1: About to receive more bytes from server
 DT: 3 WT 1: Forwarded 1023 HTTP bytes response to client. 
 DT: 3 WT 1: Received and sent additional 1023 bytes. Still need: 16457
 DT: 3 WT 1: About to receive more bytes from server
+DT: 1 WT 1: GOT 677 BYTES FROM SERVER
+DT: 1 WT 1: Forwarding 677 bytes from server to client
 DT: 3 WT 1: Forwarded 1023 HTTP bytes response to client. 
 DT: 3 WT 1: Received and sent additional 1023 bytes. Still need: 15434
 DT: 3 WT 1: About to receive more bytes from server
@@ -458,6 +463,7 @@ DT: 3 WT 1: About to receive more bytes from server
 DT: 3 WT 1: Forwarded 1023 HTTP bytes response to client. 
 DT: 3 WT 1: Received and sent additional 1023 bytes. Still need: 13388
 DT: 3 WT 1: About to receive more bytes from server
+DT: 1 WT 1: Forwarded 677 HTTP bytes response to client. 
 DT: 3 WT 1: Forwarded 1023 HTTP bytes response to client. 
 DT: 3 WT 1: Received and sent additional 1023 bytes. Still need: 12365
 DT: 3 WT 1: About to receive more bytes from server
@@ -470,12 +476,26 @@ DT: 3 WT 1: About to receive more bytes from server
 DT: 3 WT 1: Forwarded 1023 HTTP bytes response to client. 
 DT: 3 WT 1: Received and sent additional 1023 bytes. Still need: 9296
 DT: 3 WT 1: About to receive more bytes from server
+START: DISPLAY PARSING RESULTS
+REQUEST FIELDS
+	Method: 0
+	URI: 200
+	Version: 0
+HEADER FIELDS
+	Keep-Alive: 1
+	Content-Length: 375
 DT: 3 WT 1: Forwarded 1023 HTTP bytes response to client. 
+	Host: 
 DT: 3 WT 1: Received and sent additional 1023 bytes. Still need: 8273
 DT: 3 WT 1: About to receive more bytes from server
 DT: 3 WT 1: Forwarded 1023 HTTP bytes response to client. 
 DT: 3 WT 1: Received and sent additional 1023 bytes. Still need: 7250
 DT: 3 WT 1: About to receive more bytes from server
+	Port: 0
+END: DISPLAY PARSING RESULTS
+DT: 1 WT 1: HTTP response contains a payload of 375 bytes.
+DT: 1 WT 1: So far we have obtained 73 bytes. Still need 302 bytes of payload.
+DT: 1 WT 1: About to receive more bytes from server
 DT: 3 WT 1: Forwarded 1023 HTTP bytes response to client. 
 DT: 3 WT 1: Received and sent additional 1023 bytes. Still need: 6227
 DT: 3 WT 1: About to receive more bytes from server
@@ -497,26 +517,6 @@ DT: 3 WT 1: About to receive more bytes from server
 DT: 3 WT 1: Forwarded 807 HTTP bytes response to client. 
 DT: 3 WT 1: Received and sent additional 807 bytes. Still need: 305
 DT: 3 WT 1: About to receive more bytes from server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 4 WT 1: Forwarding original HTTP request from client to server
-DT: 4 WT 1: Sent HTTP request to server.
-DT: 4 WT 1: GOT 681 BYTES FROM SERVER
-DT: 4 WT 1: Forwarding 681 bytes from server to client
-DT: 4 WT 1: Forwarded 681 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 379
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 4 WT 1: HTTP response contains a payload of 379 bytes.
-DT: 4 WT 1: So far we have obtained 77 bytes. Still need 302 bytes of payload.
-DT: 4 WT 1: About to receive more bytes from server
 DP 3: GOT 435 BYTES FROM CLIENT (HTTP REQUEST)
 DP 3: Attempting to parse HTTP request.
 DP 3: Attempting to create worker thread.
@@ -547,13 +547,13 @@ DT: 3 WT 2: So far we have obtained 74 bytes. Still need 302 bytes of payload.
 DT: 3 WT 2: About to receive more bytes from server
 DT: 0 WT 0: TERMINATING
 DT: 1 WT 0: TERMINATING
-DT: 4 WT 0: TERMINATING
 DT: 2 WT 0: TERMINATING
+DT: 4 WT 0: TERMINATING
 DT: 3 WT 0: TERMINATING
-DT: 1 WT 1: TERMINATING
-DT: 2 WT 1: TERMINATING
-DT: 3 WT 1: TERMINATING
 DT: 4 WT 1: TERMINATING
+DT: 3 WT 1: TERMINATING
+DT: 2 WT 1: TERMINATING
+DT: 1 WT 1: TERMINATING
 DT: 3 WT 2: TERMINATING
 DP 4: Got EOF from client. Shutting down.
 DP 4: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
@@ -563,85 +563,17 @@ DP 1: Got EOF from client. Shutting down.
 DP 1: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
 DP 3: Got EOF from client. Shutting down.
 DP 3: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 0: GOT 537 BYTES FROM CLIENT (HTTP REQUEST)
-DP 0: Attempting to parse HTTP request.
-DP 0: Attempting to create worker thread.
-DP 0: Success creating worker thread
-DP 0: Did not detect keep-alive.
-DP 0: waiting for message from fd=4
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 0 WT 2: Forwarding original HTTP request from client to server
-DT: 0 WT 2: Sent HTTP request to server.
-DT: 0 WT 2: GOT 1023 BYTES FROM SERVER
-DT: 0 WT 2: Forwarding 1023 bytes from server to client
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 206
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 13123
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 0 WT 2: HTTP response contains a payload of 13123 bytes.
-DT: 0 WT 2: So far we have obtained 307 bytes. Still need 12816 bytes of payload.
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 11793
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 10770
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 9747
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 8724
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 7701
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 6678
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 5655
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 4632
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 3609
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 2586
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 1563
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 1023 bytes. Still need: 540
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: Forwarded 182 HTTP bytes response to client. 
-DT: 0 WT 2: Received and sent additional 182 bytes. Still need: 358
-DT: 0 WT 2: About to receive more bytes from server
-DT: 0 WT 2: TERMINATING
 DP 0: Got EOF from client. Shutting down.
 DP 0: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
 SV: got connection
 SV: Waiting for connection
-DP 5: waiting for message from fd=15
-DP 5: GOT 480 BYTES FROM CLIENT (HTTP REQUEST)
+DP 5: waiting for message from fd=12
+DP 5: GOT 523 BYTES FROM CLIENT (HTTP REQUEST)
 DP 5: Attempting to parse HTTP request.
 DP 5: Attempting to create worker thread.
 DP 5: Success creating worker thread
 DP 5: Did not detect keep-alive.
-DP 5: waiting for message from fd=15
+DP 5: waiting for message from fd=12
 sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
 host_strlen=22, port_strlen=2, service_strlen=4
 sock_connect_to_host: connecting to 198.59.7.17
@@ -703,29 +635,32 @@ DT: 5 WT 0: About to receive more bytes from server
 DT: 5 WT 0: Forwarded 1023 HTTP bytes response to client. 
 DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 7819
 DT: 5 WT 0: About to receive more bytes from server
-DT: 5 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 6796
+DT: 5 WT 0: Forwarded 158 HTTP bytes response to client. 
+DT: 5 WT 0: Received and sent additional 158 bytes. Still need: 7661
 DT: 5 WT 0: About to receive more bytes from server
 DT: 5 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 5773
+DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 6638
 DT: 5 WT 0: About to receive more bytes from server
 DT: 5 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 4750
+DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 5615
 DT: 5 WT 0: About to receive more bytes from server
 DT: 5 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 3727
+DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 4592
 DT: 5 WT 0: About to receive more bytes from server
 DT: 5 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 2704
+DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 3569
 DT: 5 WT 0: About to receive more bytes from server
 DT: 5 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 1681
+DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 2546
 DT: 5 WT 0: About to receive more bytes from server
 DT: 5 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 658
+DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 1523
 DT: 5 WT 0: About to receive more bytes from server
-DT: 5 WT 0: Forwarded 353 HTTP bytes response to client. 
-DT: 5 WT 0: Received and sent additional 353 bytes. Still need: 305
+DT: 5 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 5 WT 0: Received and sent additional 1023 bytes. Still need: 500
+DT: 5 WT 0: About to receive more bytes from server
+DT: 5 WT 0: Forwarded 195 HTTP bytes response to client. 
+DT: 5 WT 0: Received and sent additional 195 bytes. Still need: 305
 DT: 5 WT 0: About to receive more bytes from server
 DT: 5 WT 0: TERMINATING
 DP 5: Got EOF from client. Shutting down.
@@ -733,61 +668,214 @@ DP 5: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
 SV: got connection
 SV: Waiting for connection
 DP 6: waiting for message from fd=4
-DP 6: GOT 538 BYTES FROM CLIENT (HTTP REQUEST)
+DP 6: GOT 467 BYTES FROM CLIENT (HTTP REQUEST)
 DP 6: Attempting to parse HTTP request.
 DP 6: Attempting to create worker thread.
 DP 6: Success creating worker thread
 DP 6: Did not detect keep-alive.
 DP 6: waiting for message from fd=4
-sock_connect_to_host: host=web.cs.wpi.edu, port=80, service=http
-host_strlen=14, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 130.215.29.52
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 198.59.7.17
 DT: 6 WT 0: Forwarding original HTTP request from client to server
 DT: 6 WT 0: Sent HTTP request to server.
-DT: 6 WT 0: GOT 341 BYTES FROM SERVER
-DT: 6 WT 0: Forwarding 341 bytes from server to client
-DT: 6 WT 0: Forwarded 341 HTTP bytes response to client. 
+DT: 6 WT 0: GOT 1023 BYTES FROM SERVER
+DT: 6 WT 0: Forwarding 1023 bytes from server to client
+DT: 6 WT 0: Forwarded 1023 HTTP bytes response to client. 
 START: DISPLAY PARSING RESULTS
 REQUEST FIELDS
 	Method: 0
-	URI: 304
+	URI: 200
 	Version: 0
 HEADER FIELDS
 	Keep-Alive: 1
-	Content-Length: 0
+	Content-Length: 3348
 	Host: 
 	Port: 0
 END: DISPLAY PARSING RESULTS
-DT: 6 WT 0: HTTP response contains a payload of 0 bytes.
-DT: 6 WT 0: So far we have obtained 0 bytes. Still need 0 bytes of payload.
-DT: 6 WT 0: TERMINATING
-DP 6: GOT 321 BYTES FROM CLIENT (HTTP REQUEST)
+DT: 6 WT 0: HTTP response contains a payload of 3348 bytes.
+DT: 6 WT 0: So far we have obtained 387 bytes. Still need 2961 bytes of payload.
+DT: 6 WT 0: About to receive more bytes from server
+DT: 6 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 0: Received and sent additional 1023 bytes. Still need: 1938
+DT: 6 WT 0: About to receive more bytes from server
+DT: 6 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 0: Received and sent additional 1023 bytes. Still need: 915
+DT: 6 WT 0: About to receive more bytes from server
+DT: 6 WT 0: Forwarded 597 HTTP bytes response to client. 
+DT: 6 WT 0: Received and sent additional 597 bytes. Still need: 318
+DT: 6 WT 0: About to receive more bytes from server
+DP 6: GOT 383 BYTES FROM CLIENT (HTTP REQUEST)
 DP 6: Attempting to parse HTTP request.
 DP 6: Attempting to create worker thread.
 DP 6: Success creating worker thread
 DP 6: Did not detect keep-alive.
 DP 6: waiting for message from fd=4
-sock_connect_to_host: host=web.cs.wpi.edu, port=80, service=http
-host_strlen=14, port_strlen=2, service_strlen=4
-DP 6: Got EOF from client. Shutting down.
-DP 6: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-sock_connect_to_host: connecting to 130.215.29.52
-DT: 0 WT 0: Forwarding original HTTP request from client to server
-DT: 0 WT 0: Sent HTTP request to server.
+sock_connect_to_host: host=ajax.googleapis.com, port=80, service=http
+host_strlen=19, port_strlen=2, service_strlen=4
+sock_connect_to_host: connecting to 142.250.72.74
+DT: 6 WT 1: Forwarding original HTTP request from client to server
+DT: 6 WT 1: Sent HTTP request to server.
+DT: 6 WT 1: GOT 1023 BYTES FROM SERVER
+DT: 6 WT 1: Forwarding 1023 bytes from server to client
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+START: DISPLAY PARSING RESULTS
+REQUEST FIELDS
+	Method: 0
+	URI: 200
+	Version: 0
+HEADER FIELDS
+	Keep-Alive: 0
+	Content-Length: 27266
+	Host: 
+	Port: 0
+END: DISPLAY PARSING RESULTS
+DT: 6 WT 1: HTTP response contains a payload of 27266 bytes.
+DT: 6 WT 1: So far we have obtained -797 bytes. Still need 28063 bytes of payload.
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 27040
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 26017
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 24994
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 23971
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 22948
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 21925
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 20902
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 19879
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 18856
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 17833
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 16810
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 15787
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 881 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 881 bytes. Still need: 14906
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 13883
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 12860
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 790 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 790 bytes. Still need: 12070
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 11047
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 10024
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 9001
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 7978
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 6955
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 557 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 557 bytes. Still need: 6398
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 5375
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 395 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 395 bytes. Still need: 4980
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 3957
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 2934
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1023 bytes. Still need: 1911
+DT: 6 WT 1: About to receive more bytes from server
+DT: 6 WT 1: Forwarded 1001 HTTP bytes response to client. 
+DT: 6 WT 1: Received and sent additional 1001 bytes. Still need: 910
+DT: 6 WT 1: About to receive more bytes from server
 SV: got connection
 SV: Waiting for connection
-DP 7: waiting for message from fd=10
-DP 7: GOT 467 BYTES FROM CLIENT (HTTP REQUEST)
+DP 7: waiting for message from fd=8
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+SV: got connection
+SV: Waiting for connection
+DP 7: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
 DP 7: Attempting to parse HTTP request.
 DP 7: Attempting to create worker thread.
+DP 9: waiting for message from fd=24
+DP 9: GOT 445 BYTES FROM CLIENT (HTTP REQUEST)
+DP 9: Attempting to parse HTTP request.
 DP 7: Success creating worker thread
 DP 7: Did not detect keep-alive.
-DP 7: waiting for message from fd=10
+DP 7: waiting for message from fd=8
+DP 9: Attempting to create worker thread.
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+DP 10: waiting for message from fd=25
+DP 10: GOT 424 BYTES FROM CLIENT (HTTP REQUEST)
+DP 10: Attempting to parse HTTP request.
+DP 9: Success creating worker thread
+DP 9: Did not detect keep-alive.
+DP 9: waiting for message from fd=24
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+DP 10: Attempting to create worker thread.
+DP 8: waiting for message from fd=12
+DP 8: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
+DP 8: Attempting to parse HTTP request.
+DP 10: Success creating worker thread
+DP 10: Did not detect keep-alive.
+DP 10: waiting for message from fd=25
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+DP 8: Attempting to create worker thread.
+DP 8: Success creating worker thread
+DP 8: Did not detect keep-alive.
+DP 8: waiting for message from fd=12
 sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
 host_strlen=22, port_strlen=2, service_strlen=4
 sock_connect_to_host: connecting to 198.59.7.17
 DT: 7 WT 0: Forwarding original HTTP request from client to server
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 9 WT 0: Forwarding original HTTP request from client to server
 DT: 7 WT 0: Sent HTTP request to server.
+DT: 9 WT 0: Sent HTTP request to server.
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 10 WT 0: Forwarding original HTTP request from client to server
+DT: 10 WT 0: Sent HTTP request to server.
+sock_connect_to_host: connecting to 198.59.7.17
+DT: 8 WT 0: Forwarding original HTTP request from client to server
+DT: 8 WT 0: Sent HTTP request to server.
+DT: 8 WT 0: GOT 1023 BYTES FROM SERVER
+DT: 8 WT 0: Forwarding 1023 bytes from server to client
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
 DT: 7 WT 0: GOT 1023 BYTES FROM SERVER
 DT: 7 WT 0: Forwarding 1023 bytes from server to client
 DT: 7 WT 0: Forwarded 1023 HTTP bytes response to client. 
@@ -798,235 +886,19 @@ REQUEST FIELDS
 	Version: 0
 HEADER FIELDS
 	Keep-Alive: 1
-	Content-Length: 3348
+	Content-Length: 15624
 	Host: 
 	Port: 0
 END: DISPLAY PARSING RESULTS
-DT: 7 WT 0: HTTP response contains a payload of 3348 bytes.
-DT: 7 WT 0: So far we have obtained 387 bytes. Still need 2961 bytes of payload.
-DT: 7 WT 0: About to receive more bytes from server
-DT: 7 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 0: Received and sent additional 1023 bytes. Still need: 1938
-DT: 7 WT 0: About to receive more bytes from server
-DT: 7 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 0: Received and sent additional 1023 bytes. Still need: 915
-DT: 7 WT 0: About to receive more bytes from server
-DT: 7 WT 0: Forwarded 597 HTTP bytes response to client. 
-DT: 7 WT 0: Received and sent additional 597 bytes. Still need: 318
-DT: 7 WT 0: About to receive more bytes from server
-DP 7: GOT 383 BYTES FROM CLIENT (HTTP REQUEST)
-DP 7: Attempting to parse HTTP request.
-DP 7: Attempting to create worker thread.
-sock_connect_to_host: host=ajax.googleapis.com, port=80, service=http
-host_strlen=19, port_strlen=2, service_strlen=4
-DP 7: Success creating worker thread
-DP 7: Did not detect keep-alive.
-DP 7: waiting for message from fd=10
-sock_connect_to_host: connecting to 142.250.72.10
-DT: 7 WT 1: Forwarding original HTTP request from client to server
-DT: 7 WT 1: Sent HTTP request to server.
-DT: 7 WT 1: GOT 1023 BYTES FROM SERVER
-DT: 7 WT 1: Forwarding 1023 bytes from server to client
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 27266
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 7 WT 1: HTTP response contains a payload of 27266 bytes.
-DT: 7 WT 1: So far we have obtained -799 bytes. Still need 28065 bytes of payload.
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 27042
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 26019
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 24996
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 23973
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 22950
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 21927
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 20904
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 19881
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 18858
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 17835
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 16812
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 15789
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 881 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 881 bytes. Still need: 14908
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 13885
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 12862
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 11839
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 10816
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 9793
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 8770
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 7747
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 6724
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 5701
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 4678
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 3655
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 2632
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 486 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 486 bytes. Still need: 2146
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 1023 bytes. Still need: 1123
-DT: 7 WT 1: About to receive more bytes from server
-DT: 7 WT 1: Forwarded 212 HTTP bytes response to client. 
-DT: 7 WT 1: Received and sent additional 212 bytes. Still need: 911
-DT: 7 WT 1: About to receive more bytes from server
-SV: got connection
-SV: Waiting for connection
-DP 8: waiting for message from fd=15
-DP 8: GOT 424 BYTES FROM CLIENT (HTTP REQUEST)
-DP 8: Attempting to parse HTTP request.
-DP 8: Attempting to create worker thread.
-SV: got connection
-DP 9: waiting for message from fd=26
-DP 9: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
-DP 9: Attempting to parse HTTP request.
-DP 9: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-SV: Waiting for connection
-DP 9: Success creating worker thread
-DP 9: Did not detect keep-alive.
-DP 9: waiting for message from fd=26
-SV: got connection
-DP 10: waiting for message from fd=28
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-SV: Waiting for connection
-SV: got connection
-DP 11: waiting for message from fd=30
-DP 8: Success creating worker thread
-DP 8: Did not detect keep-alive.
-DP 8: waiting for message from fd=15
-DP 11: GOT 445 BYTES FROM CLIENT (HTTP REQUEST)
-DP 11: Attempting to parse HTTP request.
-DP 11: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-SV: Waiting for connection
-DP 11: Success creating worker thread
-DP 11: Did not detect keep-alive.
-DP 11: waiting for message from fd=30
-DP 10: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 10: Attempting to parse HTTP request.
-DP 10: Attempting to create worker thread.
-DP 10: Success creating worker thread
-DP 10: Did not detect keep-alive.
-DP 10: waiting for message from fd=28
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 11 WT 0: Forwarding original HTTP request from client to server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 8 WT 0: Forwarding original HTTP request from client to server
-DT: 11 WT 0: Sent HTTP request to server.
-DT: 8 WT 0: Sent HTTP request to server.
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 9 WT 0: Forwarding original HTTP request from client to server
-DT: 9 WT 0: Sent HTTP request to server.
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 10 WT 0: Forwarding original HTTP request from client to server
-DT: 8 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 8 WT 0: Forwarding 1023 bytes from server to client
-DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 2338
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 8 WT 0: HTTP response contains a payload of 2338 bytes.
-DT: 8 WT 0: So far we have obtained 419 bytes. Still need 1919 bytes of payload.
+DT: 8 WT 0: HTTP response contains a payload of 15624 bytes.
+DT: 8 WT 0: So far we have obtained 387 bytes. Still need 15237 bytes of payload.
 DT: 8 WT 0: About to receive more bytes from server
 DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 896
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 14214
 DT: 8 WT 0: About to receive more bytes from server
-DT: 8 WT 0: Forwarded 594 HTTP bytes response to client. 
-DT: 8 WT 0: Received and sent additional 594 bytes. Still need: 302
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 13191
 DT: 8 WT 0: About to receive more bytes from server
-DT: 11 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 11 WT 0: Forwarding 1023 bytes from server to client
-DT: 9 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 9 WT 0: Forwarding 1023 bytes from server to client
-DT: 11 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 8852
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 11 WT 0: HTTP response contains a payload of 8852 bytes.
-DT: 11 WT 0: So far we have obtained 417 bytes. Still need 8435 bytes of payload.
-DT: 11 WT 0: About to receive more bytes from server
-DT: 11 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 11 WT 0: Received and sent additional 1023 bytes. Still need: 7412
-DT: 11 WT 0: About to receive more bytes from server
-DT: 9 WT 0: Forwarded 1023 HTTP bytes response to client. 
 START: DISPLAY PARSING RESULTS
 REQUEST FIELDS
 	Method: 0
@@ -1038,36 +910,42 @@ HEADER FIELDS
 	Host: 
 	Port: 0
 END: DISPLAY PARSING RESULTS
-DT: 9 WT 0: HTTP response contains a payload of 1279 bytes.
-DT: 9 WT 0: So far we have obtained 391 bytes. Still need 888 bytes of payload.
-DT: 9 WT 0: About to receive more bytes from server
-DT: 9 WT 0: Forwarded 572 HTTP bytes response to client. 
-DT: 9 WT 0: Received and sent additional 572 bytes. Still need: 316
-DT: 9 WT 0: About to receive more bytes from server
-DT: 11 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 11 WT 0: Received and sent additional 1023 bytes. Still need: 6389
-DT: 11 WT 0: About to receive more bytes from server
-DT: 11 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 11 WT 0: Received and sent additional 1023 bytes. Still need: 5366
-DT: 11 WT 0: About to receive more bytes from server
-DT: 11 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 11 WT 0: Received and sent additional 1023 bytes. Still need: 4343
-DT: 11 WT 0: About to receive more bytes from server
-DT: 11 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 11 WT 0: Received and sent additional 1023 bytes. Still need: 3320
-DT: 11 WT 0: About to receive more bytes from server
-DT: 11 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 11 WT 0: Received and sent additional 1023 bytes. Still need: 2297
-DT: 11 WT 0: About to receive more bytes from server
-DT: 11 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 11 WT 0: Received and sent additional 1023 bytes. Still need: 1274
-DT: 11 WT 0: About to receive more bytes from server
-DT: 11 WT 0: Forwarded 971 HTTP bytes response to client. 
-DT: 11 WT 0: Received and sent additional 971 bytes. Still need: 303
-DT: 11 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Sent HTTP request to server.
+DT: 7 WT 0: HTTP response contains a payload of 1279 bytes.
+DT: 7 WT 0: So far we have obtained 391 bytes. Still need 888 bytes of payload.
+DT: 7 WT 0: About to receive more bytes from server
+DT: 7 WT 0: Forwarded 425 HTTP bytes response to client. 
+DT: 7 WT 0: Received and sent additional 425 bytes. Still need: 463
+DT: 7 WT 0: About to receive more bytes from server
+DT: 9 WT 0: GOT 1023 BYTES FROM SERVER
+DT: 9 WT 0: Forwarding 1023 bytes from server to client
+DT: 9 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 12168
+DT: 8 WT 0: About to receive more bytes from server
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 11145
+DT: 8 WT 0: About to receive more bytes from server
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 10122
+DT: 8 WT 0: About to receive more bytes from server
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 9099
+DT: 8 WT 0: About to receive more bytes from server
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 8076
+DT: 8 WT 0: About to receive more bytes from server
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 7053
+DT: 8 WT 0: About to receive more bytes from server
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+START: DISPLAY PARSING RESULTS
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 6030
+DT: 8 WT 0: About to receive more bytes from server
+DT: 7 WT 0: Forwarded 147 HTTP bytes response to client. 
 DT: 10 WT 0: GOT 1023 BYTES FROM SERVER
 DT: 10 WT 0: Forwarding 1023 bytes from server to client
+DT: 7 WT 0: Received and sent additional 147 bytes. Still need: 316
+DT: 7 WT 0: About to receive more bytes from server
 DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
 START: DISPLAY PARSING RESULTS
 REQUEST FIELDS
@@ -1076,121 +954,99 @@ REQUEST FIELDS
 	Version: 0
 HEADER FIELDS
 	Keep-Alive: 1
-	Content-Length: 15624
+	Content-Length: 2338
 	Host: 
 	Port: 0
 END: DISPLAY PARSING RESULTS
-DT: 10 WT 0: HTTP response contains a payload of 15624 bytes.
-DT: 10 WT 0: So far we have obtained 387 bytes. Still need 15237 bytes of payload.
+DT: 10 WT 0: HTTP response contains a payload of 2338 bytes.
+REQUEST FIELDS
+DT: 10 WT 0: So far we have obtained 419 bytes. Still need 1919 bytes of payload.
 DT: 10 WT 0: About to receive more bytes from server
 DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 14214
+DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 896
 DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 13191
+	Method: 0
+	URI: 200
+	Version: 0
+HEADER FIELDS
+	Keep-Alive: 1
+	Content-Length: 8852
+	Host: 
+	Port: 0
+END: DISPLAY PARSING RESULTS
+DT: 9 WT 0: HTTP response contains a payload of 8852 bytes.
+DT: 9 WT 0: So far we have obtained 417 bytes. Still need 8435 bytes of payload.
+DT: 9 WT 0: About to receive more bytes from server
+DT: 9 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 10 WT 0: Forwarded 594 HTTP bytes response to client. 
+DT: 10 WT 0: Received and sent additional 594 bytes. Still need: 302
 DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 12168
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 11145
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 10122
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 9099
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 8076
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 7053
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 6030
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 5007
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 3984
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 2961
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 1938
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 1023 bytes. Still need: 915
-DT: 10 WT 0: About to receive more bytes from server
-DT: 10 WT 0: Forwarded 597 HTTP bytes response to client. 
-DT: 10 WT 0: Received and sent additional 597 bytes. Still need: 318
-DT: 10 WT 0: About to receive more bytes from server
-DP 10: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
-DP 10: Attempting to parse HTTP request.
-DP 10: Attempting to create worker thread.
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 5007
+DT: 8 WT 0: About to receive more bytes from server
+DT: 9 WT 0: Received and sent additional 1023 bytes. Still need: 7412
+DT: 9 WT 0: About to receive more bytes from server
+DT: 9 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 9 WT 0: Received and sent additional 1023 bytes. Still need: 6389
+DT: 9 WT 0: About to receive more bytes from server
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 3984
+DT: 8 WT 0: About to receive more bytes from server
+DT: 9 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 9 WT 0: Received and sent additional 1023 bytes. Still need: 5366
+DT: 9 WT 0: About to receive more bytes from server
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 2961
+DT: 8 WT 0: About to receive more bytes from server
+DT: 9 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 9 WT 0: Received and sent additional 1023 bytes. Still need: 4343
+DT: 9 WT 0: About to receive more bytes from server
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 1938
+DT: 8 WT 0: About to receive more bytes from server
+DT: 9 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 9 WT 0: Received and sent additional 1023 bytes. Still need: 3320
+DT: 9 WT 0: About to receive more bytes from server
+DT: 8 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 1023 bytes. Still need: 915
+DT: 8 WT 0: About to receive more bytes from server
+DT: 9 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 9 WT 0: Received and sent additional 1023 bytes. Still need: 2297
+DT: 9 WT 0: About to receive more bytes from server
+DT: 8 WT 0: Forwarded 597 HTTP bytes response to client. 
+DT: 8 WT 0: Received and sent additional 597 bytes. Still need: 318
+DT: 8 WT 0: About to receive more bytes from server
+DT: 9 WT 0: Forwarded 1023 HTTP bytes response to client. 
+DT: 9 WT 0: Received and sent additional 1023 bytes. Still need: 1274
+DT: 9 WT 0: About to receive more bytes from server
+DT: 9 WT 0: Forwarded 971 HTTP bytes response to client. 
+DT: 9 WT 0: Received and sent additional 971 bytes. Still need: 303
+DT: 9 WT 0: About to receive more bytes from server
+DP 8: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
+DP 8: Attempting to parse HTTP request.
 DP 9: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
 DP 9: Attempting to parse HTTP request.
-DP 9: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 10: Success creating worker thread
-DP 10: Did not detect keep-alive.
-DP 10: waiting for message from fd=28
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 8: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 8: Attempting to parse HTTP request.
 DP 8: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 9: Success creating worker thread
-DP 9: Did not detect keep-alive.
-DP 9: waiting for message from fd=26
-DP 11: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 11: Attempting to parse HTTP request.
-DP 11: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 11: Success creating worker thread
-DP 11: Did not detect keep-alive.
-DP 11: waiting for message from fd=30
+DP 9: Attempting to create worker thread.
 DP 8: Success creating worker thread
 DP 8: Did not detect keep-alive.
-DP 8: waiting for message from fd=15
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 10 WT 1: Forwarding original HTTP request from client to server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 11 WT 1: Forwarding original HTTP request from client to server
-DT: 10 WT 1: Sent HTTP request to server.
+DP 8: waiting for message from fd=12
+DP 9: Success creating worker thread
+DP 9: Did not detect keep-alive.
+DP 9: waiting for message from fd=24
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
 sock_connect_to_host: connecting to 198.59.7.17
 DT: 9 WT 1: Forwarding original HTTP request from client to server
 DT: 9 WT 1: Sent HTTP request to server.
-DT: 11 WT 1: Sent HTTP request to server.
 sock_connect_to_host: connecting to 198.59.7.17
 DT: 8 WT 1: Forwarding original HTTP request from client to server
-DT: 10 WT 1: GOT 1023 BYTES FROM SERVER
-DT: 10 WT 1: Forwarding 1023 bytes from server to client
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 18916
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 10 WT 1: HTTP response contains a payload of 18916 bytes.
-DT: 10 WT 1: So far we have obtained 413 bytes. Still need 18503 bytes of payload.
-DT: 10 WT 1: About to receive more bytes from server
-DT: 11 WT 1: GOT 681 BYTES FROM SERVER
-DT: 11 WT 1: Forwarding 681 bytes from server to client
-DT: 11 WT 1: Forwarded 681 HTTP bytes response to client. 
+DT: 8 WT 1: Sent HTTP request to server.
+DT: 9 WT 1: GOT 681 BYTES FROM SERVER
+DT: 9 WT 1: Forwarding 681 bytes from server to client
+DT: 9 WT 1: Forwarded 681 HTTP bytes response to client. 
 START: DISPLAY PARSING RESULTS
 REQUEST FIELDS
 	Method: 0
@@ -1202,952 +1058,105 @@ HEADER FIELDS
 	Host: 
 	Port: 0
 END: DISPLAY PARSING RESULTS
-DT: 11 WT 1: HTTP response contains a payload of 379 bytes.
-DT: 11 WT 1: So far we have obtained 77 bytes. Still need 302 bytes of payload.
-DT: 11 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 17480
-DT: 10 WT 1: About to receive more bytes from server
-DT: 9 WT 1: GOT 677 BYTES FROM SERVER
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 16457
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 15434
-DT: 10 WT 1: About to receive more bytes from server
-DT: 8 WT 1: Sent HTTP request to server.
-DT: 8 WT 1: GOT 677 BYTES FROM SERVER
-DT: 8 WT 1: Forwarding 677 bytes from server to client
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 14411
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 13388
-DT: 10 WT 1: About to receive more bytes from server
-DT: 8 WT 1: Forwarded 677 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 375
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 8 WT 1: HTTP response contains a payload of 375 bytes.
-DT: 8 WT 1: So far we have obtained 73 bytes. Still need 302 bytes of payload.
-DT: 8 WT 1: About to receive more bytes from server
-DT: 9 WT 1: Forwarding 677 bytes from server to client
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 12365
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 11342
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 10319
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 9296
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 8273
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 7250
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 6227
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 5204
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 4181
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 3158
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 2135
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 1023 bytes. Still need: 1112
-DT: 10 WT 1: About to receive more bytes from server
-DT: 10 WT 1: Forwarded 807 HTTP bytes response to client. 
-DT: 10 WT 1: Received and sent additional 807 bytes. Still need: 305
-DT: 10 WT 1: About to receive more bytes from server
-DT: 9 WT 1: Forwarded 677 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 375
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 9 WT 1: HTTP response contains a payload of 375 bytes.
-DT: 9 WT 1: So far we have obtained 73 bytes. Still need 302 bytes of payload.
+DT: 9 WT 1: HTTP response contains a payload of 379 bytes.
+DT: 9 WT 1: So far we have obtained 77 bytes. Still need 302 bytes of payload.
 DT: 9 WT 1: About to receive more bytes from server
-DP 10: GOT 435 BYTES FROM CLIENT (HTTP REQUEST)
+DT: 8 WT 1: GOT 1023 BYTES FROM SERVER
+DT: 8 WT 1: Forwarding 1023 bytes from server to client
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+START: DISPLAY PARSING RESULTS
+REQUEST FIELDS
+	Method: 0
+	URI: 200
+	Version: 0
+HEADER FIELDS
+	Keep-Alive: 1
+	Content-Length: 18916
+	Host: 
+	Port: 0
+END: DISPLAY PARSING RESULTS
+DT: 8 WT 1: HTTP response contains a payload of 18916 bytes.
+DT: 8 WT 1: So far we have obtained 413 bytes. Still need 18503 bytes of payload.
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 17480
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 16457
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 15434
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 14411
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 13388
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 12365
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 11342
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 10319
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 9296
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 8273
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 7250
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 6227
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 5204
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 4181
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 3158
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 2135
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 1023 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 1023 bytes. Still need: 1112
+DT: 8 WT 1: About to receive more bytes from server
+DT: 8 WT 1: Forwarded 807 HTTP bytes response to client. 
+DT: 8 WT 1: Received and sent additional 807 bytes. Still need: 305
+DT: 8 WT 1: About to receive more bytes from server
+DP 10: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
 DP 10: Attempting to parse HTTP request.
 DP 10: Attempting to create worker thread.
-DP 10: Success creating worker thread
-DP 10: Did not detect keep-alive.
-DP 10: waiting for message from fd=28
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 10 WT 2: Forwarding original HTTP request from client to server
-DT: 10 WT 2: Sent HTTP request to server.
-DT: 10 WT 2: GOT 678 BYTES FROM SERVER
-DT: 10 WT 2: Forwarding 678 bytes from server to client
-DT: 10 WT 2: Forwarded 678 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 376
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 10 WT 2: HTTP response contains a payload of 376 bytes.
-DT: 10 WT 2: So far we have obtained 74 bytes. Still need 302 bytes of payload.
-DT: 10 WT 2: About to receive more bytes from server
-DT: 7 WT 0: TERMINATING
-DT: 8 WT 0: TERMINATING
-DT: 11 WT 0: TERMINATING
-DT: 10 WT 0: TERMINATING
-DT: 9 WT 0: TERMINATING
-DT: 10 WT 1: TERMINATING
-DT: 9 WT 1: TERMINATING
-DT: 8 WT 1: TERMINATING
-DT: 11 WT 1: TERMINATING
-DT: 10 WT 2: TERMINATING
-DP 9: Got EOF from client. Shutting down.
-DP 9: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 8: Got EOF from client. Shutting down.
-DP 8: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 10: Got EOF from client. Shutting down.
-DP 10: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 11: Got EOF from client. Shutting down.
-DP 11: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 7: GOT 473 BYTES FROM CLIENT (HTTP REQUEST)
+DP 7: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
 DP 7: Attempting to parse HTTP request.
 DP 7: Attempting to create worker thread.
+DP 10: Success creating worker thread
+DP 10: Did not detect keep-alive.
+DP 10: waiting for message from fd=25
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
 DP 7: Success creating worker thread
+host_strlen=22, port_strlen=2, service_strlen=4
+sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
+host_strlen=22, port_strlen=2, service_strlen=4
 DP 7: Did not detect keep-alive.
-DP 7: waiting for message from fd=10
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
+DP 7: waiting for message from fd=8
 sock_connect_to_host: connecting to 198.59.7.17
-DT: 7 WT 2: Forwarding original HTTP request from client to server
-DT: 7 WT 2: Sent HTTP request to server.
-DT: 7 WT 2: GOT 1023 BYTES FROM SERVER
-DT: 7 WT 2: Forwarding 1023 bytes from server to client
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 15287
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 7 WT 2: HTTP response contains a payload of 15287 bytes.
-DT: 7 WT 2: So far we have obtained 413 bytes. Still need 14874 bytes of payload.
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 13851
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 12828
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 11805
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 10782
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 9759
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 8736
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 7713
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 6690
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 5667
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 4644
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 3621
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 2598
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 1575
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 1023 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 1023 bytes. Still need: 552
-DT: 7 WT 2: About to receive more bytes from server
-DT: 7 WT 2: Forwarded 247 HTTP bytes response to client. 
-DT: 7 WT 2: Received and sent additional 247 bytes. Still need: 305
-DT: 7 WT 2: About to receive more bytes from server
-SV: got connection
-SV: Waiting for connection
-DP 12: waiting for message from fd=32
-DP 12: GOT 475 BYTES FROM CLIENT (HTTP REQUEST)
-DP 12: Attempting to parse HTTP request.
-DP 12: Attempting to create worker thread.
-DP 12: Success creating worker thread
-DP 12: Did not detect keep-alive.
-DP 12: waiting for message from fd=32
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
+DT: 7 WT 1: Forwarding original HTTP request from client to server
+DT: 7 WT 1: Sent HTTP request to server.
 sock_connect_to_host: connecting to 198.59.7.17
-DT: 12 WT 0: Forwarding original HTTP request from client to server
-DT: 12 WT 0: Sent HTTP request to server.
-DT: 12 WT 0: GOT 504 BYTES FROM SERVER
-DT: 12 WT 0: Forwarding 504 bytes from server to client
-DT: 12 WT 0: Forwarded 504 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 203
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 12 WT 0: HTTP response contains a payload of 203 bytes.
-DT: 12 WT 0: So far we have obtained -98 bytes. Still need 301 bytes of payload.
-DT: 12 WT 0: About to receive more bytes from server
-SV: got connection
-SV: Waiting for connection
-DP 13: waiting for message from fd=26
-DP 13: GOT 475 BYTES FROM CLIENT (HTTP REQUEST)
-DP 13: Attempting to parse HTTP request.
-DP 13: Attempting to create worker thread.
-DP 13: Success creating worker thread
-DP 13: Did not detect keep-alive.
-DP 13: waiting for message from fd=26
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 13 WT 0: Forwarding original HTTP request from client to server
-DT: 13 WT 0: Sent HTTP request to server.
-DT: 13 WT 0: GOT 477 BYTES FROM SERVER
-DT: 13 WT 0: Forwarding 477 bytes from server to client
-DT: 13 WT 0: Forwarded 477 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 176
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 13 WT 0: HTTP response contains a payload of 176 bytes.
-DT: 13 WT 0: So far we have obtained -125 bytes. Still need 301 bytes of payload.
-DT: 13 WT 0: About to receive more bytes from server
-SV: got connection
-SV: Waiting for connection
-DP 14: waiting for message from fd=30
-DP 14: GOT 447 BYTES FROM CLIENT (HTTP REQUEST)
-DP 14: Attempting to parse HTTP request.
-DP 14: Attempting to create worker thread.
-DP 14: Success creating worker thread
-DP 14: Did not detect keep-alive.
-DP 14: waiting for message from fd=30
-sock_connect_to_host: host=ocsp.pki.goog, port=80, service=http
-host_strlen=13, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 142.250.72.35
-DT: 14 WT 0: Forwarding original HTTP request from client to server
-DT: 14 WT 0: Sent HTTP request to server.
-DT: 14 WT 0: GOT 702 BYTES FROM SERVER
-DT: 14 WT 0: Forwarding 702 bytes from server to client
-DT: 14 WT 0: Forwarded 702 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 472
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 14 WT 0: HTTP response contains a payload of 472 bytes.
-DT: 14 WT 0: So far we have obtained 242 bytes. Still need 230 bytes of payload.
-DT: 14 WT 0: About to receive more bytes from server
-DP 14: GOT 446 BYTES FROM CLIENT (HTTP REQUEST)
-DP 14: Attempting to parse HTTP request.
-DP 14: Attempting to create worker thread.
-DP 14: Success creating worker thread
-DP 14: Did not detect keep-alive.
-DP 14: waiting for message from fd=30
-sock_connect_to_host: host=ocsp.pki.goog, port=80, service=http
-host_strlen=13, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 142.250.72.35
-DT: 14 WT 1: Forwarding original HTTP request from client to server
-DT: 14 WT 1: Sent HTTP request to server.
-SV: got connection
-SV: Waiting for connection
-DP 15: waiting for message from fd=40
-DP 15: GOT 447 BYTES FROM CLIENT (HTTP REQUEST)
-DP 15: Attempting to parse HTTP request.
-DP 15: Attempting to create worker thread.
-DT: 14 WT 1: GOT 701 BYTES FROM SERVER
-DT: 14 WT 1: Forwarding 701 bytes from server to client
-SV: got connection
-DP 15: Success creating worker thread
-DP 15: Did not detect keep-alive.
-DP 15: waiting for message from fd=40
-DP 16: waiting for message from fd=43
-sock_connect_to_host: host=ocsp.pki.goog, port=80, service=http
-host_strlen=13, port_strlen=2, service_strlen=4
-DP 16: GOT 447 BYTES FROM CLIENT (HTTP REQUEST)
-DP 16: Attempting to parse HTTP request.
-DP 16: Attempting to create worker thread.
-DT: 14 WT 1: Forwarded 701 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 471
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 14 WT 1: HTTP response contains a payload of 471 bytes.
-DT: 14 WT 1: So far we have obtained 241 bytes. Still need 230 bytes of payload.
-DT: 14 WT 1: About to receive more bytes from server
-SV: Waiting for connection
-DP 16: Success creating worker thread
-DP 16: Did not detect keep-alive.
-DP 16: waiting for message from fd=43
-sock_connect_to_host: host=ocsp.pki.goog, port=80, service=http
-host_strlen=13, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 142.250.72.35
-DT: 16 WT 0: Forwarding original HTTP request from client to server
-DT: 16 WT 0: Sent HTTP request to server.
-sock_connect_to_host: connecting to 142.250.72.35
-DT: 15 WT 0: Forwarding original HTTP request from client to server
-DT: 15 WT 0: Sent HTTP request to server.
-DP 14: GOT 447 BYTES FROM CLIENT (HTTP REQUEST)
-DP 14: Attempting to parse HTTP request.
-DP 14: Attempting to create worker thread.
-SV: got connection
-DP 17: waiting for message from fd=45
-DP 14: Success creating worker thread
-DP 14: Did not detect keep-alive.
-DP 14: waiting for message from fd=30
-sock_connect_to_host: host=ocsp.pki.goog, port=80, service=http
-host_strlen=13, port_strlen=2, service_strlen=4
-SV: Waiting for connection
-DP 17: GOT 447 BYTES FROM CLIENT (HTTP REQUEST)
-DP 17: Attempting to parse HTTP request.
-DP 17: Attempting to create worker thread.
-sock_connect_to_host: host=ocsp.pki.goog, port=80, service=http
-host_strlen=13, port_strlen=2, service_strlen=4
-DP 17: Success creating worker thread
-DP 17: Did not detect keep-alive.
-DP 17: waiting for message from fd=45
-sock_connect_to_host: connecting to 142.250.72.35
-DT: 14 WT 2: Forwarding original HTTP request from client to server
-DT: 14 WT 2: Sent HTTP request to server.
-sock_connect_to_host: connecting to 142.250.72.35
-DT: 17 WT 0: Forwarding original HTTP request from client to server
-DT: 17 WT 0: Sent HTTP request to server.
-DT: 16 WT 0: GOT 702 BYTES FROM SERVER
-DT: 16 WT 0: Forwarding 702 bytes from server to client
-DT: 16 WT 0: Forwarded 702 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 472
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 16 WT 0: HTTP response contains a payload of 472 bytes.
-DT: 16 WT 0: So far we have obtained 242 bytes. Still need 230 bytes of payload.
-DT: 16 WT 0: About to receive more bytes from server
-DT: 15 WT 0: GOT 702 BYTES FROM SERVER
-DT: 15 WT 0: Forwarding 702 bytes from server to client
-DT: 15 WT 0: Forwarded 702 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 472
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 15 WT 0: HTTP response contains a payload of 472 bytes.
-DT: 15 WT 0: So far we have obtained 242 bytes. Still need 230 bytes of payload.
-DT: 15 WT 0: About to receive more bytes from server
-DT: 14 WT 2: GOT 702 BYTES FROM SERVER
-DT: 14 WT 2: Forwarding 702 bytes from server to client
-DT: 14 WT 2: Forwarded 702 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 472
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 14 WT 2: HTTP response contains a payload of 472 bytes.
-DT: 14 WT 2: So far we have obtained 242 bytes. Still need 230 bytes of payload.
-DT: 14 WT 2: About to receive more bytes from server
-DT: 17 WT 0: GOT 702 BYTES FROM SERVER
-DT: 17 WT 0: Forwarding 702 bytes from server to client
-DT: 17 WT 0: Forwarded 702 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 472
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 17 WT 0: HTTP response contains a payload of 472 bytes.
-DT: 17 WT 0: So far we have obtained 242 bytes. Still need 230 bytes of payload.
-DT: 17 WT 0: About to receive more bytes from server
-DP 16: GOT 447 BYTES FROM CLIENT (HTTP REQUEST)
-DP 16: Attempting to parse HTTP request.
-DP 16: Attempting to create worker thread.
-DP 16: Success creating worker thread
-DP 16: Did not detect keep-alive.
-DP 16: waiting for message from fd=43
-sock_connect_to_host: host=ocsp.pki.goog, port=80, service=http
-host_strlen=13, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 142.250.72.35
-DT: 16 WT 1: Forwarding original HTTP request from client to server
-DT: 16 WT 1: Sent HTTP request to server.
-DT: 16 WT 1: GOT 702 BYTES FROM SERVER
-DT: 16 WT 1: Forwarding 702 bytes from server to client
-DT: 16 WT 1: Forwarded 702 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 472
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 16 WT 1: HTTP response contains a payload of 472 bytes.
-DT: 16 WT 1: So far we have obtained 242 bytes. Still need 230 bytes of payload.
-DT: 16 WT 1: About to receive more bytes from server
-DP 15: GOT 446 BYTES FROM CLIENT (HTTP REQUEST)
-DP 15: Attempting to parse HTTP request.
-DP 15: Attempting to create worker thread.
-DP 15: Success creating worker thread
-DP 15: Did not detect keep-alive.
-DP 15: waiting for message from fd=40
-sock_connect_to_host: host=ocsp.pki.goog, port=80, service=http
-host_strlen=13, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 142.250.72.35
-DT: 15 WT 1: Forwarding original HTTP request from client to server
-DT: 15 WT 1: Sent HTTP request to server.
-DT: 15 WT 1: GOT 701 BYTES FROM SERVER
-DT: 15 WT 1: Forwarding 701 bytes from server to client
-DT: 15 WT 1: Forwarded 701 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 471
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 15 WT 1: HTTP response contains a payload of 471 bytes.
-DT: 15 WT 1: So far we have obtained 241 bytes. Still need 230 bytes of payload.
-DT: 15 WT 1: About to receive more bytes from server
-DT: 7 WT 2: TERMINATING
-DT: 12 WT 0: TERMINATING
-DT: 13 WT 0: TERMINATING
-DP 13: Got EOF from client. Shutting down.
-DP 13: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 7: Got EOF from client. Shutting down.
-DP 7: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 12: Got EOF from client. Shutting down.
-DP 12: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-SV: got connection
-SV: Waiting for connection
-DP 18: waiting for message from fd=48
-DP 16: Got EOF from client. Shutting down.
-DP 16: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 17: Got EOF from client. Shutting down.
-DP 17: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 18: Got EOF from client. Shutting down.
-DP 18: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 14: Got EOF from client. Shutting down.
-DP 14: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 15: Got EOF from client. Shutting down.
-DP 15: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-SV: got connection
-SV: Waiting for connection
-DP 19: waiting for message from fd=10
-DP 19: GOT 467 BYTES FROM CLIENT (HTTP REQUEST)
-DP 19: Attempting to parse HTTP request.
-DP 19: Attempting to create worker thread.
-DP 19: Success creating worker thread
-DP 19: Did not detect keep-alive.
-DP 19: waiting for message from fd=10
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 19 WT 0: Forwarding original HTTP request from client to server
-DT: 19 WT 0: Sent HTTP request to server.
-DT: 19 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 19 WT 0: Forwarding 1023 bytes from server to client
-DT: 19 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 3348
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 19 WT 0: HTTP response contains a payload of 3348 bytes.
-DT: 19 WT 0: So far we have obtained 387 bytes. Still need 2961 bytes of payload.
-DT: 19 WT 0: About to receive more bytes from server
-DT: 19 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 0: Received and sent additional 1023 bytes. Still need: 1938
-DT: 19 WT 0: About to receive more bytes from server
-DT: 19 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 0: Received and sent additional 1023 bytes. Still need: 915
-DT: 19 WT 0: About to receive more bytes from server
-DT: 19 WT 0: Forwarded 597 HTTP bytes response to client. 
-DT: 19 WT 0: Received and sent additional 597 bytes. Still need: 318
-DT: 19 WT 0: About to receive more bytes from server
-DP 19: GOT 383 BYTES FROM CLIENT (HTTP REQUEST)
-DP 19: Attempting to parse HTTP request.
-DP 19: Attempting to create worker thread.
-DP 19: Success creating worker thread
-DP 19: Did not detect keep-alive.
-DP 19: waiting for message from fd=10
-sock_connect_to_host: host=ajax.googleapis.com, port=80, service=http
-host_strlen=19, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 142.250.72.10
-DT: 19 WT 1: Forwarding original HTTP request from client to server
-DT: 19 WT 1: Sent HTTP request to server.
-DT: 19 WT 1: GOT 1023 BYTES FROM SERVER
-DT: 19 WT 1: Forwarding 1023 bytes from server to client
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 27266
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 19 WT 1: HTTP response contains a payload of 27266 bytes.
-DT: 19 WT 1: So far we have obtained -799 bytes. Still need 28065 bytes of payload.
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 27042
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 26019
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 24996
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 23973
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 22950
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 21927
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 20904
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 19881
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 18858
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 17835
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 16812
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 15789
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 881 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 881 bytes. Still need: 14908
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 13885
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 12862
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 11839
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 10816
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 9793
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 8770
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 7747
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 6724
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 5701
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 4678
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 3655
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 2632
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 1023 bytes. Still need: 1609
-DT: 19 WT 1: About to receive more bytes from server
-DT: 19 WT 1: Forwarded 698 HTTP bytes response to client. 
-DT: 19 WT 1: Received and sent additional 698 bytes. Still need: 911
-DT: 19 WT 1: About to receive more bytes from server
-SV: got connection
-SV: Waiting for connection
-DP 20: waiting for message from fd=26
-SV: got connection
-DP 20: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
-DP 20: Attempting to parse HTTP request.
-DP 20: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-SV: Waiting for connection
-SV: got connection
-DP 22: waiting for message from fd=43
-SV: Waiting for connection
-DP 21: waiting for message from fd=40
-SV: got connection
-DP 23: waiting for message from fd=48
-SV: Waiting for connection
-DP 22: GOT 445 BYTES FROM CLIENT (HTTP REQUEST)
-DP 22: Attempting to parse HTTP request.
-DP 22: Attempting to create worker thread.
-DP 20: Success creating worker thread
-DP 20: Did not detect keep-alive.
-DP 20: waiting for message from fd=26
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 21: GOT 424 BYTES FROM CLIENT (HTTP REQUEST)
-DP 21: Attempting to parse HTTP request.
-DP 21: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 22: Success creating worker thread
-DP 22: Did not detect keep-alive.
-DP 22: waiting for message from fd=43
-DP 23: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 23: Attempting to parse HTTP request.
-DP 23: Attempting to create worker thread.
-DP 21: Success creating worker thread
-DP 21: Did not detect keep-alive.
-DP 21: waiting for message from fd=40
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 23: Success creating worker thread
-DP 23: Did not detect keep-alive.
-DP 23: waiting for message from fd=48
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 20 WT 0: Forwarding original HTTP request from client to server
-DT: 20 WT 0: Sent HTTP request to server.
-DT: 20 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 20 WT 0: Forwarding 1023 bytes from server to client
-DT: 20 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 1279
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 20 WT 0: HTTP response contains a payload of 1279 bytes.
-DT: 20 WT 0: So far we have obtained 391 bytes. Still need 888 bytes of payload.
-DT: 20 WT 0: About to receive more bytes from server
-DT: 20 WT 0: Forwarded 572 HTTP bytes response to client. 
-DT: 20 WT 0: Received and sent additional 572 bytes. Still need: 316
-DT: 20 WT 0: About to receive more bytes from server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 21 WT 0: Forwarding original HTTP request from client to server
-DT: 21 WT 0: Sent HTTP request to server.
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 22 WT 0: Forwarding original HTTP request from client to server
-DT: 22 WT 0: Sent HTTP request to server.
-DT: 22 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 22 WT 0: Forwarding 1023 bytes from server to client
-DT: 22 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 8852
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 22 WT 0: HTTP response contains a payload of 8852 bytes.
-DT: 22 WT 0: So far we have obtained 417 bytes. Still need 8435 bytes of payload.
-DT: 22 WT 0: About to receive more bytes from server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 23 WT 0: Forwarding original HTTP request from client to server
-DT: 22 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 22 WT 0: Received and sent additional 1023 bytes. Still need: 7412
-DT: 22 WT 0: About to receive more bytes from server
-DT: 21 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 21 WT 0: Forwarding 1023 bytes from server to client
-DT: 23 WT 0: Sent HTTP request to server.
-DT: 21 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 2338
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 21 WT 0: HTTP response contains a payload of 2338 bytes.
-DT: 21 WT 0: So far we have obtained 419 bytes. Still need 1919 bytes of payload.
-DT: 21 WT 0: About to receive more bytes from server
-DT: 22 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 22 WT 0: Received and sent additional 1023 bytes. Still need: 6389
-DT: 22 WT 0: About to receive more bytes from server
-DT: 21 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 21 WT 0: Received and sent additional 1023 bytes. Still need: 896
-DT: 21 WT 0: About to receive more bytes from server
-DT: 22 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 22 WT 0: Received and sent additional 1023 bytes. Still need: 5366
-DT: 22 WT 0: About to receive more bytes from server
-DT: 21 WT 0: Forwarded 594 HTTP bytes response to client. 
-DT: 21 WT 0: Received and sent additional 594 bytes. Still need: 302
-DT: 21 WT 0: About to receive more bytes from server
-DT: 23 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 23 WT 0: Forwarding 1023 bytes from server to client
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 15624
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 23 WT 0: HTTP response contains a payload of 15624 bytes.
-DT: 23 WT 0: So far we have obtained 387 bytes. Still need 15237 bytes of payload.
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 14214
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 13191
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 12168
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 11145
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 10122
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 9099
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 8076
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 7053
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 6030
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 5007
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 3984
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 2961
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 1938
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 1023 bytes. Still need: 915
-DT: 23 WT 0: About to receive more bytes from server
-DT: 23 WT 0: Forwarded 597 HTTP bytes response to client. 
-DT: 23 WT 0: Received and sent additional 597 bytes. Still need: 318
-DT: 23 WT 0: About to receive more bytes from server
-DT: 22 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 22 WT 0: Received and sent additional 1023 bytes. Still need: 4343
-DT: 22 WT 0: About to receive more bytes from server
-DT: 22 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 22 WT 0: Received and sent additional 1023 bytes. Still need: 3320
-DT: 22 WT 0: About to receive more bytes from server
-DT: 22 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 22 WT 0: Received and sent additional 1023 bytes. Still need: 2297
-DT: 22 WT 0: About to receive more bytes from server
-DT: 22 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 22 WT 0: Received and sent additional 1023 bytes. Still need: 1274
-DT: 22 WT 0: About to receive more bytes from server
-DT: 22 WT 0: Forwarded 971 HTTP bytes response to client. 
-DT: 22 WT 0: Received and sent additional 971 bytes. Still need: 303
-DT: 22 WT 0: About to receive more bytes from server
-DP 23: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
-DP 23: Attempting to parse HTTP request.
-DP 23: Attempting to create worker thread.
-DP 20: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 20: Attempting to parse HTTP request.
-DP 20: Attempting to create worker thread.
-DP 23: Success creating worker thread
-DP 23: Did not detect keep-alive.
-DP 23: waiting for message from fd=48
-DP 22: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 22: Attempting to parse HTTP request.
-DP 22: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 21: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 21: Attempting to parse HTTP request.
-DP 21: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 22: Success creating worker thread
-DP 22: Did not detect keep-alive.
-DP 22: waiting for message from fd=43
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 20: Success creating worker thread
-DP 20: Did not detect keep-alive.
-DP 20: waiting for message from fd=26
-DP 21: Success creating worker thread
-DP 21: Did not detect keep-alive.
-DP 21: waiting for message from fd=40
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 21 WT 1: Forwarding original HTTP request from client to server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 20 WT 1: Forwarding original HTTP request from client to server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 23 WT 1: Forwarding original HTTP request from client to server
-DT: 20 WT 1: Sent HTTP request to server.
-DT: 23 WT 1: Sent HTTP request to server.
-DT: 21 WT 1: Sent HTTP request to server.
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 22 WT 1: Forwarding original HTTP request from client to server
-DT: 22 WT 1: Sent HTTP request to server.
-DT: 23 WT 1: GOT 1023 BYTES FROM SERVER
-DT: 23 WT 1: Forwarding 1023 bytes from server to client
-DT: 20 WT 1: GOT 677 BYTES FROM SERVER
-DT: 20 WT 1: Forwarding 677 bytes from server to client
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 18916
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 23 WT 1: HTTP response contains a payload of 18916 bytes.
-DT: 23 WT 1: So far we have obtained 413 bytes. Still need 18503 bytes of payload.
-DT: 23 WT 1: About to receive more bytes from server
-DT: 20 WT 1: Forwarded 677 HTTP bytes response to client. 
+DT: 10 WT 1: Forwarding original HTTP request from client to server
+DT: 10 WT 1: Sent HTTP request to server.
+DT: 7 WT 1: GOT 677 BYTES FROM SERVER
+DT: 7 WT 1: Forwarding 677 bytes from server to client
+DT: 7 WT 1: Forwarded 677 HTTP bytes response to client. 
 START: DISPLAY PARSING RESULTS
 REQUEST FIELDS
 	Method: 0
@@ -2159,32 +1168,12 @@ HEADER FIELDS
 	Host: 
 	Port: 0
 END: DISPLAY PARSING RESULTS
-DT: 20 WT 1: HTTP response contains a payload of 375 bytes.
-DT: 20 WT 1: So far we have obtained 73 bytes. Still need 302 bytes of payload.
-DT: 20 WT 1: About to receive more bytes from server
-DT: 22 WT 1: GOT 681 BYTES FROM SERVER
-DT: 22 WT 1: Forwarding 681 bytes from server to client
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 17480
-DT: 23 WT 1: About to receive more bytes from server
-DT: 21 WT 1: GOT 677 BYTES FROM SERVER
-DT: 21 WT 1: Forwarding 677 bytes from server to client
-DT: 22 WT 1: Forwarded 681 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 379
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 22 WT 1: HTTP response contains a payload of 379 bytes.
-DT: 22 WT 1: So far we have obtained 77 bytes. Still need 302 bytes of payload.
-DT: 22 WT 1: About to receive more bytes from server
-DT: 21 WT 1: Forwarded 677 HTTP bytes response to client. 
+DT: 7 WT 1: HTTP response contains a payload of 375 bytes.
+DT: 7 WT 1: So far we have obtained 73 bytes. Still need 302 bytes of payload.
+DT: 7 WT 1: About to receive more bytes from server
+DT: 10 WT 1: GOT 677 BYTES FROM SERVER
+DT: 10 WT 1: Forwarding 677 bytes from server to client
+DT: 10 WT 1: Forwarded 677 HTTP bytes response to client. 
 START: DISPLAY PARSING RESULTS
 REQUEST FIELDS
 	Method: 0
@@ -2196,675 +1185,19 @@ HEADER FIELDS
 	Host: 
 	Port: 0
 END: DISPLAY PARSING RESULTS
-DT: 21 WT 1: HTTP response contains a payload of 375 bytes.
-DT: 21 WT 1: So far we have obtained 73 bytes. Still need 302 bytes of payload.
-DT: 21 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 16457
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 15434
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 14411
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 13388
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 12365
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 11342
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 10319
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 9296
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 8273
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 7250
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 6227
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 5204
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 4181
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 3158
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 2135
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 1023 bytes. Still need: 1112
-DT: 23 WT 1: About to receive more bytes from server
-DT: 23 WT 1: Forwarded 807 HTTP bytes response to client. 
-DT: 23 WT 1: Received and sent additional 807 bytes. Still need: 305
-DT: 23 WT 1: About to receive more bytes from server
-DP 23: GOT 435 BYTES FROM CLIENT (HTTP REQUEST)
-DP 23: Attempting to parse HTTP request.
-DP 23: Attempting to create worker thread.
-DP 23: Success creating worker thread
-DP 23: Did not detect keep-alive.
-DP 23: waiting for message from fd=48
+DT: 10 WT 1: HTTP response contains a payload of 375 bytes.
+DT: 10 WT 1: So far we have obtained 73 bytes. Still need 302 bytes of payload.
+DT: 10 WT 1: About to receive more bytes from server
+DP 8: GOT 435 BYTES FROM CLIENT (HTTP REQUEST)
+DP 8: Attempting to parse HTTP request.
+DP 8: Attempting to create worker thread.
+DP 8: Success creating worker thread
+DP 8: Did not detect keep-alive.
+DP 8: waiting for message from fd=12
 sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
 host_strlen=22, port_strlen=2, service_strlen=4
 sock_connect_to_host: connecting to 198.59.7.17
-DT: 23 WT 2: Forwarding original HTTP request from client to server
-DT: 23 WT 2: Sent HTTP request to server.
-DT: 23 WT 2: GOT 678 BYTES FROM SERVER
-DT: 23 WT 2: Forwarding 678 bytes from server to client
-DT: 23 WT 2: Forwarded 678 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 376
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 23 WT 2: HTTP response contains a payload of 376 bytes.
-DT: 23 WT 2: So far we have obtained 74 bytes. Still need 302 bytes of payload.
-DT: 23 WT 2: About to receive more bytes from server
-DP 20: Got EOF from client. Shutting down.
-DP 20: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 19: Got EOF from client. Shutting down.
-DP 19: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 21: Got EOF from client. Shutting down.
-DP 21: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 22: Got EOF from client. Shutting down.
-DP 22: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 23: Got EOF from client. Shutting down.
-DP 23: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-SV: got connection
-SV: Waiting for connection
-DP 24: waiting for message from fd=52
-DP 24: GOT 467 BYTES FROM CLIENT (HTTP REQUEST)
-DP 24: Attempting to parse HTTP request.
-DP 24: Attempting to create worker thread.
-DP 24: Success creating worker thread
-DP 24: Did not detect keep-alive.
-DP 24: waiting for message from fd=52
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 24 WT 0: Forwarding original HTTP request from client to server
-DT: 24 WT 0: Sent HTTP request to server.
-DT: 24 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 24 WT 0: Forwarding 1023 bytes from server to client
-DT: 24 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 3348
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 24 WT 0: HTTP response contains a payload of 3348 bytes.
-DT: 24 WT 0: So far we have obtained 387 bytes. Still need 2961 bytes of payload.
-DT: 24 WT 0: About to receive more bytes from server
-DT: 24 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 24 WT 0: Received and sent additional 1023 bytes. Still need: 1938
-DT: 24 WT 0: About to receive more bytes from server
-DT: 24 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 24 WT 0: Received and sent additional 1023 bytes. Still need: 915
-DT: 24 WT 0: About to receive more bytes from server
-DT: 24 WT 0: Forwarded 597 HTTP bytes response to client. 
-DT: 24 WT 0: Received and sent additional 597 bytes. Still need: 318
-DT: 24 WT 0: About to receive more bytes from server
-SV: got connection
-SV: Waiting for connection
-SV: got connection
-SV: Waiting for connection
-DP 25: waiting for message from fd=10
-DP 26: waiting for message from fd=40
-SV: got connection
-DP 27: waiting for message from fd=43
-DP 25: GOT 383 BYTES FROM CLIENT (HTTP REQUEST)
-DP 25: Attempting to parse HTTP request.
-DP 25: Attempting to create worker thread.
-sock_connect_to_host: host=ajax.googleapis.com, port=80, service=http
-host_strlen=19, port_strlen=2, service_strlen=4
-SV: Waiting for connection
-DP 27: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 27: Attempting to parse HTTP request.
-DP 27: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 26: GOT 424 BYTES FROM CLIENT (HTTP REQUEST)
-DP 26: Attempting to parse HTTP request.
-DP 26: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 27: Success creating worker thread
-DP 27: Did not detect keep-alive.
-DP 27: waiting for message from fd=43
-DP 26: Success creating worker thread
-DP 26: Did not detect keep-alive.
-DP 26: waiting for message from fd=40
-DP 25: Success creating worker thread
-DP 25: Did not detect keep-alive.
-DP 25: waiting for message from fd=10
-SV: got connection
-SV: Waiting for connection
-SV: got connection
-DP 29: waiting for message from fd=64
-SV: Waiting for connection
-DP 28: waiting for message from fd=61
-DP 29: GOT 445 BYTES FROM CLIENT (HTTP REQUEST)
-DP 29: Attempting to parse HTTP request.
-DP 29: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 29: Success creating worker thread
-DP 29: Did not detect keep-alive.
-DP 29: waiting for message from fd=64
-DP 28: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
-DP 28: Attempting to parse HTTP request.
-DP 28: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 28: Success creating worker thread
-DP 28: Did not detect keep-alive.
-DP 28: waiting for message from fd=61
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 27 WT 0: Forwarding original HTTP request from client to server
-DT: 27 WT 0: Sent HTTP request to server.
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 26 WT 0: Forwarding original HTTP request from client to server
-DT: 26 WT 0: Sent HTTP request to server.
-DT: 27 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 27 WT 0: Forwarding 1023 bytes from server to client
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 15624
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 27 WT 0: HTTP response contains a payload of 15624 bytes.
-DT: 27 WT 0: So far we have obtained 387 bytes. Still need 15237 bytes of payload.
-DT: 27 WT 0: About to receive more bytes from server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 28 WT 0: Forwarding original HTTP request from client to server
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 14214
-DT: 27 WT 0: About to receive more bytes from server
-DT: 28 WT 0: Sent HTTP request to server.
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 13191
-DT: 27 WT 0: About to receive more bytes from server
-DT: 26 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 26 WT 0: Forwarding 1023 bytes from server to client
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 12168
-DT: 27 WT 0: About to receive more bytes from server
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 11145
-DT: 27 WT 0: About to receive more bytes from server
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 10122
-DT: 27 WT 0: About to receive more bytes from server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 29 WT 0: Forwarding original HTTP request from client to server
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 9099
-DT: 27 WT 0: About to receive more bytes from server
-DT: 29 WT 0: Sent HTTP request to server.
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 8076
-DT: 27 WT 0: About to receive more bytes from server
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 7053
-DT: 27 WT 0: About to receive more bytes from server
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 6030
-DT: 27 WT 0: About to receive more bytes from server
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 5007
-DT: 27 WT 0: About to receive more bytes from server
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 3984
-DT: 27 WT 0: About to receive more bytes from server
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 2961
-DT: 27 WT 0: About to receive more bytes from server
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 1938
-DT: 27 WT 0: About to receive more bytes from server
-DT: 27 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 1023 bytes. Still need: 915
-DT: 27 WT 0: About to receive more bytes from server
-DT: 27 WT 0: Forwarded 597 HTTP bytes response to client. 
-DT: 27 WT 0: Received and sent additional 597 bytes. Still need: 318
-DT: 27 WT 0: About to receive more bytes from server
-DT: 26 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 2338
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 26 WT 0: HTTP response contains a payload of 2338 bytes.
-DT: 26 WT 0: So far we have obtained 419 bytes. Still need 1919 bytes of payload.
-DT: 26 WT 0: About to receive more bytes from server
-DT: 26 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 26 WT 0: Received and sent additional 1023 bytes. Still need: 896
-DT: 26 WT 0: About to receive more bytes from server
-DT: 26 WT 0: Forwarded 594 HTTP bytes response to client. 
-DT: 26 WT 0: Received and sent additional 594 bytes. Still need: 302
-DT: 26 WT 0: About to receive more bytes from server
-sock_connect_to_host: connecting to 142.250.72.10
-DT: 25 WT 0: Forwarding original HTTP request from client to server
-DT: 25 WT 0: Sent HTTP request to server.
-DT: 25 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 25 WT 0: Forwarding 1023 bytes from server to client
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 0
-	Content-Length: 27266
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 25 WT 0: HTTP response contains a payload of 27266 bytes.
-DT: 25 WT 0: So far we have obtained -799 bytes. Still need 28065 bytes of payload.
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 27042
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 26019
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 24996
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 23973
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 22950
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 21927
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 20904
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 19881
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 18858
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 17835
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 16812
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 15789
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 881 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 881 bytes. Still need: 14908
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 13885
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 12862
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 11839
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 10816
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 9793
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 8770
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 7747
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 6724
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 5701
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 4678
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 3655
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 2632
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 1023 bytes. Still need: 1609
-DT: 25 WT 0: About to receive more bytes from server
-DT: 25 WT 0: Forwarded 698 HTTP bytes response to client. 
-DT: 25 WT 0: Received and sent additional 698 bytes. Still need: 911
-DT: 25 WT 0: About to receive more bytes from server
-DT: 28 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 28 WT 0: Forwarding 1023 bytes from server to client
-DT: 28 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 1279
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 28 WT 0: HTTP response contains a payload of 1279 bytes.
-DT: 28 WT 0: So far we have obtained 391 bytes. Still need 888 bytes of payload.
-DT: 28 WT 0: About to receive more bytes from server
-DT: 28 WT 0: Forwarded 572 HTTP bytes response to client. 
-DT: 28 WT 0: Received and sent additional 572 bytes. Still need: 316
-DT: 28 WT 0: About to receive more bytes from server
-DT: 29 WT 0: GOT 1023 BYTES FROM SERVER
-DT: 29 WT 0: Forwarding 1023 bytes from server to client
-DT: 29 WT 0: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 8852
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 29 WT 0: HTTP response contains a payload of 8852 bytes.
-DT: 29 WT 0: So far we have obtained 417 bytes. Still need 8435 bytes of payload.
-DT: 29 WT 0: About to receive more bytes from server
-DT: 29 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 29 WT 0: Received and sent additional 1023 bytes. Still need: 7412
-DT: 29 WT 0: About to receive more bytes from server
-DT: 29 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 29 WT 0: Received and sent additional 1023 bytes. Still need: 6389
-DT: 29 WT 0: About to receive more bytes from server
-DT: 29 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 29 WT 0: Received and sent additional 1023 bytes. Still need: 5366
-DT: 29 WT 0: About to receive more bytes from server
-DT: 29 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 29 WT 0: Received and sent additional 1023 bytes. Still need: 4343
-DT: 29 WT 0: About to receive more bytes from server
-DT: 29 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 29 WT 0: Received and sent additional 1023 bytes. Still need: 3320
-DT: 29 WT 0: About to receive more bytes from server
-DT: 29 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 29 WT 0: Received and sent additional 1023 bytes. Still need: 2297
-DT: 29 WT 0: About to receive more bytes from server
-DT: 29 WT 0: Forwarded 1023 HTTP bytes response to client. 
-DT: 29 WT 0: Received and sent additional 1023 bytes. Still need: 1274
-DT: 29 WT 0: About to receive more bytes from server
-DT: 29 WT 0: Forwarded 971 HTTP bytes response to client. 
-DT: 29 WT 0: Received and sent additional 971 bytes. Still need: 303
-DT: 29 WT 0: About to receive more bytes from server
-DP 25: GOT 436 BYTES FROM CLIENT (HTTP REQUEST)
-DP 25: Attempting to parse HTTP request.
-DP 25: Attempting to create worker thread.
-DP 27: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 27: Attempting to parse HTTP request.
-DP 27: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 25: Success creating worker thread
-DP 25: Did not detect keep-alive.
-DP 25: waiting for message from fd=10
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 29: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 29: Attempting to parse HTTP request.
-DP 29: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 26: GOT 434 BYTES FROM CLIENT (HTTP REQUEST)
-DP 26: Attempting to parse HTTP request.
-DP 26: Attempting to create worker thread.
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-DP 26: Success creating worker thread
-DP 26: Did not detect keep-alive.
-DP 26: waiting for message from fd=40
-DP 29: Success creating worker thread
-DP 29: Did not detect keep-alive.
-DP 29: waiting for message from fd=64
-DP 27: Success creating worker thread
-DP 27: Did not detect keep-alive.
-DP 27: waiting for message from fd=43
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 26 WT 1: Forwarding original HTTP request from client to server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 27 WT 1: Forwarding original HTTP request from client to server
-DT: 27 WT 1: Sent HTTP request to server.
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 25 WT 1: Forwarding original HTTP request from client to server
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 29 WT 1: Forwarding original HTTP request from client to server
-DT: 26 WT 1: Sent HTTP request to server.
-DT: 26 WT 1: GOT 677 BYTES FROM SERVER
-DT: 26 WT 1: Forwarding 677 bytes from server to client
-DT: 29 WT 1: Sent HTTP request to server.
-DT: 27 WT 1: GOT 681 BYTES FROM SERVER
-DT: 27 WT 1: Forwarding 681 bytes from server to client
-DT: 25 WT 1: Sent HTTP request to server.
-DT: 26 WT 1: Forwarded 677 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 375
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 26 WT 1: HTTP response contains a payload of 375 bytes.
-DT: 26 WT 1: So far we have obtained 73 bytes. Still need 302 bytes of payload.
-DT: 26 WT 1: About to receive more bytes from server
-DT: 27 WT 1: Forwarded 681 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 379
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 27 WT 1: HTTP response contains a payload of 379 bytes.
-DT: 27 WT 1: So far we have obtained 77 bytes. Still need 302 bytes of payload.
-DT: 27 WT 1: About to receive more bytes from server
-DP 27: GOT 435 BYTES FROM CLIENT (HTTP REQUEST)
-DP 27: Attempting to parse HTTP request.
-DP 27: Attempting to create worker thread.
-DP 27: Success creating worker thread
-DP 27: Did not detect keep-alive.
-DP 27: waiting for message from fd=43
-sock_connect_to_host: host=netsys.cs.colorado.edu, port=80, service=http
-host_strlen=22, port_strlen=2, service_strlen=4
-sock_connect_to_host: connecting to 198.59.7.17
-DT: 27 WT 2: Forwarding original HTTP request from client to server
-DT: 27 WT 2: Sent HTTP request to server.
-DT: 25 WT 1: GOT 1023 BYTES FROM SERVER
-DT: 25 WT 1: Forwarding 1023 bytes from server to client
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 18916
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 25 WT 1: HTTP response contains a payload of 18916 bytes.
-DT: 25 WT 1: So far we have obtained 413 bytes. Still need 18503 bytes of payload.
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 17480
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 16457
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 15434
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 14411
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 13388
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 12365
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 11342
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 10319
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 9296
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 8273
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 7250
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 6227
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 5204
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 4181
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 3158
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 2135
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 1023 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 1023 bytes. Still need: 1112
-DT: 25 WT 1: About to receive more bytes from server
-DT: 25 WT 1: Forwarded 807 HTTP bytes response to client. 
-DT: 25 WT 1: Received and sent additional 807 bytes. Still need: 305
-DT: 25 WT 1: About to receive more bytes from server
-DT: 29 WT 1: GOT 677 BYTES FROM SERVER
-DT: 29 WT 1: Forwarding 677 bytes from server to client
-DT: 29 WT 1: Forwarded 677 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 375
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 29 WT 1: HTTP response contains a payload of 375 bytes.
-DT: 29 WT 1: So far we have obtained 73 bytes. Still need 302 bytes of payload.
-DT: 29 WT 1: About to receive more bytes from server
-DT: 27 WT 2: GOT 678 BYTES FROM SERVER
-DT: 27 WT 2: Forwarding 678 bytes from server to client
-DT: 27 WT 2: Forwarded 678 HTTP bytes response to client. 
-START: DISPLAY PARSING RESULTS
-REQUEST FIELDS
-	Method: 0
-	URI: 200
-	Version: 0
-HEADER FIELDS
-	Keep-Alive: 1
-	Content-Length: 376
-	Host: 
-	Port: 0
-END: DISPLAY PARSING RESULTS
-DT: 27 WT 2: HTTP response contains a payload of 376 bytes.
-DT: 27 WT 2: So far we have obtained 74 bytes. Still need 302 bytes of payload.
-DT: 27 WT 2: About to receive more bytes from server
-DT: 27 WT 0: TERMINATING
-DT: 26 WT 0: TERMINATING
-DT: 24 WT 0: TERMINATING
-DT: 25 WT 0: TERMINATING
-DT: 0 WT 0: TERMINATING
-DT: 26 WT 1: TERMINATING
-DT: 25 WT 1: TERMINATING
-DT: 0 WT 0: TERMINATING
-DT: 0 WT 0: TERMINATING
-DT: 0 WT 0: TERMINATING
-DT: 24 WT 0: TERMINATING
-DP 24: Got EOF from client. Shutting down.
-DP 24: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DT: 27 WT 0: TERMINATING
-DT: 26 WT 0: TERMINATING
-DT: 28 WT 0: TERMINATING
-DT: 29 WT 0: TERMINATING
-DP 28: Got EOF from client. Shutting down.
-DP 28: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DT: 26 WT 1: TERMINATING
-DT: 27 WT 1: TERMINATING
-DT: 25 WT 1: TERMINATING
-DT: 27 WT 2: TERMINATING
-DT: 29 WT 1: TERMINATING
-DP 29: Got EOF from client. Shutting down.
-DP 29: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 27: Got EOF from client. Shutting down.
-DP 27: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 25: Got EOF from client. Shutting down.
-DP 25: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
-DP 26: Got EOF from client. Shutting down.
-DP 26: TERMINATING DISPATCHER THREAD. CLOSING CONNECTION TO CLIENT.
+DT: 8 WT 2: Forwarding original HTTP request from client to server
+DT: 8 WT 2: Sent HTTP request to server.
+DT: 8 WT 2: GOT 678 BYTES FROM SERVER
+DT: 8 WT 2: Forw
