@@ -1,1403 +1,416 @@
-// #include "state_machine.h"
-// #include "file.h"
-// #include "crc.h"
-// #include "socket.h"
-// #include "cli.h"
-// #include "packet.h"
+#include <stdio.h>
+#include <pthread.h>
+#include <stdlib.h>
+#include <string.h>
 
-// #include <stdbool.h>
+#include "state_machine.h"
+#include "threading.h"
+#include "packet.h"
+#include "socket.h"
+#include "conf_parsing.h"
+#include "file.h"
+#include "crc.h"
 
-// /*******************************************************************************
-// * Cleint state machines
-// *******************************************************************************/
-// void sm_client_get()
-// {
-//     int ret;
-//     // int transmit_complete = 0;
-//     uint32_t crc32_calc;
-//     uint32_t last_sequence_number;
-//     uint32_t total_packets = 0;
+#define DEBUG_PRINT_DISPATCHER (0)
+#define DEBUG_PRINT_WORKER     (0)
 
-//     state_t previous_state = null_t;
-//     state_t current_state = sendCmd_t;
+extern char *dfs_name;
 
-//     event_t event = evtNull_t;
-//     uint32_t sequence_number = 0;
-//     uint32_t last_sequece_number = 0;
+void sm_server(int sockfd_listen)
+{
+    int new_fd;
+    state_t current_state = state_idle;
+    event_t current_event = evt_none;
 
-//     while(true)
-//     {
-//         switch(current_state)
-//         {
-//             case(sendCmd_t):
-//                 // 1. generate filtered version of user commands
-//                 cli_generate_filtered_usr_cmd("get", cli_get_user_param_buf());
+    while(1)
+    {
+        switch(current_state)
+        {
+            case state_idle:
+                // wait for incomming connection
+                printf("%s: Waiting for connection\r\n", dfs_name);
+                if((new_fd = sock_wait_for_connection(sockfd_listen)) == -1) 
+                {
+                    current_event = evt_none;
+                }
+                else
+                {
+                    printf("%s: got connection\r\n", dfs_name);
+                    current_event = evt_connection;
+                }
 
-//                 // 2. fill packet struct fields
-//                 packet_write_sequence_number(0);
-//                 packet_write_payload_size(cli_get_filtered_usr_cmd_size());
-//                 packet_write_payload(
-//                     cli_get_filtered_usr_cmd(), 
-//                     packet_get_payload_size()
-//                 );
-//                 packet_write_crc32(
-//                     crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     )
-//                 );
+                // progress state machine
+                if(current_event == evt_connection)
+                {
+                    current_state = state_creating_thread;
+                    current_event = evt_none;
+                }
 
-//                 // 3. generate packet buffer
-//                 ret = packet_generate();
+            break;
 
-//                 // Open file to write to
-//                 file_open(cli_get_user_param_buf(), 1);
+            case state_creating_thread:
+                if(threading_create_dispatcher(new_fd) != 0)
+                {
+                    current_event = evt_thread_create_fail;
+                }
+                else
+                {
+                    current_event = evt_thread_create_success;
+                }
 
-//                 if(ret > 0)
-//                 {
-//                     event = evtAckNotRecv_t;
-//                     previous_state = sendCmd_t;
-//                     current_state = waitAck_t;
-//                 }
-//                 break;
+                if(current_event ==  evt_thread_create_fail)
+                {
+                    printf("SV: Error creating dispatcher thread\n");
+                    printf("SV: Closing new_fd\n");
+                    sock_close(sockfd_listen);
+                }
+                current_state = state_idle;
 
-//             case(waitPayload_t):
-//                 // printf("In wait payload\n");
-//                 // loop until a packet is received
-//                 ret = 0;
-//                 while(ret <= 0)
-//                 {
-//                     // wait for any kind of response from server
-//                     sock_clear_input_buffer();
-//                     //printf("Waiting for PAYLOAD from server\n");
-//                     socket_init_timeout();
-//                     sock_enable_timeout();
-//                     ret = sock_recv(1);
-//                     sock_disable_timeout();
-//                 }
+            break;
 
-//                 // parse packet
-//                 packet_parse(sock_get_in_buf());
-//                 // printf("======PAYLOAD\n");
-//                 // packet_print_struct();
+            default:
+                // something went wrong
+                current_state = state_idle;
+                current_event = evt_none;
+            break;
+        }
+    }
+}
 
-//                 // verify correct payload
-//                 crc32_calc = crc_generate(
-//                     (char *) packet_get_struct(), 
-//                     packet_get_packet_size_for_crc()
-//                 );
-//                 if(crc32_calc != packet_get_crc32())
-//                 {
-//                     // data is corrupted, go back to step 1.
-//                     printf("CRC32 mismatch, corrupted packet!\n");
-//                     printf("PACKET CRC = %u | CALC CRC32 = %u\n", packet_get_crc32(), crc32_calc);
-//                     continue;
-//                 }
+void *sm_dispatch_thread(void *p_args)
+{
+    // get parameters passed to thread
+    thread_args_t args = *(thread_args_t *)p_args;
 
-//                 if ( strcmp(packet_get_payload(), "ACK") == 0 )
-//                 {
-//                     printf("ACK Received!\nEOF\n");
-//                     event = evtFileTransComplete_t;
-//                     previous_state = waitPayload_t;
-//                     current_state = sendAck_t;
-//                     // transmit_complete = 1;
-//                     file_close();
-//                 }
+    // variable to enable timeout
+    bool is_timeout = false;
 
-//                 // we got the same packet as before. don't save and just send an ACK
-//                 else if(last_sequence_number == packet_get_sequence_number())
-//                 {
-//                     printf("repeat sequence number\n");
-//                     event = evtPayloadReceived_t;
-//                     previous_state = waitPayload_t;
-//                     current_state = sendAck_t;
-//                 }
-//                 // otherwise, we got a normal payload and carry on saving
-//                 else
-//                 {
-//                     last_sequence_number = packet_get_sequence_number();
-//                     event = evtPayloadReceived_t;
-//                     previous_state = waitPayload_t;
-//                     current_state = savePayload_t;
-//                 }
-//                 break;
+    // variables to store socket read results
+    char in_buf[PACKET_SIZE];
+    int recvbytes;
 
+    // // worker thread variables
+    // pthread_t worker_thread_id[MAX_NUMBER_OF_THREADS];
+    // worker_thread_args_t worker_args[MAX_NUMBER_OF_THREADS];
+    // uint8_t worker_thread_counter = 0;
 
-//             case(waitAck_t):
+    // // state machine variables
+    // state_t current_state = state_idle;
+    // event_t current_event = evt_none;
+
+    Packet pkt;
+
+    while(1)
+    {
+        // 1. Get an incomming message.
+        memset(in_buf, 0, PACKET_SIZE);
+        printf("%s#%d: waiting for message from client @fd=%d\n", dfs_name, args.thread_id, args.fd_client);
+        recvbytes = sock_read(args.fd_client, in_buf, PACKET_SIZE, is_timeout);
+        if(recvbytes == -1)
+        {
+            if(is_timeout)
+            {
+                printf("%s#%d: TIMEOUT! Closing connection to client.\n", dfs_name, args.thread_id);
+                // current_event = evt_timeout;
+            }
+            else
+            {
+                printf("%s#%d: Unexpected error during recv.\n", dfs_name, args.thread_id);
+            }
+        }
+        else if(recvbytes == 0)
+        {
+            // current_event = evt_close_request;
+            printf("%s#%d: Got EOF from client. Shutting down.\n", dfs_name, args.thread_id);
+        }
+        else
+        {
+            // current_event = evt_message_received;
+            printf("%s#%d: GOT %d BYTES FROM CLIENT (DFC COMMAND)\n", dfs_name, args.thread_id, recvbytes);
+
+        }
+
+        // 2. Parse received command
+        printf("%s#%d: Attempting to parse DFC command.\n", dfs_name, args.thread_id);
+        pkt = packet_parse_packet(in_buf, recvbytes);
+        if(packet_is_default(pkt))
+        {
+            // invalid request received
+            printf("%s#%d: received invalid request", dfs_name, args.thread_id);
+            continue;
+        }  
+
+        // 3. process command
+        // (0) Debug print pkt
+        packet_print(pkt);
+
+        // (1) Process request
+        switch(pkt.cmd_header)
+        {
+            case CMD_GET_PKT:
+                printf("%s#%d: Made it to GET cmd\r\n", dfs_name, args.thread_id);
+                // TODO: ARMANDO
+                // make up a conf variable just for sending
+                // sm_send(pkt.file_name, conf, args.fd_client) to client.
+            break;
+
+            case CMD_PUT_PKT:
+                printf("%s#%d: Made it to PUT cmd\r\n", dfs_name, args.thread_id);
+                sm_receive(args.fd_client, pkt);
+
+            break;
+
+            case CMD_LS_PKT:
+                printf("%s#%d: Made it to LS cmd\r\n", dfs_name, args.thread_id);
+            break;
+
+            default:
+                printf("%s#%d: Invalid CMD received: %d\r\n", dfs_name, args.thread_id, pkt.cmd_header);
+            break;
+        }
+    }
+}
+
+void *sm_worker_thread(void *p_args)
+{
+    if(p_args == NULL)
+    {
+        printf("WT: GOT NULL ARGS! Terminating.\r\n");
+    }
+
+    worker_thread_args_t *args = (worker_thread_args_t *)p_args;
+
+    /***************************************************************
+     * (0) Debug print pkt
+     * (1) Respond to packet
+     * (2) Terminate worker thread
+     **************************************************************/
+
+    // (0) Debug print pkt
+    packet_print(args->pkt);
+
+    // (1) Process request
+    switch(args->pkt.cmd_header)
+    {
+        case CMD_GET_PKT:
+            printf("Made it to GET cmd\r\n");
+        break;
+
+        case CMD_PUT_PKT:
+            printf("Made it to PUT cmd\r\n");
+            sm_receive(args->fd_client, args->pkt);
+
+        break;
+
+        case CMD_LS_PKT:
+            printf("Made it to LS cmd\r\n");
+        break;
+
+        default:
+            printf("Invalid CMD received: %d\r\n", args->pkt.cmd_header);
+        break;
+    }
                 
-//                 // 1. Attempt to send packet and wait for response.
-//                 //    If no response is received within the timeout period
-//                 //    attempt to transmit again. Repeat until ACK is received.
-//                 ret = 0;
-
-//                 // loop will terminate when ACK has been received.
-//                 while(event != evtAckRecv_t)
-//                 {
-//                     // break out of loop if some kind of response is received.
-//                     ret = 0;
-//                     sock_clear_input_buffer();
-//                     while(ret <= 0)
-//                     {
-//                         // send packet to server
-//                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-//                         printf("Sent CMD\n");
-
-//                         // wait for any kind of response from server
-//                         // printf("Waiting for ACK from server\n");
-
-//                         socket_init_timeout();
-//                         sock_enable_timeout();
-//                         ret = sock_recv(1);
-//                         sock_disable_timeout();
-//                     }
-
-//                     // parse the received message
-//                     packet_parse(sock_get_in_buf());
-
-//                     // verify that payload contents are correct (crc32 check)
-//                     crc32_calc = crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     );
-//                     if(crc32_calc != packet_get_crc32())
-//                     {
-//                         printf("CRC32 mismatch, corrupted packet!\n");
-//                         continue;
-//                     }
-
-//                     // check that the payload is ACK
-//                     if ( strcmp(packet_get_payload(), "ACK") != 0 )
-//                     {
-//                         // ack was not received. start over.
-//                         printf("ACK NOT RECEIVED\n");
-//                     }
-//                     else
-//                     {
-//                         printf("Got ACK\n");
-//                         event = evtAckRecv_t;
-//                     }
-//                 }
-
-//                 // if we were sending the final ack, go to log info,
-//                 // otherwise, prepare to send another payload packet.
-//                 if(previous_state == sendAck_t)
-//                 {
-//                     previous_state = waitAck_t;
-//                     current_state = logFileInfo_t;
-//                 }
-//                 // we just sent the get command, now get ready to receive
-//                 else if (previous_state == sendCmd_t)
-//                 {
-//                     previous_state = waitAck_t;
-//                     current_state = waitPayload_t;
-//                 }
-//                 else if(previous_state == transmitPayload_t)
-//                 {
-//                     sequence_number++;
-//                     last_sequece_number = sequence_number;
-//                     previous_state = waitAck_t;
-//                     current_state = transmitPayload_t;
-//                 }
-//                 else
-//                 {
-//                     printf("HUH\n");
-//                 }
-
-//                 break;
-
-//             case(savePayload_t):
-//                 // save payload to file
-//                 // printf("GOING TO WRITE TO FILE\n");
-//                 ret = file_write_chunk(
-//                     packet_get_payload(), 
-//                     packet_get_payload_size()
-//                 );
-//                 if(ret != packet_get_payload_size())
-//                 {
-//                     printf("ERROR: Not all bytes written to file.\n");
-//                     event = evtPayloadNotReceived_t;
-//                     previous_state = savePayload_t;
-//                     current_state = waitPayload_t;
-//                 }
-//                 else
-//                 {
-//                     // printf("Wrote %d bytes to file\n", ret);
-//                     event = evtPayloadReceived_t;
-//                     previous_state = savePayload_t;
-//                     current_state = sendAck_t;   
-//                 }
-
-//                 break;
-
-//             case(sendAck_t):
-//                 // generate ACK packet.
-//                 // printf("Generating ACK packet\n");
-//                 packet_write_sequence_number(0);
-//                 packet_write_payload_size(sizeof("ACK"));
-//                 packet_write_payload("ACK", packet_get_payload_size());
-//                 packet_write_crc32(
-//                     crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     )
-//                 );
-//                 ret = packet_generate();
-//                 // printf("======SENDING: ACK\n");
-//                 // packet_print_struct();
-
-//                 // send ACK packet 
-//                 //printf("Sending ACK\n");
-//                 ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
-
-//                 // we were just sending the final ACK, we are done
-//                 if(event == evtFileTransComplete_t)
-//                 {
-//                     //printf("sendAck: evtFileTransComplete\n");
-//                     previous_state = sendAck_t;
-//                     current_state = logFileInfo_t; 
-//                 }
-//                 // we have just sucessfully received a packet
-//                 else if(event == evtPayloadReceived_t)
-//                 {
-//                     //printf("sendAck: evtPayloadReceived\n");
-//                     // wait for next payload
-//                     total_packets++;
-//                     previous_state = sendAck_t;
-//                     current_state = waitPayload_t;    
-//                 }
-//                 // we just started, wait for first payload packet.
-//                 else if (event == evtNull_t)
-//                 {
-//                     //printf("sendAck: evtNull_t\n");
-//                     event = evtFileTransNotComplete_t;
-//                     previous_state = sendAck_t;
-//                     current_state = waitPayload_t;
-//                 }
-//                 else
-//                 {
-//                     printf("HMM\n");
-//                 }
-
-//                 break;
-
-//             case(logFileInfo_t):
-//                 printf("===PRINTING FILE STATS===\n");
-//                 printf("Last sequence number: %d\n", last_sequece_number);
-//                 file_open(cli_get_user_param_buf(), 0);
-//                 printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
-
-//                 // Generate the complete files CRC32
-//                 crc32_calc = crc_generate_file(file_get_fp());
-//                 printf("File CRC: %u\n", crc32_calc);
-//                 file_close();
-//                 return;
-
-//                 break;
-
-//             default:
-//                 printf("State machine error\n");
-//                 break;
-//         }
-//     }
-// }
-// void sm_client_put()
-// {
-//     int ret;
-//     int transmit_complete = 0;
-//     uint32_t crc32_calc;
-
-//     state_t previous_state = null_t;
-//     state_t current_state = sendCmd_t;
-
-//     event_t event = evtNull_t;
-//     uint32_t sequence_number = 0;
-//     uint32_t last_sequece_number = 0;
-
-//     file_open(cli_get_user_param_buf(), 0);
-//     while(true)
-//     {
-//         switch(current_state)
-//         {
-//             case(sendCmd_t):
-//                 // 1. generate filtered version of user commands
-//                 cli_generate_filtered_usr_cmd("put", cli_get_user_param_buf());
-
-//                 // 2. fill packet struct fields
-//                 packet_write_sequence_number(0);
-//                 packet_write_payload_size(cli_get_filtered_usr_cmd_size());
-//                 packet_write_payload(
-//                     cli_get_filtered_usr_cmd(), 
-//                     packet_get_payload_size()
-//                 );
-//                 packet_write_crc32(
-//                     crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     )
-//                 );
-
-//                 // 3. generate packet buffer
-//                 ret = packet_generate();
-//                 // printf("====SENDING: CMD\n");
-//                 // packet_print_struct();
-
-//                 // Open file to send
-//                 file_open(cli_get_user_param_buf(), 0);
-//                 printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
-
-//                 if(ret > 0)
-//                 {
-//                     event = evtAckNotRecv_t;
-//                     previous_state = sendCmd_t;
-//                     current_state = waitAck_t;
-//                 }
-//                 break;
-
-//             case(transmitPayload_t):
-//                 // printf("In transmit payload\n");
-
-//                 if(!transmit_complete)
-//                 {
-//                     // Read a chunk from file
-//                     ret = file_read_chunk(packet_get_chunk_size());
-//                     // printf("file read returned %d bytes\n", ret);
-//                     if(ret != packet_get_chunk_size())
-//                     {
-//                         transmit_complete = 1;
-//                     }
-
-//                     // fill packet struct fields
-//                     packet_write_sequence_number(sequence_number);
-//                     packet_write_payload_size(ret);
-//                     packet_write_payload(
-//                         file_get_file_buf(), 
-//                         packet_get_payload_size()
-//                     );
-//                     packet_write_crc32(
-//                         crc_generate(
-//                             (char *) packet_get_struct(), 
-//                             packet_get_packet_size_for_crc()
-//                         )
-//                     );
-
-//                     // generate packet buffer
-//                     ret = packet_generate();
-//                     // printf("====SENDING: PACKET");
-//                     // packet_print_struct();
-
-//                     // prepare to transition to next state
-//                     event = evtAckNotRecv_t;
-//                     previous_state = transmitPayload_t;
-//                     current_state = waitAck_t;
-//                 }
-//                 else
-//                 {
-//                     file_close();
-//                     // generate ACK packet.
-//                     printf("Generating ACK packet\n");
-//                     packet_write_sequence_number(0);
-//                     packet_write_payload_size(sizeof("ACK"));
-//                     packet_write_payload("ACK", packet_get_payload_size());
-//                     packet_write_crc32(
-//                         crc_generate(
-//                             (char *) packet_get_struct(), 
-//                             packet_get_packet_size_for_crc()
-//                         )
-//                     );
-//                     packet_generate();
-
-//                     event = evtAckNotRecv_t;
-//                     previous_state = sendAck_t;
-//                     current_state = waitAck_t;
-//                 }
-//                 break;
-
-
-//             case(waitAck_t):
-                
-//                 // 1. Attempt to send packet and wait for response.
-//                 //    If no response is received within the timeout period
-//                 //    attempt to transmit again. Repeat until ACK is received.
-//                 ret = 0;
-
-//                 // loop will terminate when ACK has been received.
-//                 while(event != evtAckRecv_t)
-//                 {
-//                     // break out of loop if some kind of response is received.
-//                     ret = 0;
-//                     sock_clear_input_buffer();
-//                     while(ret <= 0)
-//                     {
-//                         // send packet to server
-//                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-//                         //printf("Sent PACKET\n");
-
-//                         // wait for any kind of response from server
-//                         // printf("Waiting for ACK from server\n");
-
-//                         socket_init_timeout();
-//                         sock_enable_timeout();
-//                         ret = sock_recv(1);
-//                         sock_disable_timeout();
-//                     }
-
-//                     // parse the received message
-//                     packet_parse(sock_get_in_buf());
-
-//                     // verify that payload contents are correct (crc32 check)
-//                     crc32_calc = crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     );
-//                     if(crc32_calc != packet_get_crc32())
-//                     {
-//                         printf("CRC32 mismatch, corrupted packet!");
-//                         continue;
-//                     }
-
-//                     // check that the payload is ACK
-//                     if ( strcmp(packet_get_payload(), "ACK") != 0 )
-//                     {
-//                         // ack was not received. start over.
-//                         printf("ACK NOT RECEIVED\n");
-//                     }
-//                     else
-//                     {
-//                         // printf("Got ACK\n");
-//                         event = evtAckRecv_t;
-//                     }
-//                 }
-
-//                 // if we were sending the final ack, go to log info,
-//                 // otherwise, prepare to send another payload packet.
-//                 if(previous_state == sendAck_t)
-//                 {
-//                     previous_state = waitAck_t;
-//                     current_state = logFileInfo_t;
-//                 }
-//                 else if (previous_state == sendCmd_t)
-//                 {
-//                     previous_state = waitAck_t;
-//                     current_state = transmitPayload_t;
-//                 }
-//                 else if(previous_state == transmitPayload_t)
-//                 {
-//                     sequence_number++;
-//                     last_sequece_number = sequence_number;
-//                     previous_state = waitAck_t;
-//                     current_state = transmitPayload_t;
-//                 }
-//                 else
-//                 {
-//                     printf("HUH\n");
-//                 }
-
-//                 break;
-
-//             case(logFileInfo_t):
-//                 printf("===PRINTING FILE STATS===\n");
-//                 printf("Last sequence number: %d\n", last_sequece_number);
-//                 file_open(cli_get_user_param_buf(), 0);
-//                 printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
-
-//                 // Generate the complete files CRC32
-//                 crc32_calc = crc_generate_file(file_get_fp());
-//                 printf("File CRC: %u\n", crc32_calc);
-//                 file_close();
-//                 return;
-
-//                 break;
-
-//             default:
-//                 printf("State machine error\n");
-//                 break;
-//         }
-//     }
-// }
-// void sm_client_ls()
-// {
-//     int ret;
-//     // int transmit_complete = 0;
-//     uint32_t crc32_calc;
-//     uint32_t total_packets = 0;
-
-//     state_t previous_state = null_t;
-//     state_t current_state = sendCmd_t;
-
-//     event_t event = evtNull_t;
-//     uint32_t sequence_number = 0;
-//     uint32_t last_sequence_number = 0xFFFF;
-
-//     while(true)
-//     {
-//         switch (current_state)
-//         {
-//             case sendCmd_t:
-//                 // 1. generate filtered version of user commands
-//                 cli_generate_filtered_usr_cmd("ls", cli_get_user_param_buf());
-
-//                 // 2. fill packet struct fields
-//                 packet_write_sequence_number(0);
-//                 packet_write_payload_size(cli_get_filtered_usr_cmd_size());
-//                 packet_write_payload(
-//                     cli_get_filtered_usr_cmd(), 
-//                     packet_get_payload_size()
-//                 );
-//                 packet_write_crc32(
-//                     crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     )
-//                 );
-
-//                 // 3. generate packet buffer
-//                 ret = packet_generate();
-
-//                 if(ret > 0)
-//                 {
-//                     event = evtAckNotRecv_t;
-//                     previous_state = sendCmd_t;
-//                     current_state = waitAck_t;
-//                 }    
-//                 break;
-
-//            case(waitAck_t):
-                
-//                 // 1. Attempt to send packet and wait for response.
-//                 //    If no response is received within the timeout period
-//                 //    attempt to transmit again. Repeat until ACK is received.
-//                 ret = 0;
-
-//                 // loop will terminate when ACK has been received.
-//                 while(event != evtAckRecv_t)
-//                 {
-//                     // break out of loop if some kind of response is received.
-//                     ret = 0;
-//                     sock_clear_input_buffer();
-//                     while(ret <= 0)
-//                     {
-//                         // send packet to server
-//                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), true);
-//                         // printf("Sent CMD\n");
-
-//                         // wait for any kind of response from server
-//                         // printf("Waiting for ACK from server\n");
-
-//                         socket_init_timeout();
-//                         sock_enable_timeout();
-//                         ret = sock_recv(1);
-//                         sock_disable_timeout();
-//                     }
-
-//                     // parse the received message
-//                     packet_parse(sock_get_in_buf());
-
-//                     // verify that payload contents are correct (crc32 check)
-//                     crc32_calc = crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     );
-//                     if(crc32_calc != packet_get_crc32())
-//                     {
-//                         printf("CRC32 mismatch, corrupted packet!\n");
-//                         continue;
-//                     }
-
-//                     // check that the payload is ACK
-//                     if ( strcmp(packet_get_payload(), "ACK") != 0 )
-//                     {
-//                         // ack was not received. start over.
-//                         printf("ACK NOT RECEIVED\n");
-//                     }
-//                     else
-//                     {
-//                         // printf("Got ACK\n");
-//                         event = evtAckRecv_t;
-//                     }
-//                 }
-
-//                 // if we were sending the final ack, go to log info,
-//                 // otherwise, prepare to send another payload packet.
-//                 if(previous_state == sendAck_t)
-//                 {
-//                     previous_state = waitAck_t;
-//                     current_state = logFileInfo_t;
-//                 }
-//                 // we just sent the get command, now get ready to receive
-//                 else if (previous_state == sendCmd_t)
-//                 {
-//                     previous_state = waitAck_t;
-//                     current_state = waitPayload_t;
-//                 }
-//                 else if(previous_state == transmitPayload_t)
-//                 {
-//                     sequence_number++;
-//                     last_sequence_number = sequence_number;
-//                     previous_state = waitAck_t;
-//                     current_state = transmitPayload_t;
-//                 }
-//                 else
-//                 {
-//                     printf("Error in waitAck\n");
-//                 }
-
-//                 break;
-
-//             case(waitPayload_t):
-//                 // printf("In wait payload\n");
-//                 // loop until a packet is received
-//                 ret = 0;
-//                 while(ret <= 0)
-//                 {
-//                     // wait for any kind of response from server
-//                     sock_clear_input_buffer();
-//                     // printf("Waiting for PAYLOAD from server\n");
-//                     socket_init_timeout();
-//                     sock_enable_timeout();
-//                     ret = sock_recv(1);
-//                     sock_disable_timeout();
-//                 }
-
-//                 // parse packet
-//                 packet_parse(sock_get_in_buf());
-//                 // printf("======PAYLOAD\n");
-//                 // packet_print_struct();
-
-//                 // verify correct payload
-//                 crc32_calc = crc_generate(
-//                     (char *) packet_get_struct(), 
-//                     packet_get_packet_size_for_crc()
-//                 );
-//                 if(crc32_calc != packet_get_crc32())
-//                 {
-//                     // data is corrupted, go back to step 1.
-//                     printf("CRC32 mismatch, corrupted packet!\n");
-//                     printf("PACKET CRC = %u | CALC CRC32 = %u\n", packet_get_crc32(), crc32_calc);
-//                     continue;
-//                 }
-
-//                 // check if we got an ACK
-//                 if ( strcmp(packet_get_payload(), "ACK") == 0 )
-//                 {
-//                     // printf("ACK Received!\nEOF\n");
-//                     event = evtFileTransComplete_t;
-//                     previous_state = waitPayload_t;
-//                     return;
-//                     // transmit_complete = 1;
-//                 }
-
-//                 // we got the same packet as before. don't save and just send an ACK
-//                 else if(last_sequence_number == packet_get_sequence_number())
-//                 {
-//                     printf("Repeat sequence number.\n");
-//                     event = evtPayloadReceived_t;
-//                     previous_state = waitPayload_t;
-//                     current_state = sendAck_t;
-//                 }
-
-//                 // otherwise, we got a normal payload, display the payload next
-//                 else
-//                 {
-//                     last_sequence_number = packet_get_sequence_number();
-//                     event = evtPayloadReceived_t;
-//                     previous_state = waitPayload_t;
-//                     current_state = displayPayload_t;
-//                 }
-//                 break;
-
-//             case(displayPayload_t):
-//             printf("Files on SERVER @ local directory:\n");
-//                 file_print_ls_buf(packet_get_payload());
-//                 event = evtPayloadReceived_t;
-//                 previous_state = displayPayload_t;
-//                 current_state = sendAck_t;
-//                 break;
-
-//             case(sendAck_t):
-//                 // generate ACK packet.
-//                 // printf("Generating ACK packet\n");
-//                 packet_write_sequence_number(0);
-//                 packet_write_payload_size(sizeof("ACK"));
-//                 packet_write_payload("ACK", packet_get_payload_size());
-//                 packet_write_crc32(
-//                     crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     )
-//                 );
-//                 ret = packet_generate();
-//                 // printf("======SENDING: ACK\n");
-//                 // packet_print_struct();
-
-//                 // send ACK packet 
-//                 //printf("Sending ACK\n");
-//                 ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
-
-//                 // we were just sending the final ACK, we are done
-//                 if(event == evtFileTransComplete_t)
-//                 {
-//                     //printf("sendAck: evtFileTransComplete\n");
-//                     previous_state = sendAck_t;
-//                     return;
-//                 }
-//                 // we have just sucessfully received a packet
-//                 else if(event == evtPayloadReceived_t)
-//                 {
-//                     //printf("sendAck: evtPayloadReceived\n");
-//                     // wait for next payload
-//                     total_packets++;
-//                     previous_state = sendAck_t;
-//                     current_state = waitPayload_t;    
-//                 }
-//                 // we just started, wait for first payload packet.
-//                 else if (event == evtNull_t)
-//                 {
-//                     //printf("sendAck: evtNull_t\n");
-//                     event = evtFileTransNotComplete_t;
-//                     previous_state = sendAck_t;
-//                     current_state = waitPayload_t;
-//                 }
-//                 else
-//                 {
-//                     printf("Error in sendAck\n");
-//                 }
-
-//                 break;
-
-//             default:
-//                 break;
-//         }
-//     }
-
-// }
-// /*******************************************************************************
-// * Server state machines
-// *******************************************************************************/
-// void sm_server_get()
-// {
-//     // we are sending the file in this case.
-//     int ret;
-//     int final_ack = 0;
-//     int transmit_complete = 0;
-//     uint32_t crc32_calc;
-//     uint32_t total_packets = 0;
-
-//     state_t previous_state = null_t;
-//     state_t current_state = sendAck_t;
-
-//     event_t event = evtNull_t;
-//     uint32_t sequence_number = 0;
-//     uint32_t last_sequece_number = 0;
-
-//     file_open(cli_get_user_param_buf(), 0);
-//     while(true)
-//     {
-//         switch(current_state)
-//         {
-//             case(sendAck_t):
-//                 // generate ACK packet.
-//                 // printf("Generating ACK packet\n");
-//                 packet_write_sequence_number(0);
-//                 packet_write_payload_size(sizeof("ACK"));
-//                 packet_write_payload("ACK", packet_get_payload_size());
-//                 packet_write_crc32(
-//                     crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     )
-//                 );
-//                 ret = packet_generate();
-//                 // printf("======SENDING: ACK\n");
-//                 // packet_print_struct();
-
-//                 // send ACK packet 
-//                 //printf("Sending ACK\n");
-//                 ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
-
-//                 // we were just sending the final ACK, we are done
-//                 if(event == evtFileTransComplete_t)
-//                 {
-//                     //printf("sendAck: evtFileTransComplete\n");
-//                     previous_state = sendAck_t;
-//                     current_state = logFileInfo_t; 
-//                 }
-//                 // we have just sucessfully received a packet
-//                 else if(event == evtPayloadReceived_t)
-//                 {
-//                     //printf("sendAck: evtPayloadReceived\n");
-//                     // wait for next payload
-//                     total_packets++;
-//                     previous_state = sendAck_t;
-//                     current_state = waitPayload_t;    
-//                 }
-//                 // we just started, wait for first payload packet.
-//                 else if (event == evtNull_t)
-//                 {
-//                     //printf("sendAck: evtNull_t\n");
-//                     event = evtFileTransNotComplete_t;
-//                     previous_state = sendAck_t;
-//                     current_state = transmitPayload_t;
-//                 }
-//                 else
-//                 {
-//                     printf("HMM\n");
-//                 }
-
-//                 break;
-
-//             case(transmitPayload_t):
-//                 // printf("In transmit payload\n");
+    // (2) Termiante worker thread.
+    printf("Terminating\r\n");
+    pthread_exit(0);
+
+}
+
+/*******************************************************************************
+ * DFC state machines
+ ******************************************************************************/
+// This function sends a GET request for `file_name` to the socket connection 
+// `fd` using user_name and password from `conf`.
+void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd)
+{
+    // TODO: ARMANDO
+    // 1. Create pkt containing file_name and GET cmd + other essential
+    //    variables from `conf`.
+    // 2. Send the command to `fd`
+    // 3. Wait for response tcp message.
+    // 4. Enter sm_receive() to obtain entierty of file.
+    uint32_t bytes_sent = 0;
+    uint32_t packet_size = 0;
+    char out_buffer[PACKET_SIZE];
+
+    // Generate the CMD header
+    Packet pkt = packet_get_default();
+
+    strcpy(pkt.user_name, "Amy");
+    strcpy(pkt.password, "KoolPass");
+    pkt.cmd_header = CMD_GET_PKT;
+    pkt.crc32_header = 1198457;
+    pkt.payload_header = 100;
+    pkt.payload[0] = '1';
+    pkt.payload[pkt.payload_header-1] = '1';
+
+    // Generate packet to send
+    packet_size = packet_convert_to_buffer(pkt, out_buffer);
+
+    // Send the packet
+    bytes_sent = sock_send(fd_dfs1, out_buffer, packet_size);
+
+    printf("packet_size: %d, bytes_sent: %d\r\n", packet_size, bytes_sent);
+
+    return;
+}
+
+// This function will send the `file_name` to socket connection `fd` with 
+// user_name and passowrd from `conf`.
+void sm_send(char *file_name, conf_results_t conf, fd_dfs_t fd)
+{
+    FILE *file;
+    uint32_t file_bytes_read;
+    uint32_t file_bytes_sent;
+    uint32_t out_buffer_size;
+    uint32_t bytes_sent;
+    char out_buffer[PACKET_SIZE];
+    char file_buffer[PAYLOAD_CHUNK_SIZE];
+
+    memset(out_buffer, 0, PACKET_SIZE);
+    memset(file_buffer, 0, PAYLOAD_CHUNK_SIZE);
+
+    // 1. Attempt to open the specified file.
+    file = file_open(file_name, 0);
+    if(file == NULL)
+    {
+        printf("%s does not exist\r\n", file_name);
+        return;
+    }
+
+    // 2. Generate initial packet
+    Packet pkt = packet_get_default();
+    strcpy(pkt.user_name, conf.user_name);
+    strcpy(pkt.password, conf.password);
+    pkt.cmd_header = CMD_PUT_PKT;
+    pkt.crc32_header = crc_generate_file(file);
+    strcpy(pkt.file_name, file_name);
+    pkt.payload_header = file_get_size(file);
+
+    // 2.5: Print pkt
+    packet_print(pkt);
+
+    // 4. Send packets
+    if(pkt.payload_header <= PAYLOAD_CHUNK_SIZE)
+    {
+        printf("The file will fit in one transfer\r\n");
+        // 5. Copy payload
+        file_read(file_buffer, file, pkt.payload_header);
+        memcpy(pkt.payload, file_buffer, pkt.payload_header);
+
+        // 6. Turn packet into a bytes buffer
+        out_buffer_size = packet_convert_to_buffer(pkt, out_buffer);
+
+        // 7. Send initial packet
+        bytes_sent = sock_send(fd.dfs1, out_buffer, out_buffer_size);
+        printf("Sent %d bytes out of %d bytes to DFS1\r\n", bytes_sent, out_buffer_size);
+    }  
+    else
+    {
+         printf("The file requires multiple transfers\r\n");
+
+        // 5. Copy payload
+        file_bytes_read = file_read(file_buffer, file, PAYLOAD_CHUNK_SIZE);
+        printf("file_bytes_read: %d\r\n", file_bytes_read);
+        memcpy(pkt.payload, file_buffer, PAYLOAD_CHUNK_SIZE);
+        // 6. Turn packet into a bytes buffer
+        out_buffer_size = packet_convert_to_buffer(pkt, out_buffer);
+        printf("out_buffer_size: %d\r\n", out_buffer_size);
         
-//                 if(!transmit_complete)
-//                 {
-//                     // Read a chunk from file
-//                     ret = file_read_chunk(packet_get_chunk_size());
-//                     // printf("file read returned %d bytes\n", ret);
-//                     if(ret != packet_get_chunk_size())
-//                     {
-//                         transmit_complete = 1;
-//                     }
+        // 7. Send initial packet
+        bytes_sent = sock_send(fd.dfs1, out_buffer, out_buffer_size);
 
-//                     // fill packet struct fields
-//                     packet_write_sequence_number(sequence_number);
-//                     packet_write_payload_size(ret);
-//                     packet_write_payload(
-//                         file_get_file_buf(), 
-//                         packet_get_payload_size()
-//                     );
-//                     packet_write_crc32(
-//                         crc_generate(
-//                             (char *) packet_get_struct(), 
-//                             packet_get_packet_size_for_crc()
-//                         )
-//                     );
+        // 8. Send the rest of the payload
+        file_bytes_sent = PAYLOAD_CHUNK_SIZE;
+        printf("Sent %d/%d bytes.\r\n", file_bytes_sent, pkt.payload_header);
+        while(file_bytes_sent < pkt.payload_header)
+        {
+            // 9. Clear buffers
+            memset(out_buffer, 0, PACKET_SIZE);
+            memset(file_buffer, 0, PAYLOAD_CHUNK_SIZE);
 
-//                     // generate packet buffer
-//                     ret = packet_generate();
-//                     // printf("====SENDING: PACKET");
-//                     // packet_print_struct();
+            // 10. Send a pure payload
+            if((pkt.payload_header - file_bytes_sent) < PAYLOAD_CHUNK_SIZE)
+            {
+                // 11. Copy payload
+                file_read(file_buffer, file, (pkt.payload_header - file_bytes_sent));
 
-//                     // prepare to transition to next state
-//                     event = evtAckNotRecv_t;
-//                     previous_state = transmitPayload_t;
-//                     current_state = waitAck_t;
-//                 }
-//                 else
-//                 {
-//                     file_close();
-//                     // generate ACK packet.
-//                     // printf("Generating ACK packet\n");
-//                     packet_write_sequence_number(0);
-//                     packet_write_payload_size(sizeof("ACK"));
-//                     packet_write_payload("ACK", packet_get_payload_size());
-//                     packet_write_crc32(
-//                         crc_generate(
-//                             (char *) packet_get_struct(), 
-//                             packet_get_packet_size_for_crc()
-//                         )
-//                     );
-//                     packet_generate();
-
-//                     final_ack = 1;
-//                     event = evtAckNotRecv_t;
-//                     previous_state = sendAck_t;
-//                     current_state = waitAck_t;
-//                 }
-//                 break;
-
-
-//             case(waitAck_t):
+                // 12. Send the pure payload
+                bytes_sent = sock_send(fd.dfs1, file_buffer, (pkt.payload_header - file_bytes_sent));
                 
-//                 // 1. Attempt to send packet and wait for response.
-//                 //    If no response is received within the timeout period
-//                 //    attempt to transmit again. Repeat until ACK is received.
-//                 ret = 0;
+                file_bytes_sent += (pkt.payload_header - file_bytes_sent);
+                printf("Sent: %d; File transfer: %d/%d sent\r\n", bytes_sent, file_bytes_sent, pkt.payload_header);
+            }
+            else
+            {
+                file_read(file_buffer, file, PAYLOAD_CHUNK_SIZE);
+                file_bytes_sent += PAYLOAD_CHUNK_SIZE;
 
-//                 // loop will terminate when ACK has been received.
-//                 while(event != evtAckRecv_t)
-//                 {
-//                     // break out of loop if some kind of response is received.
-//                     ret = 0;
-//                     sock_clear_input_buffer();
-//                     while(ret <= 0)
-//                     {
-//                         // send packet to server
-//                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
-//                         //printf("Sent PACKET\n");
+                bytes_sent = sock_send(fd.dfs1, file_buffer, PAYLOAD_CHUNK_SIZE);
+                printf("Sent: %d; File transfer: %d/%d sent\r\n", bytes_sent, file_bytes_sent, pkt.payload_header);
+            }
+        }
+    }
 
-//                         // wait for any kind of response from server
-//                         // printf("Waiting for ACK from server\n");
+    return;
+}
 
-//                         socket_init_timeout();
-//                         sock_enable_timeout();
-//                         ret = sock_recv(1);
-//                         sock_disable_timeout();
-//                     }
+// This function will receive a file from socket connection `fd`. The initial 
+// parameters of the file are provided to the function in `pkt`.
+void sm_receive(int fd, Packet pkt)
+{
+    FILE *file;
+    uint32_t bytes_saved = 0;
+    uint32_t bytes_recv = 0;
+    char in_buf[PAYLOAD_CHUNK_SIZE];
+    uint32_t file_bytes_recv = 0;
 
-//                     // parse the received message
-//                     packet_parse(sock_get_in_buf());
+    // Check if we got the size of the payload
+    if(pkt.payload_header == 0)
+    {
+        printf("No payload noted in payload_header\r\n");
+        return;
+    }
 
-//                     // verify that payload contents are correct (crc32 check)
-//                     crc32_calc = crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     );
-//                     if(crc32_calc != packet_get_crc32())
-//                     {
-//                         printf("CRC32 mismatch, corrupted packet!");
-//                         continue;
-//                     }
+    char file_path[FILE_NAME_SIZE + 21];
+    sprintf(file_path, "./%s/%s", dfs_name, pkt.file_name);
 
-//                     // check that the payload is ACK
-//                     if ( strcmp(packet_get_payload(), "ACK") != 0 )
-//                     {
-//                         // ack was not received. start over.
-//                         printf("ACK NOT RECEIVED\n");
-//                     }
-//                     else
-//                     {
-//                         // printf("Got ACK\n");
-//                         event = evtAckRecv_t;
-//                     }
-//                 }
+    // Open/create file
+    file = file_open_create(file_path, 1);
+    if(file == NULL)
+    {
+        printf("Failed to create file %s\r\n", file_path);
+        return;
+    }
 
-//                 // if we were sending the final ack, go to log info,
-//                 // otherwise, prepare to send another payload packet.
-//                 if(transmit_complete && final_ack)
-//                 {
-//                     previous_state = waitAck_t;
-//                     current_state = logFileInfo_t;
-//                 }
-//                 else if(previous_state == transmitPayload_t)
-//                 {
-//                     sequence_number++;
-//                     last_sequece_number = sequence_number;
-//                     previous_state = waitAck_t;
-//                     current_state = transmitPayload_t;
-//                 }
-//                 else
-//                 {
-//                     printf("HUH\n");
-//                 }
 
-//                 break;
+    if(pkt.payload_header > PAYLOAD_CHUNK_SIZE)
+    {
+        file_bytes_recv = PAYLOAD_CHUNK_SIZE;
 
-//             case(logFileInfo_t):
-//                 printf("===PRINTING FILE STATS===\n");
-//                 printf("Last sequence number: %d\n", last_sequece_number);
-//                 file_open(cli_get_user_param_buf(), 0);
-//                 printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
+        // Write initial payload
+        bytes_saved = file_write(pkt.payload, file, PAYLOAD_CHUNK_SIZE);
+        printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
+        file_bytes_recv = PAYLOAD_CHUNK_SIZE;
+        while(file_bytes_recv < pkt.payload_header)
+        {
+            memset(in_buf, 0, PAYLOAD_CHUNK_SIZE);
+            bytes_recv = sock_read(fd, in_buf, PAYLOAD_CHUNK_SIZE, 0);
+            bytes_saved += file_write(in_buf, file, bytes_recv);
+            printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
+            file_bytes_recv += bytes_recv;
+        }
+    }
+    else
+    {
+        // Write initial payload
+        bytes_saved = file_write((char *)pkt.payload, file, pkt.payload_header);
+        printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
 
-//                 // Generate the complete files CRC32
-//                 crc32_calc = crc_generate_file(file_get_fp());
-//                 printf("File CRC: %u\n", crc32_calc);
-//                 file_close();
-//                 return;
+    }
+    file_close(file);
+    printf("Exiting receive command\r\n");
+    return;
 
-//                 break;
-
-//             default:
-//                 printf("State machine error\n");
-//                 break;
-//         }
-//     }
-// }
-// void sm_server_put()
-// {
-//     int ret;
-//     // int transmit_complete = 0;
-//     uint32_t crc32_calc;
-//     uint32_t last_sequence_number;
-//     uint32_t total_packets = 0;
-
-//     state_t previous_state = null_t; if(previous_state != null_t) {};
-//     state_t current_state = sendAck_t;
-
-//     event_t event = evtNull_t;
-
-//     printf("Performing PUT command with param \"%s\"\n", cli_get_user_param_buf());
-//     file_open(cli_get_user_param_buf(), 1);
-
-//     while(true)
-//     {
-//         switch(current_state)
-//         {
-//             case(sendAck_t):
-//                 // generate ACK packet.
-//                 // printf("Generating ACK packet\n");
-//                 packet_write_sequence_number(0);
-//                 packet_write_payload_size(sizeof("ACK"));
-//                 packet_write_payload("ACK", packet_get_payload_size());
-//                 packet_write_crc32(
-//                     crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     )
-//                 );
-//                 ret = packet_generate();
-//                 // printf("======SENDING: ACK\n");
-//                 // packet_print_struct();
-
-//                 // send ACK packet 
-//                 //printf("Sending ACK\n");
-//                 ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
-
-//                 // we were just sending the final ACK, we are done
-//                 if(event == evtFileTransComplete_t)
-//                 {
-//                     //printf("sendAck: evtFileTransComplete\n");
-//                     previous_state = sendAck_t;
-//                     current_state = logFileInfo_t; 
-//                 }
-//                 // we have just sucessfully received a packet
-//                 else if(event == evtPayloadReceived_t)
-//                 {
-//                     //printf("sendAck: evtPayloadReceived\n");
-//                     // wait for next payload
-//                     total_packets++;
-//                     previous_state = sendAck_t;
-//                     current_state = waitPayload_t;    
-//                 }
-//                 // we just started, wait for first payload packet.
-//                 else if (event == evtNull_t)
-//                 {
-//                     //printf("sendAck: evtNull_t\n");
-//                     event = evtFileTransNotComplete_t;
-//                     previous_state = sendAck_t;
-//                     current_state = waitPayload_t;
-//                 }
-//                 else
-//                 {
-//                     printf("HMM\n");
-//                 }
-
-//                 break;
-
-//             case(waitPayload_t):
-//                 // loop until a packet is received
-//                 ret = 0;
-//                 while(ret <= 0)
-//                 {
-//                     // wait for any kind of response from server
-//                     sock_clear_input_buffer();
-//                     //printf("Waiting for PAYLOAD from server\n");
-//                     socket_init_timeout();
-//                     sock_enable_timeout();
-//                     ret = sock_recv(1);
-//                     sock_disable_timeout();
-//                 }
-
-//                 // parse packet
-//                 packet_parse(sock_get_in_buf());
-//                 // printf("======PAYLOAD\n");
-//                 // packet_print_struct();
-
-//                 // verify correct payload
-//                 crc32_calc = crc_generate(
-//                     (char *) packet_get_struct(), 
-//                     packet_get_packet_size_for_crc()
-//                 );
-//                 if(crc32_calc != packet_get_crc32())
-//                 {
-//                     // data is corrupted, go back to step 1.
-//                     printf("CRC32 mismatch, corrupted packet!\n");
-//                     printf("PACKET CRC = %u | CALC CRC32 = %u\n", packet_get_crc32(), crc32_calc);
-//                     continue;
-//                 }
-
-//                 // // check if we got a command, if so, re ACK the message
-//                 // if(strstr(packet_get_payload(), "put") != NULL)
-//                 // {
-//                 //     printf(">>>>FOUND A COMMAND\n");
-//                 //     event = evtNull_t;
-//                 //     previous_state = waitPayload_t;
-//                 //     current_state = sendAck_t;
-//                 // }
-//                 // Check if we got an ACK packet (means end of transmission)
-//                 if ( strcmp(packet_get_payload(), "ACK") == 0 )
-//                 {
-//                     printf("ACK Received!\nEOF\n");
-//                     event = evtFileTransComplete_t;
-//                     previous_state = waitPayload_t;
-//                     current_state = sendAck_t;
-//                     // transmit_complete = 1;
-//                     file_close();
-//                 }
-//                 // we got the same packet as before. don't save and just send an ACK
-//                 else if(last_sequence_number == packet_get_sequence_number())
-//                 {
-//                     printf("repeat sequence number\n");
-//                     event = evtPayloadReceived_t;
-//                     previous_state = waitPayload_t;
-//                     current_state = sendAck_t;
-//                 }
-//                 // otherwise, we got a normal payload and carry on saving
-//                 else
-//                 {
-//                     last_sequence_number = packet_get_sequence_number();
-//                     event = evtPayloadReceived_t;
-//                     previous_state = waitPayload_t;
-//                     current_state = savePayload_t;
-//                 }
-//                 break;
-
-//             case(savePayload_t):
-//                 // save payload to file
-//                 // printf("GOING TO WRITE TO FILE\n");
-//                 ret = file_write_chunk(
-//                     packet_get_payload(), 
-//                     packet_get_payload_size()
-//                 );
-//                 if(ret != packet_get_payload_size())
-//                 {
-//                     printf("ERROR: Not all bytes written to file.\n");
-//                     event = evtPayloadNotReceived_t;
-//                     previous_state = savePayload_t;
-//                     current_state = waitPayload_t;
-//                 }
-//                 else
-//                 {
-//                     // printf("Wrote %d bytes to file\n", ret);
-//                     event = evtPayloadReceived_t;
-//                     previous_state = savePayload_t;
-//                     current_state = sendAck_t;   
-//                 }
-
-//                 break;
-
-//             case(logFileInfo_t):
-//                 printf("===PRINTING FILE STATS===\n");
-//                 printf("last sequence number received: %u\n", last_sequence_number);
-//                 printf("total packets received: %u\n", total_packets);
-//                 file_open(cli_get_user_param_buf(), 0);
-//                 printf("%s size (bytes): %d\n", cli_get_user_param_buf(), file_get_size());
-
-//                 // Generate the complete files CRC32
-//                 crc32_calc = crc_generate_file(file_get_fp());
-//                 printf("File CRC: %u\n", crc32_calc);
-//                 file_close();
-//                 return;
-
-//                 break;
-
-//             default:
-//                 printf("State machine error\n");
-//                 break;
-//         }
-//     }
-// }
-// void sm_server_ls()
-// {
-//     int ret;
-//     int final_ack = 0;
-//     int payload_size;
-//     int transmit_complete = 0;
-//     uint32_t crc32_calc;
-//     // uint32_t last_sequence_number;
-//     uint32_t total_packets = 0;
-
-//     state_t previous_state = null_t; if(previous_state != null_t) {};
-//     state_t current_state = sendAck_t;
-
-//     event_t event = evtNull_t;
-
-//     // printf("Performing LS command\n");
-
-//     while(true)
-//     {
-//         switch(current_state)
-//         {
-//             case(sendAck_t):
-//                 // generate ACK packet.
-//                 // printf("Generating ACK packet\n");
-//                 packet_write_sequence_number(0);
-//                 packet_write_payload_size(sizeof("ACK"));
-//                 packet_write_payload("ACK", packet_get_payload_size());
-//                 packet_write_crc32(
-//                     crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     )
-//                 );
-//                 ret = packet_generate();
-//                 // printf("======SENDING: ACK\n");
-//                 // packet_print_struct();
-
-//                 // send ACK packet 
-//                 // printf("Sending ACK\n");
-//                 ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
-
-//                 // we just started, create first payload.
-//                 if (event == evtNull_t)
-//                 {
-//                     //printf("sendAck: evtNull_t\n");
-//                     event = evtFileTransNotComplete_t;
-//                     previous_state = sendAck_t;
-//                     current_state = transmitPayload_t;
-//                 }
-//                 // we were just sending the final ACK, we are done
-//                 else if(event == evtFileTransComplete_t)
-//                 {
-//                     //printf("sendAck: evtFileTransComplete\n");
-//                     final_ack = 1;
-//                     return;
-//                     previous_state = sendAck_t;
-//                     current_state = waitAck_t; 
-//                 }
-//                 // we have just sucessfully received a packet
-//                 else if(event == evtPayloadReceived_t)
-//                 {
-//                     //printf("sendAck: evtPayloadReceived\n");
-//                     // wait for next payload
-//                     total_packets++;
-//                     previous_state = sendAck_t;
-//                     current_state = waitPayload_t;    
-//                 }
-
-//                 else
-//                 {
-//                     printf("HMM\n");
-//                 }
-
-//                 break;
-
-//             case(transmitPayload_t):
-
-//                 if(!transmit_complete)
-//                 {
-//                     // printf("Generating Payload\n");
-//                     // create the packet to send
-//                     if((payload_size = file_get_ls()) > 0)
-//                     {
-//                         if(payload_size < packet_get_chunk_size())
-//                         {  
-//                             packet_write_sequence_number(0);
-//                             packet_write_payload_size(payload_size);
-//                             packet_write_payload(file_get_file_buf(), packet_get_payload_size());
-//                             packet_write_crc32(
-//                                 crc_generate(
-//                                     (char *) packet_get_struct(), 
-//                                     packet_get_packet_size_for_crc()
-//                                 )
-//                             );
-//                             // packet_print_struct();
-//                             ret = packet_generate();  
-//                             transmit_complete = 1;
-//                         }
-//                         else
-//                         {
-//                             // payload is too big to send in one frame.
-//                             // will need to handle case to send in multiplie frames.
-//                         }
-//                     }
-//                     event = evtAckNotRecv_t;
-//                     previous_state = transmitPayload_t;
-//                     current_state = waitAck_t;
-//                 }
-//                 // we are done sending payloads, now send ACK to signal
-//                 // end of transmission.
-//                 else
-//                 {
-//                     packet_write_sequence_number(0);
-//                     packet_write_payload_size(sizeof("ACK"));
-//                     packet_write_payload("ACK", packet_get_payload_size());
-//                     packet_write_crc32(
-//                         crc_generate(
-//                             (char *) packet_get_struct(), 
-//                             packet_get_packet_size_for_crc()
-//                         )
-//                     );
-//                     ret = packet_generate();
-//                     event = evtFileTransComplete_t;
-//                     previous_state = transmitPayload_t;
-//                     current_state = waitAck_t;   
-//                 }
-//                 break;
-
-//            case(waitAck_t):
-                
-//                 // 1. Attempt to send packet and wait for response.
-//                 //    If no response is received within the timeout period
-//                 //    attempt to transmit again. Repeat until ACK is received.
-//                 ret = 0;
-
-//                 // loop will terminate when ACK has been received.
-//                 while(event != evtAckRecv_t)
-//                 {
-//                     // break out of loop if some kind of response is received.
-//                     ret = 0;
-//                     sock_clear_input_buffer();
-//                     while(ret <= 0)
-//                     {
-//                         // send packet to server
-//                         ret = sock_sendto(packet_get_buf(), packet_get_total_size(), false);
-//                         // printf("Sent PACKET\n");
-
-//                         // wait for any kind of response from server
-//                         // printf("Waiting for ACK from server\n");
-
-//                         socket_init_timeout();
-//                         sock_enable_timeout();
-//                         ret = sock_recv(1);
-//                         sock_disable_timeout();
-//                     }
-
-//                     // parse the received message
-//                     packet_parse(sock_get_in_buf());
-
-//                     // verify that payload contents are correct (crc32 check)
-//                     crc32_calc = crc_generate(
-//                         (char *) packet_get_struct(), 
-//                         packet_get_packet_size_for_crc()
-//                     );
-//                     if(crc32_calc != packet_get_crc32())
-//                     {
-//                         printf("CRC32 mismatch, corrupted packet!");
-//                         continue;
-//                     }
-
-//                     // check that the payload is ACK
-//                     if ( strcmp(packet_get_payload(), "ACK") != 0 )
-//                     {
-//                         // ack was not received. start over.
-//                         printf("ACK NOT RECEIVED\n");
-//                     }
-//                     else
-//                     {
-//                         // printf("Got ACK\n");
-//                         event = evtAckRecv_t;
-//                     }
-//                 }
-
-//                 // if we were sending the final ack, go to log info,
-//                 // otherwise, prepare to send another payload packet.
-//                 if(transmit_complete)
-//                 {
-//                     if(final_ack)
-//                     {
-//                         return;
-//                     }
-//                     event = evtFileTransComplete_t;
-//                     previous_state = waitAck_t;
-//                     current_state = sendAck_t;
-//                 }
-//                 else if(previous_state == transmitPayload_t)
-//                 {
-//                     // sequence_number++;
-//                     // last_sequece_number = sequence_number;
-//                     previous_state = waitAck_t;
-//                     current_state = transmitPayload_t;
-//                 }
-//                 else
-//                 {
-//                     printf("HUH\n");
-//                 }
-
-//                 break;
-
-//             default:
-//                 printf("State machine error\n");
-//                 break;
-//         }
-//     }  
-// }
+}

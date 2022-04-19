@@ -2,6 +2,9 @@
 #include <stdio.h>
 #include <string.h>
 
+/*******************************************************************************
+ * Initialization functions
+ ******************************************************************************/
 conf_results_t conf_parsing_default_struct()
 {
     conf_results_t res;
@@ -41,7 +44,166 @@ conf_results_dfs_t conf_parsing_default_struct_dfs()
     return res;
 }
 
-// assume a standard format of .conf file for dfc
+
+/*******************************************************************************
+ * Utilities
+ ******************************************************************************/
+void conf_parsing_remove_cr_nl(char *buf, int size)
+{
+    for(int idx = 0; idx < size; idx++)
+    {
+        if(buf[idx] == '\r')
+        {
+            buf[idx] = '\0';
+        }
+
+        if(buf[idx] == '\n')
+        {
+            buf[idx] = '\0';
+        }
+    }
+}
+
+
+
+/*******************************************************************************
+ * Parsing methods
+ ******************************************************************************/
+conf_results_dfs_t conf_parsing_get_config_dfs(FILE *fd)
+{
+    conf_results_dfs_t res = conf_parsing_default_struct_dfs();
+    char *token = NULL;
+    char *line = NULL;
+    size_t len = 0;
+    ssize_t read;
+
+    /***************************************************************************
+     * Parse first user
+     **************************************************************************/
+    read = getline(&line, &len, fd);
+    if(read == -1)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    //  first token is user1
+    token = strtok(line, " ");
+    if(token == NULL)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    conf_parsing_remove_cr_nl(token, strlen(token));
+    strcpy(res.user1, token);
+    // second token is pass1
+    token = strtok(NULL, " ");
+    if(token == NULL)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    conf_parsing_remove_cr_nl(token, strlen(token));
+    strcpy(res.pass1, token);
+    
+    /***************************************************************************
+     * Parse second user
+     **************************************************************************/
+    read = getline(&line, &len, fd);
+    if(read == -1)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    //  first token is user2
+    token = strtok(line, " ");
+    if(token == NULL)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    conf_parsing_remove_cr_nl(token, strlen(token));
+    strcpy(res.user2, token);
+    // second token is pass2
+    token = strtok(NULL, " ");
+    if(token == NULL)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    conf_parsing_remove_cr_nl(token, strlen(token));
+    strcpy(res.pass2, token);   
+
+    /***************************************************************************
+     * Parse third user
+     **************************************************************************/
+    read = getline(&line, &len, fd);
+    if(read == -1)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    //  first token is user3
+    token = strtok(line, " ");
+    if(token == NULL)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    conf_parsing_remove_cr_nl(token, strlen(token));
+    strcpy(res.user3, token);
+    // second token is pass3
+    token = strtok(NULL, " ");
+    if(token == NULL)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    conf_parsing_remove_cr_nl(token, strlen(token));
+    strcpy(res.pass3, token);
+
+    /***************************************************************************
+     * Parse fourth user
+     **************************************************************************/
+    read = getline(&line, &len, fd);
+    if(read == -1)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    //  first token is user4
+    token = strtok(line, " ");
+    if(token == NULL)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    conf_parsing_remove_cr_nl(token, strlen(token));
+    strcpy(res.user4, token);
+    // second token is pass4
+    token = strtok(NULL, " ");
+    if(token == NULL)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    conf_parsing_remove_cr_nl(token, strlen(token));
+    strcpy(res.pass4, token);
+
+    /***************************************************************************
+     * Parse fifth user
+     **************************************************************************/
+    read = getline(&line, &len, fd);
+    if(read == -1)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    //  first token is user5
+    token = strtok(line, " ");
+    if(token == NULL)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    conf_parsing_remove_cr_nl(token, strlen(token));
+    strcpy(res.user5, token);
+    // second token is pass5
+    token = strtok(NULL, " ");
+    if(token == NULL)
+    {
+        return conf_parsing_default_struct_dfs();
+    }
+    conf_parsing_remove_cr_nl(token, strlen(token));
+    strcpy(res.pass5, token);
+    return res;
+}
+
 conf_results_t conf_parsing_get_config_dfc(FILE *fd)
 {
     conf_results_t res = conf_parsing_default_struct();
@@ -239,6 +401,10 @@ conf_results_t conf_parsing_get_config_dfc(FILE *fd)
     return res;
 }
 
+
+/*******************************************************************************
+ * Print parsing results.
+ ******************************************************************************/
 void conf_parsing_print_struct(conf_results_t conf)
 {
     printf("dsf1_addr: %s\r\n", conf.dfs1_addr);
@@ -266,158 +432,4 @@ void conf_parsing_print_struct_dfs(conf_results_dfs_t conf)
     printf("user5: %s\r\n", conf.user5);
     printf("pass5: %s\r\n", conf.pass5);
 
-}
-
-void conf_parsing_remove_cr_nl(char *buf, int size)
-{
-    for(int idx = 0; idx < size; idx++)
-    {
-        if(buf[idx] == '\r')
-        {
-            buf[idx] = '\0';
-        }
-
-        if(buf[idx] == '\n')
-        {
-            buf[idx] = '\0';
-        }
-    }
-}
-
-
-
-// assume a standard format of .conf file for dfs
-conf_results_dfs_t conf_parsing_get_config_dfs(FILE *fd)
-{
-    conf_results_dfs_t res = conf_parsing_default_struct_dfs();
-    char *token = NULL;
-    char *line = NULL;
-    size_t len = 0;
-    ssize_t read;
-
-    /***************************************************************************
-     * Parse first user
-     **************************************************************************/
-    read = getline(&line, &len, fd);
-    if(read == -1)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    //  first token is user1
-    token = strtok(line, " ");
-    if(token == NULL)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    conf_parsing_remove_cr_nl(token, strlen(token));
-    strcpy(res.user1, token);
-    // second token is pass1
-    token = strtok(NULL, " ");
-    if(token == NULL)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    conf_parsing_remove_cr_nl(token, strlen(token));
-    strcpy(res.pass1, token);
-    
-    /***************************************************************************
-     * Parse second user
-     **************************************************************************/
-    read = getline(&line, &len, fd);
-    if(read == -1)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    //  first token is user2
-    token = strtok(line, " ");
-    if(token == NULL)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    conf_parsing_remove_cr_nl(token, strlen(token));
-    strcpy(res.user2, token);
-    // second token is pass2
-    token = strtok(NULL, " ");
-    if(token == NULL)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    conf_parsing_remove_cr_nl(token, strlen(token));
-    strcpy(res.pass2, token);   
-
-    /***************************************************************************
-     * Parse third user
-     **************************************************************************/
-    read = getline(&line, &len, fd);
-    if(read == -1)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    //  first token is user3
-    token = strtok(line, " ");
-    if(token == NULL)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    conf_parsing_remove_cr_nl(token, strlen(token));
-    strcpy(res.user3, token);
-    // second token is pass3
-    token = strtok(NULL, " ");
-    if(token == NULL)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    conf_parsing_remove_cr_nl(token, strlen(token));
-    strcpy(res.pass3, token);
-
-    /***************************************************************************
-     * Parse fourth user
-     **************************************************************************/
-    read = getline(&line, &len, fd);
-    if(read == -1)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    //  first token is user4
-    token = strtok(line, " ");
-    if(token == NULL)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    conf_parsing_remove_cr_nl(token, strlen(token));
-    strcpy(res.user4, token);
-    // second token is pass4
-    token = strtok(NULL, " ");
-    if(token == NULL)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    conf_parsing_remove_cr_nl(token, strlen(token));
-    strcpy(res.pass4, token);
-
-    /***************************************************************************
-     * Parse fifth user
-     **************************************************************************/
-    read = getline(&line, &len, fd);
-    if(read == -1)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    //  first token is user5
-    token = strtok(line, " ");
-    if(token == NULL)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    conf_parsing_remove_cr_nl(token, strlen(token));
-    strcpy(res.user5, token);
-    // second token is pass5
-    token = strtok(NULL, " ");
-    if(token == NULL)
-    {
-        return conf_parsing_default_struct_dfs();
-    }
-    conf_parsing_remove_cr_nl(token, strlen(token));
-    strcpy(res.pass5, token);
-    return res;
 }

@@ -1,160 +1,174 @@
 #include <stdio.h>
 #include <stdint.h>
 #include <string.h>
+#include <stdbool.h>
 
 #include "packet.h"
-
-/*
- * The way to use this library is to first load the packet struct with:
- *      * frame number (uint32_t)
- *      * payload size (uint32_t)
- *      * payload      (char array[<=MAX_PAYLOAD])
- *      * crc32        (uint32_t)
- * Using the packet_write_*() commands.
- * 
- * Then, after loading the struct, use packet_generate() to populate the char 
- * array which will be transmitted via UDP.
- * 
- * On the receiving device, the usage is to use packet_parse() to populate
- * the packet struct. Packet struct fields can then be accessed using the 
- * packet_get_*() methods.
- * 
- * Use https://crccalc.com/ to verify generated crc32 values.
- */
-
-// Struct for holding parsed packet contents
-static Packet packet = {0};
-// Char array for holding unparsed packet contents
-static char packet_buf[MAX_PAYLOAD];
 
 /*******************************************************************************
 * Functions for generating and parsing packets
 *******************************************************************************/
-uint32_t packet_generate()
+Packet packet_get_default()
 {
-    // clear packet_buf
-    memset(packet_buf, 0, MAX_PAYLOAD);
+    Packet pkt;
 
-    // copy sequence number field into first 4 bytes of packet_buf
-    memcpy(packet_buf, &packet.sequence_number, sizeof(packet.sequence_number));
+    memset(&pkt, 0, sizeof(pkt));
 
-    // copy size field into second 4 bytes of packet_buf
-    memcpy(packet_buf + sizeof(packet.sequence_number), &packet.payload_size, sizeof(packet.payload_size));
+    pkt.user_name[0]   = '\0';
+    pkt.password[0]    = '\0';
+    pkt.cmd_header     = CMD_NULL_PKT;
+    pkt.crc32_header   = 0;
+    pkt.file_name[0]      = '\0';
+    pkt.payload_header = 0;
+    pkt.payload[0]     = 0;
 
-    // copy payload into packet_buf
-    memcpy(packet_buf + sizeof(packet.sequence_number) + sizeof(packet.payload_size), packet.payload, packet.payload_size);
-
-    // copy crc32 into last 4 bytes of packet_buf
-    memcpy((packet_buf + sizeof(packet.sequence_number) + packet.payload_size + sizeof(packet.payload_size)), &packet.crc32, sizeof(packet.crc32));
-
-    //             4 bytes                +                 4 bytes     + <=500 bytes  +    4 bytes
-    return sizeof(packet.sequence_number) + sizeof(packet.payload_size) + packet.payload_size + sizeof(packet.crc32);
+    return pkt;
 }
 
-
-// Used by receiving device. Used to parse a buffer into the packet struct.
-void packet_parse(char *buf)
+uint32_t packet_convert_to_buffer(Packet pkt, char *buffer)
 {
-    // copy sequence number field
-    memcpy(&packet.sequence_number, buf, sizeof(packet.sequence_number));
-    // copy size field
-    memcpy(&packet.payload_size, buf + sizeof(packet.sequence_number), sizeof(packet.payload_size));
-    // copy payload
-    memcpy(packet.payload, sizeof(packet.sequence_number) + sizeof(packet.payload_size) + buf, packet.payload_size);
-    // copy crc32 field 
-    memcpy(&packet.crc32, sizeof(packet.sequence_number) + sizeof(packet.payload_size) + buf + packet.payload_size, sizeof(packet.crc32));
+    uint32_t offset = 0;
 
+    // Get user_name
+    memcpy(buffer+offset, &pkt.user_name, USER_NAME_SIZE);
+    offset += USER_NAME_SIZE;
+
+    // Get password
+    memcpy(buffer+offset, &pkt.password, PASSWORD_SIZE);
+    offset += PASSWORD_SIZE;  
+
+    // Get cmd_header
+    memcpy(buffer+offset, &pkt.cmd_header, CMD_CODE);
+    offset += CMD_CODE;  
+
+    // Get crc32_header
+    memcpy(buffer+offset, &pkt.crc32_header, CRC32_HEADER);
+    offset += CRC32_HEADER;  
+
+    // Get file_name
+    memcpy(buffer+offset, pkt.file_name, FILE_NAME_SIZE);
+    offset += FILE_NAME_SIZE;  
+
+    // Get payload_header
+    memcpy(buffer+offset, &pkt.payload_header, PAYLOAD_HEADER);
+    offset += PAYLOAD_HEADER; 
+
+    // Get payload
+    if(pkt.payload_header > 0 && pkt.payload_header <= PAYLOAD_CHUNK_SIZE)
+    {
+        memcpy(buffer+offset, pkt.payload, pkt.payload_header);
+        offset += pkt.payload_header;   
+    }
+    else if(pkt.payload_header > PAYLOAD_CHUNK_SIZE)
+    {
+        memcpy(buffer+offset, pkt.payload, PAYLOAD_CHUNK_SIZE);
+        offset += PAYLOAD_CHUNK_SIZE;     
+    }
+
+    return offset;
 }
-
-
 /*******************************************************************************
-* Functions for getting and writing to packet struct
+* Functions for parsing packets from buffer
 *******************************************************************************/
-char *packet_get_payload()
+Packet packet_parse_packet(char *buffer, uint32_t buffer_size)
 {
-    return packet.payload;
+    uint32_t offset = 0;
+    Packet pkt = packet_get_default();
+
+    if(buffer_size > PACKET_SIZE)
+    {
+        return pkt;
+    }
+
+    // Get user_name
+    memcpy(pkt.user_name, buffer+offset, USER_NAME_SIZE);
+    offset += USER_NAME_SIZE;
+
+    // Get password
+    memcpy(pkt.password, buffer+offset, PASSWORD_SIZE);
+    offset += PASSWORD_SIZE;  
+
+    // Get cmd_header
+    memcpy(&pkt.cmd_header, buffer+offset, CMD_CODE);
+    offset += CMD_CODE;  
+
+    // Get crc32_header
+    memcpy(&pkt.crc32_header, buffer+offset, CRC32_HEADER);
+    offset += CRC32_HEADER;  
+
+    // Get file_name 
+    memcpy(pkt.file_name, buffer+offset, FILE_NAME_SIZE);
+    offset += FILE_NAME_SIZE;  
+
+    // Get payload_header
+    memcpy(&pkt.payload_header, buffer+offset, PAYLOAD_HEADER);
+    offset += PAYLOAD_HEADER; 
+
+    // Get payload
+    if(pkt.payload_header > 0 && pkt.payload_header <= PAYLOAD_CHUNK_SIZE)
+    {
+        memcpy(pkt.payload, buffer+offset, pkt.payload_header);
+        offset += pkt.payload_header;   
+    }
+    else if(pkt.payload_header > PAYLOAD_CHUNK_SIZE)
+    {
+        memcpy(pkt.payload, buffer+offset, PAYLOAD_CHUNK_SIZE);
+        offset += PAYLOAD_CHUNK_SIZE; 
+    }
+
+    return pkt;
 }
 
-uint32_t packet_get_payload_size()
-{
-    return packet.payload_size;
-}
-
-uint32_t packet_get_crc32()
-{
-    return packet.crc32;
-}
-
-uint32_t packet_get_sequence_number()
-{
-    return packet.sequence_number;
-}
-
-void packet_write_payload(char *buf, uint32_t size)
-{
-    memset(packet.payload, 0, CHUNK_SIZE);
-    memcpy(packet.payload, buf, size);
-}
-
-void packet_write_payload_size(uint32_t size)
-{
-    packet.payload_size = size;
-}
-
-void packet_write_crc32(uint32_t crc32)
-{
-    packet.crc32 = crc32;
-}
-
-void packet_write_sequence_number(uint32_t size)
-{
-    packet.sequence_number = size;
-}
-
-char *packet_get_buf()
-{
-    return packet_buf;
-}
-
-uint32_t packet_get_packet_size_for_crc()
-{
-    return sizeof(packet.sequence_number) + sizeof(packet.payload_size) + packet.payload_size;
-}
-
-uint32_t packet_get_total_size()
-{
-    return sizeof(packet.sequence_number) + sizeof(packet.payload_size) + packet.payload_size + sizeof(packet.crc32);
-}
-
-Packet *packet_get_struct()
-{
-    return &packet;
-}
 /*******************************************************************************
 * Utility functions
 *******************************************************************************/
-void packet_print(char *buf, uint32_t size)
+bool packet_is_default(Packet pkt)
 {
-    int i = 0;
-    while(size)
+    if(pkt.user_name[0] != '\0')
     {
-        printf("%02x ", buf[i] & 0xFF);
-        size--;
-        i++;
+        return false;
     }
-    printf("\n");
+
+    if(pkt.password[0] != '\0')
+    {
+        return false;
+    }
+
+    if(pkt.cmd_header != CMD_NULL_PKT)
+    {
+        return false;
+    }
+
+    if(pkt.crc32_header != 0)
+    {
+        return false;
+    }
+
+    if(pkt.file_name[0] != '\0')
+    {
+        return false;
+    }
+
+    if(pkt.payload_header != 0)
+    {
+        return false;
+    }
+
+    if(pkt.payload[0] != '\0')
+    {
+        return false;
+    }
+
+    return true;
 }
 
-void packet_print_struct()
+void packet_print(Packet pkt)
 {
-    printf("PACKET SEQUENCE NUMBER: %u\n", packet.sequence_number);
-    printf("SIZE OF PAYLOAD: %u\n", packet.payload_size);
-    printf("PAYLOAD CONTENTS:\n");
-    packet_print(packet.payload, packet.payload_size);
-    printf("PACKET CRC32: %u\n", packet.crc32);
-}
-
-uint32_t packet_get_chunk_size()
-{
-    return CHUNK_SIZE;
+    printf("\tPRINTING PKT CONTENTS\r\n");
+    printf("\tuser_name: %s\r\n", pkt.user_name);
+    printf("\tpassword: %s\r\n", pkt.password);
+    printf("\tcmd_header: %d\r\n", pkt.cmd_header);
+    printf("\tcrc32_header: %u\r\n", pkt.crc32_header);
+    printf("\tfile_name: %s\r\n", pkt.file_name);
+    printf("\tpayload_header: %d\r\n", pkt.payload_header);   
 }

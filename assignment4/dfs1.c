@@ -4,14 +4,16 @@
 #include "./include/socket.h"
 #include "./include/file.h"
 #include "./include/conf_parsing.h"
+#include "./include/state_machine.h"
 
-const char *dfs_name = "DFS1";
-const char *dfs_dir = "./DFS1";
+char *dfs_name = "DFS1";
+char *dfs_dir = "./DFS1";
 char *dfs_conf_name = "dfs.conf";
+
+
 int main(int argc, char *argv[])
 {
     int sockfd;
-    int fd_client;
     FILE *fd_conf;
     DIR *dir = NULL;
 
@@ -25,7 +27,7 @@ int main(int argc, char *argv[])
     // Get port argument
     char *dfs_port = argv[1];
 
-    // check if dfs# exists
+    // Open or create dfs# directory.
     dir = file_open_dir(dfs_dir);
     if(dir == NULL)
     {
@@ -33,7 +35,7 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    // attempt to open dfs.conf
+    // Attempt to open dfs.conf
     fd_conf = file_open(dfs_conf_name, 0);
     if(fd_conf == NULL)
     {
@@ -41,31 +43,24 @@ int main(int argc, char *argv[])
         return 0;
     }
 
-    // parse dfc_conf
+    // parse dfs_conf
     conf_results_dfs_t conf = conf_parsing_get_config_dfs(fd_conf);
     conf_parsing_print_struct_dfs(conf);
 
-
+    // Bind to port
     printf("%s: Binding to port %s\r\n", dfs_name, dfs_port);
     sockfd = sock_bind_to_port(dfs_port);
-
     if(sockfd == -1)
     {
         printf("%s: Failed to bind to port %s.\r\n", dfs_name, dfs_port);
         return 0;
     }
 
-    fd_client = sock_wait_for_connection(sockfd);
-    if(fd_client == -1)
-    {
-        printf("%s: Failed to connect with client.\r\n", dfs_name);
-        return 0;
-    }
+    // create thread
+    sm_server(sockfd);
 
-    printf("%s: Got connection!\r\n", dfs_name);
-    sock_close(fd_client);
+    // shouldn't get here
     sock_close(sockfd);
-
 
     return 0;
 }

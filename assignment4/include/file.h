@@ -9,34 +9,24 @@
 #include <stdbool.h>
 #include <stdlib.h>
 
-#define MAX_FILE_BUF_SIZE (600)
-
-/*******************************************************************************
- * Getter/Setter Functions
-*******************************************************************************/
-char *file_get_file_buf();
-uint32_t file_get_fileptr_location();
-FILE *file_get_fp();
-
 /*******************************************************************************
  * Utility functions
 *******************************************************************************/
-int file_get_size();
-void file_print_buf(uint32_t bytes);
-void file_print_all(uint32_t chunk_size);
-void file_clear_buf();
-void file_reset_fileptr();
+// returns file size in bytes
+int file_get_size(FILE *fp);
+
 /*******************************************************************************
  * Functions for OPENING and CLOSING files
 *******************************************************************************/
 FILE *file_open(char* name, bool mode);
-void file_close();
+FILE *file_open_create(char *name, bool mode);
+void file_close(FILE *fp);
 
 /*******************************************************************************
  * Functions for READING and WRITING files
 *******************************************************************************/
-uint32_t file_read_chunk(uint32_t chunk_size);
-uint32_t file_write_chunk(char* buf, uint32_t chunk_size);
+uint32_t file_read(char *buffer, FILE *fp, uint32_t bytes);
+uint32_t file_write(char* buffer, FILE *fp, uint32_t bytes);
 
 /*******************************************************************************
  * Functions for DELETING files
@@ -44,15 +34,7 @@ uint32_t file_write_chunk(char* buf, uint32_t chunk_size);
 int file_delete(char * file_name);
 
 /*******************************************************************************
- * Functions for getting directory contents (LS)
+ * Functions for managing directory.
 *******************************************************************************/
-extern int alphasort();
-// static int file_select(struct direct *entry);
-int file_get_ls();
-void file_print_ls_buf(char *buf);
-
-
-
-
 DIR *file_open_dir(const char *dir_name);
 #endif /*INC_FILE_*/

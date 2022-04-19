@@ -208,21 +208,8 @@ int sock_read(int new_fd, char *buf, uint32_t buf_size, int use_timeout)
     }
     else // not using timeouts
     {
-        // int size_recv = 0;
-        // int chunk = 2048;
-        // while(1)
-        // {
-        //     if((size_recv = recv(new_fd, buf+size_recv, chunk, 0)) < chunk)
-        //     {
-        //         numbytes += size_recv;
-        //         break;
-        //     }
-        //     numbytes += size_recv;
 
-        // }
-
-
-        if((numbytes = recv(new_fd, buf, buf_size-1, 0)) == -1)
+        if((numbytes = recv(new_fd, buf, buf_size, 0)) == -1)
         {
             perror("recv\n");
             return -1;

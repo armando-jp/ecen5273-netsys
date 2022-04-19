@@ -2,6 +2,9 @@
     "files.associations": {
         "stdbool.h": "c",
         "dirent.h": "c",
-        "file.h": "c"
+        "file.h": "c",
+        "state_machine.h": "c",
+        "socket.h": "c",
+        "algorithm": "c"
     }
 }

@@ -1,3 +1,9 @@
+/**
+ * TODO: Implement GET command on client. Instructions have been written out.
+ * After that, implement LS.
+ * After that, implement 2 servers and splitting a file between them. Work your
+ * way up to the 4 required. 
+ * /
 #include <stdio.h>
 #include <unistd.h>
 #include <stdint.h>
@@ -16,6 +22,7 @@
 
 #define DEBUG         (0)
 
+char *dfs_name = NULL;
 
 int main(int argc, char *argv[]) 
 {
@@ -25,10 +32,7 @@ int main(int argc, char *argv[])
     char *user_resp = NULL;
     char user_param[MAX_USER_ARG];
 
-    int fd_dfs1;
-    int fd_dfs2;
-    int fd_dfs3;
-    int fd_dfs4;
+    fd_dfs_t fd;
 
     // verify the correct number of arguments
     if(argc != 2)
@@ -55,8 +59,8 @@ int main(int argc, char *argv[])
 
     // attempt to connnect to servers
     // connect to DFS1
-    fd_dfs1 = sock_connect_to_host(conf.dfs1_addr, conf.dfs1_port);
-    if(fd_dfs1 == -1)
+    fd.dfs1 = sock_connect_to_host(conf.dfs1_addr, conf.dfs1_port);
+    if(fd.dfs1 == -1)
     {
         printf("ERROR: Failed to connect to dfs1.\r\n");
         return 0;
@@ -83,14 +87,16 @@ int main(int argc, char *argv[])
         switch(rv)
         {
             case CMD_GET:
-                // sm_client_get();
+                printf("GET NOT IMPLEMENTED YET\r\n");
+                // sm_client_get(fd_dfs1);
             break;
 
             case CMD_PUT:
-                // sm_client_put();
+                sm_send(user_param, conf, fd);
             break;
 
             case CMD_LS:
+                printf("LS NOT IMPLEMENTED YET\r\n");
                 // sm_client_ls();
             break;
 
