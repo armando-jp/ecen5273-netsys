@@ -15,6 +15,7 @@
 // returns file size in bytes
 int file_get_size(FILE *fp);
 void file_set_fp(FILE *fp, int location);
+int file_exists(char *name);
 
 /*******************************************************************************
  * Functions for OPENING and CLOSING files

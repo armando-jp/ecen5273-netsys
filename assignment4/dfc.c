@@ -145,152 +145,152 @@ int main(int argc, char *argv[])
                         // send .file_name.1 & .file_name.2 to DFS1
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.1", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs1);
+                        sm_send(file_path_buffer, conf, fd.dfs1, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.2", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs1);
+                        sm_send(file_path_buffer, conf, fd.dfs1, 0);
 
                         // send .file_name.2 & .file_name.3 to DFS2
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.2", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs2);
+                        sm_send(file_path_buffer, conf, fd.dfs2, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.3", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs2);
+                        sm_send(file_path_buffer, conf, fd.dfs2, 0);
 
                         // send .file_name.3 & .file_name.4 to DFS3
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.3", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs3);
+                        sm_send(file_path_buffer, conf, fd.dfs3, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.4", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs3);
+                        sm_send(file_path_buffer, conf, fd.dfs3, 0);
 
                         // send .file_name.4 & .file_name.1 to DFS4
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.4", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs4);
+                        sm_send(file_path_buffer, conf, fd.dfs4, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.1", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs4);
+                        sm_send(file_path_buffer, conf, fd.dfs4, 0);
                     break;
 
                     case 1:
                         // send .file_name.4 & .file_name.1 to DFS1
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.4", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs1);
+                        sm_send(file_path_buffer, conf, fd.dfs1, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.1", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs1);
+                        sm_send(file_path_buffer, conf, fd.dfs1, 0);
 
                         // send .file_name.1 & .file_name.2 to DFS2
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.1", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs2);
+                        sm_send(file_path_buffer, conf, fd.dfs2, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.2", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs2);
+                        sm_send(file_path_buffer, conf, fd.dfs2, 0);
 
                         // send .file_name.2 & .file_name.2 to DFS3
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.2", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs3);
+                        sm_send(file_path_buffer, conf, fd.dfs3, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.3", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs3);
+                        sm_send(file_path_buffer, conf, fd.dfs3, 0);
 
                         // send .file_name.3 & .file_name.4 to DFS4
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.3", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs4);
+                        sm_send(file_path_buffer, conf, fd.dfs4, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.4", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs4);
+                        sm_send(file_path_buffer, conf, fd.dfs4, 0);
                     break;
 
                     case 2:
                         // send .file_name.3 & .file_name.4 to DFS1
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.3", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs1);
+                        sm_send(file_path_buffer, conf, fd.dfs1, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.4", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs1);
+                        sm_send(file_path_buffer, conf, fd.dfs1, 0);
 
                         // send .file_name.4 & .file_name.1 to DFS2
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.4", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs2);
+                        sm_send(file_path_buffer, conf, fd.dfs2, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.1", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs2);
+                        sm_send(file_path_buffer, conf, fd.dfs2, 0);
 
                         // send .file_name.1 & .file_name.2 to DFS3
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.1", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs3);
+                        sm_send(file_path_buffer, conf, fd.dfs3, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.2", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs3);
+                        sm_send(file_path_buffer, conf, fd.dfs3, 0);
 
                         // send .file_name.2 & .file_name.3 to DFS4
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.2", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs4);
+                        sm_send(file_path_buffer, conf, fd.dfs4, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.3", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs4);
+                        sm_send(file_path_buffer, conf, fd.dfs4, 0);
                     break;
 
                     case 3:
                         // send .file_name.2 & .file_name.3 to DFS1
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.2", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs1);
+                        sm_send(file_path_buffer, conf, fd.dfs1, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.3", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs1);
+                        sm_send(file_path_buffer, conf, fd.dfs1, 0);
 
                         // send .file_name.3 & .file_name.4 to DFS2
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.3", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs2);
+                        sm_send(file_path_buffer, conf, fd.dfs2, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.4", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs2);
+                        sm_send(file_path_buffer, conf, fd.dfs2, 0);
 
                         // send .file_name.4 & .file_name.1 to DFS3
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.4", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs3);
+                        sm_send(file_path_buffer, conf, fd.dfs3, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.1", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs3);
+                        sm_send(file_path_buffer, conf, fd.dfs3, 0);
 
                         // send .file_name.1 & .file_name.2 to DFS4
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.1", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs4);
+                        sm_send(file_path_buffer, conf, fd.dfs4, 0);
 
                         memset(file_path_buffer, 0, MAX_FILE_NAME);
                         sprintf(file_path_buffer, ".%s.2", user_param);
-                        sm_send(file_path_buffer, conf, fd.dfs4);
+                        sm_send(file_path_buffer, conf, fd.dfs4, 0);
                     break;
 
                     default:

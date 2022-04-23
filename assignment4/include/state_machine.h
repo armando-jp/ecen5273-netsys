@@ -52,7 +52,7 @@ void *sm_server_thread(void *p_args);
  * DFC state machines
  ******************************************************************************/
 void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd);
-void sm_send(char *file_name, conf_results_t conf, int fd);
+void sm_send(char *file_name, conf_results_t conf, int fd, int is_server);
 
 /*******************************************************************************
  ******************************************************************************/

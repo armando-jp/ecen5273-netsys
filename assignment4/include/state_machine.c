@@ -154,14 +154,57 @@ void *sm_server_thread(void *p_args)
             case CMD_GET_PKT:
                 printf("%s#%d: Made it to GET cmd\r\n", dfs_name, args.thread_id);
                 // TODO: ARMANDO
-                // make up a conf variable just for sending
-                conf_results_t conf;
-                char file_name[30];
 
+                // 1. Initialize variables
+                conf_results_t conf;
+                char file_name[50];
+                char file_path[60];
                 strcpy(conf.user_name, pkt.user_name);
                 strcpy(conf.password, pkt.password);
-                sprintf(file_name, "./%s/%s", dfs_name, pkt.file_name);
-                sm_send(file_name, conf, args.fd_client);
+
+                // 2. Check if a file chunk 1 exists
+                memset(file_name, 0, 50);
+                memset(file_path, 0, 60);
+                sprintf(file_name, ".%s.1", pkt.file_name);
+                sprintf(file_path, "./%s/%s", dfs_name, file_name);
+                if(file_exists(file_path))
+                {
+                    printf("found %s\r\n", file_path);
+                    sm_send(file_path, conf, args.fd_client, 1);
+                }
+
+                // 3. Check if a file chunk 2 exists
+                memset(file_name, 0, 50);
+                memset(file_path, 0, 60);
+                sprintf(file_name, ".%s.2", pkt.file_name);
+                sprintf(file_path, "./%s/%s", dfs_name, file_name);
+                if(file_exists(file_path))
+                {
+                    printf("found %s\r\n", file_path);
+                    sm_send(file_path, conf, args.fd_client, 1);
+                }
+
+                // 4. Check if a file chunk 3 exists
+                memset(file_name, 0, 50);
+                memset(file_path, 0, 60);
+                sprintf(file_name, ".%s.3", pkt.file_name);
+                sprintf(file_path, "./%s/%s", dfs_name, file_name);
+                if(file_exists(file_path))
+                {
+                    printf("found %s\r\n", file_path);
+                    sm_send(file_path, conf, args.fd_client, 1);
+                }
+
+                // 5. Check if a file chunk 4 exists
+                memset(file_name, 0, 50);
+                memset(file_path, 0, 60);
+                sprintf(file_name, ".%s.4", pkt.file_name);
+                sprintf(file_path, "./%s/%s", dfs_name, file_name);
+                if(file_exists(file_path))
+                {
+                    printf("found %s\r\n", file_path);
+                    sm_send(file_path, conf, args.fd_client, 1);
+                }
 
             break;
 
@@ -200,7 +243,7 @@ void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd)
     char out_buffer[PACKET_SIZE];
 
     /***************************************************************************
-     * Get fle pieces from DFS1
+     * Get file pieces from DFS1
      **************************************************************************/
     // Generate the CMD header
     Packet pkt = packet_get_default();
@@ -219,7 +262,11 @@ void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd)
 
     printf("packet_size: %d, bytes_sent: %d\r\n", packet_size, bytes_sent);
 
-    // Wait for response from DFS1
+    // Wait for responses from DFS1
+    if(sm_receive_pieces(fd.dfs1) == -1)
+    {
+        printf("Client: Failed to get %s\r\n", file_name);
+    }
     if(sm_receive_pieces(fd.dfs1) == -1)
     {
         printf("Client: Failed to get %s\r\n", file_name);
@@ -241,7 +288,7 @@ void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd)
 
 // This function will send the `file_name` to socket connection `fd` with 
 // user_name and passowrd from `conf`.
-void sm_send(char *file_name, conf_results_t conf, int fd)
+void sm_send(char *file_name, conf_results_t conf, int fd, int is_server)
 {
     FILE *file;
     uint32_t file_bytes_read;
@@ -268,7 +315,18 @@ void sm_send(char *file_name, conf_results_t conf, int fd)
     strcpy(pkt.password, conf.password);
     pkt.cmd_header = CMD_PUT_PKT;
     pkt.crc32_header = crc_generate_file(file);
-    strcpy(pkt.file_name, file_name);
+
+    if(is_server)
+    {
+        get_filename(file_name);
+        printf("extracted file name: %s\r\n", file_name);
+        strcpy(pkt.file_name, file_name);
+    }
+    else
+    {
+        strcpy(pkt.file_name, file_name);
+    }
+    
     pkt.payload_header = file_get_size(file);
 
     // 3: Print pkt
