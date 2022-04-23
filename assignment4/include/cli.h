@@ -7,7 +7,7 @@
 
 #define MAX_USER_INPUT (50)
 #define MAX_USER_ARG   (50)
-
+#define MAX_FILE_NAME  (MAX_USER_ARG + 4)
 typedef struct _cli {
   char *text;
   char *help;

@@ -235,9 +235,6 @@ int file_split(char *file_name)
     file_size =  file_get_size(file);
     printf("%s size: %d\r\n", file_name, file_size);
 
-    /***************************************************************************
-     * Write `.1.file_name.2`
-     **************************************************************************/
     // Calculate each file size
     chunk1_size = file_size / 4;
     chunk2_size = file_size / 4;
@@ -246,9 +243,12 @@ int file_split(char *file_name)
     printf("File sizes: 1:%d 2:%d 3:%d 4:%d\r\n", chunk1_size, chunk2_size, chunk3_size, chunk4_size);
     // return -1;
 
+    /***************************************************************************
+     * Write `.file_name.1`
+     **************************************************************************/
     // Create new file name
     memset(new_file_name, 0, 30);
-    sprintf(new_file_name, ".1.%s.2", file_name);
+    sprintf(new_file_name, ".%s.1", file_name);
 
     // open the file 
     new_file = file_open_create(new_file_name);
@@ -257,11 +257,7 @@ int file_split(char *file_name)
         printf("unable to create %s\r\n", new_file_name);
     }
 
-    // write the chunk sizes into the file
-    bytes = sprintf(buffer, "%d\r\n%d\r\n", chunk1_size, chunk2_size);
-    file_write(buffer, new_file, bytes);
-
-    // Write `.1.file_name.2` CHUNK 1
+    // Write `.file_name.1` CHUNK 1
     while(chunk1_size)
     {
         // read a chunk
@@ -281,7 +277,23 @@ int file_split(char *file_name)
         chunk1_size -= bytes;
     }
 
-    // Write `.1.file_name.2` CHUNK 2
+    // Close file
+    file_close(new_file);
+
+    /***************************************************************************
+     * Write `.file_name.2`
+     **************************************************************************/
+    // Create new file name
+    memset(new_file_name, 0, 30);
+    sprintf(new_file_name, ".%s.2", file_name);
+
+    // open the file 
+    new_file = file_open_create(new_file_name);
+    if(new_file == NULL)
+    {
+        printf("unable to create %s\r\n", new_file_name);
+    }
+
     while(chunk2_size)
     {
         // read a chunk
@@ -300,22 +312,15 @@ int file_split(char *file_name)
 
         chunk2_size -= bytes;
     }
-
     // Close file
     file_close(new_file);
 
     /***************************************************************************
-     * Write `.2.file_name.3`
+     * Write `.file_name.3`
      **************************************************************************/
-    // Calculate each file size
-    chunk1_size = file_size / 4;
-    chunk2_size = file_size / 4;
-    chunk3_size = file_size / 4;
-    chunk4_size = (file_size / 4) + (file_size - ((int)(file_size/4) * 4));
-
     // Create new file name
     memset(new_file_name, 0, 30);
-    sprintf(new_file_name, ".2.%s.3", file_name);
+    sprintf(new_file_name, ".%s.3", file_name);
 
     // open the file 
     new_file = file_open_create(new_file_name);
@@ -324,13 +329,7 @@ int file_split(char *file_name)
         printf("unable to create %s\r\n", new_file_name);
     }
 
-    // write the chunk sizes into the file
-    bytes = sprintf(buffer, "%d\r\n%d\r\n", chunk2_size, chunk3_size);
-    file_write(buffer, new_file, bytes);
-
-    // Write `.2.file_name.3` CHUNK 2
-    file_set_fp(file, chunk1_size);
-    while(chunk2_size)
+    while(chunk3_size)
     {
         // read a chunk
         memset(buffer, 0, 512);
@@ -340,26 +339,6 @@ int file_split(char *file_name)
         }
         else
         {
-            bytes = file_read(buffer, file, chunk2_size);
-        }
-
-        // write a chunk
-        file_write(buffer, new_file, bytes);
-
-        chunk2_size -= bytes;
-    }
-
-    // Write `.2.file_name.3` CHUNK 3
-    while(chunk3_size)
-    {
-        // read a chunk
-        memset(buffer, 0, 512);
-        if(chunk3_size > 512)
-        {
-            bytes = file_read(buffer, file, 512);
-        }
-        else
-        {
             bytes = file_read(buffer, file, chunk3_size);
         }
 
@@ -368,22 +347,15 @@ int file_split(char *file_name)
 
         chunk3_size -= bytes;
     }
-
     // Close file
     file_close(new_file);
-
+    
     /***************************************************************************
-     * Write `.3.file_name.4`
+     * Write `.file_name.4`
      **************************************************************************/
-    // Calculate each file size
-    chunk1_size = file_size / 4;
-    chunk2_size = file_size / 4;
-    chunk3_size = file_size / 4;
-    chunk4_size = (file_size / 4) + (file_size - ((int)(file_size/4) * 4));
-
     // Create new file name
     memset(new_file_name, 0, 30);
-    sprintf(new_file_name, ".3.%s.4", file_name);
+    sprintf(new_file_name, ".%s.4", file_name);
 
     // open the file 
     new_file = file_open_create(new_file_name);
@@ -392,32 +364,6 @@ int file_split(char *file_name)
         printf("unable to create %s\r\n", new_file_name);
     }
 
-    // write the chunk sizes into the file
-    bytes = sprintf(buffer, "%d\r\n%d\r\n", chunk3_size, chunk4_size);
-    file_write(buffer, new_file, bytes);
-
-    // Write `.3.file_name.4` CHUNK 3
-    file_set_fp(file, chunk1_size+chunk2_size);
-    while(chunk3_size)
-    {
-        // read a chunk
-        memset(buffer, 0, 512);
-        if(chunk3_size > 512)
-        {
-            bytes = file_read(buffer, file, 512);
-        }
-        else
-        {
-            bytes = file_read(buffer, file, chunk3_size);
-        }
-
-        // write a chunk
-        file_write(buffer, new_file, bytes);
-
-        chunk3_size -= bytes;
-    }
-
-    // Write `.3.file_name.4` CHUNK 4
     while(chunk4_size)
     {
         // read a chunk
@@ -435,75 +381,6 @@ int file_split(char *file_name)
         file_write(buffer, new_file, bytes);
 
         chunk4_size -= bytes;
-    }
-
-    // Close file
-    file_close(new_file);
-
-    /***************************************************************************
-     * Write `.4.file_name.1`
-     **************************************************************************/
-    // Calculate each file size
-    chunk1_size = file_size / 4;
-    chunk2_size = file_size / 4;
-    chunk3_size = file_size / 4;
-    chunk4_size = (file_size / 4) + (file_size - ((int)(file_size/4) * 4));
-
-    // Create new file name
-    memset(new_file_name, 0, 30);
-    sprintf(new_file_name, ".4.%s.1", file_name);
-
-    // open the file 
-    new_file = file_open_create(new_file_name);
-    if(new_file == NULL)
-    {
-        printf("unable to create %s\r\n", new_file_name);
-    }
-
-    // write the chunk sizes into the file
-    bytes = sprintf(buffer, "%d\r\n%d\r\n", chunk4_size, chunk1_size);
-    file_write(buffer, new_file, bytes);
-
-    // Write `.4.file_name.1` CHUNK 4
-    file_set_fp(file, chunk1_size+chunk2_size+chunk3_size);
-    while(chunk4_size)
-    {
-        // read a chunk
-        memset(buffer, 0, 512);
-        if(chunk4_size > 512)
-        {
-            bytes = file_read(buffer, file, 512);
-        }
-        else
-        {
-            bytes = file_read(buffer, file, chunk4_size);
-        }
-
-        // write a chunk
-        file_write(buffer, new_file, bytes);
-
-        chunk4_size -= bytes;
-    }
-
-    // Write `.4.file_name.1` CHUNK 1
-    file_set_fp(file, 0);
-    while(chunk1_size)
-    {
-        // read a chunk
-        memset(buffer, 0, 512);
-        if(chunk1_size > 512)
-        {
-            bytes = file_read(buffer, file, 512);
-        }
-        else
-        {
-            bytes = file_read(buffer, file, chunk1_size);
-        }
-
-        // write a chunk
-        file_write(buffer, new_file, bytes);
-
-        chunk1_size -= bytes;
     }
 
     // Close file
