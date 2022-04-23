@@ -275,7 +275,20 @@ void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd)
     /***************************************************************************
      * Get fle pieces from DFS2
      **************************************************************************/
+    // Send the packet to DFS1
+    bytes_sent = sock_send(fd.dfs2, out_buffer, packet_size);
 
+    printf("packet_size: %d, bytes_sent: %d\r\n", packet_size, bytes_sent);
+
+    // Wait for responses from DFS1
+    if(sm_receive_pieces(fd.dfs2) == -1)
+    {
+        printf("Client: Failed to get %s\r\n", file_name);
+    }
+    if(sm_receive_pieces(fd.dfs2) == -1)
+    {
+        printf("Client: Failed to get %s\r\n", file_name);
+    }
     /***************************************************************************
      * Get fle pieces from DFS3
      **************************************************************************/
@@ -431,12 +444,19 @@ void sm_receive(int fd, Packet pkt, int is_server)
     
 
     // Open/create file
-    file = file_open_create(file_path);
-    if(file == NULL)
+    int already_exists = file_exists(file_path);
+
+    printf("Does the file exist already? = %d\r\n", already_exists);
+    if(!already_exists)
     {
-        printf("Failed to create file %s\r\n", file_path);
-        return;
+        file = file_open_create(file_path);
+        if(file == NULL)
+        {
+            printf("Failed to create file %s\r\n", file_path);
+            return;
+        }
     }
+
 
 
     if(pkt.payload_header > PAYLOAD_CHUNK_SIZE)
@@ -444,26 +464,40 @@ void sm_receive(int fd, Packet pkt, int is_server)
         file_bytes_recv = PAYLOAD_CHUNK_SIZE;
 
         // Write initial payload
-        bytes_saved = file_write(pkt.payload, file, PAYLOAD_CHUNK_SIZE);
-        printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
+        if(!already_exists)
+        {
+            bytes_saved = file_write(pkt.payload, file, PAYLOAD_CHUNK_SIZE);
+            printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
+        }
         file_bytes_recv = PAYLOAD_CHUNK_SIZE;
         while(file_bytes_recv < pkt.payload_header)
         {
             memset(in_buf, 0, PAYLOAD_CHUNK_SIZE);
             bytes_recv = sock_read(fd, in_buf, PAYLOAD_CHUNK_SIZE, 0);
-            bytes_saved += file_write(in_buf, file, bytes_recv);
-            printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
+            if(!already_exists)
+            {
+                bytes_saved += file_write(in_buf, file, bytes_recv);
+                printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
+            }
             file_bytes_recv += bytes_recv;
         }
     }
     else
     {
         // Write initial payload
-        bytes_saved = file_write((char *)pkt.payload, file, pkt.payload_header);
-        printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
+        if(!already_exists)
+        {
+            bytes_saved = file_write((char *)pkt.payload, file, pkt.payload_header);
+            printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
+        }
 
     }
-    file_close(file);
+
+    if(!already_exists)
+    {
+        file_close(file);
+    }
+
     printf("Exiting receive command\r\n");
     return;
 }
@@ -520,6 +554,7 @@ int sm_receive_pieces(int fd)
 
     // 3. process command
     packet_print(pkt);
+
 
     // 4. Receive the file chunk
     sm_receive(fd, pkt, 0);
