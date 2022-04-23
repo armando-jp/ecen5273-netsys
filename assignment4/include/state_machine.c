@@ -10,12 +10,16 @@
 #include "conf_parsing.h"
 #include "file.h"
 #include "crc.h"
+#include "utils.h"
 
 #define DEBUG_PRINT_DISPATCHER (0)
 #define DEBUG_PRINT_WORKER     (0)
 
 extern char *dfs_name;
 
+/*******************************************************************************
+ * DFS state machines
+ ******************************************************************************/
 void sm_server(int sockfd_listen)
 {
     int new_fd;
@@ -77,7 +81,7 @@ void sm_server(int sockfd_listen)
     }
 }
 
-void *sm_dispatch_thread(void *p_args)
+void *sm_server_thread(void *p_args)
 {
     // get parameters passed to thread
     thread_args_t args = *(thread_args_t *)p_args;
@@ -151,12 +155,19 @@ void *sm_dispatch_thread(void *p_args)
                 printf("%s#%d: Made it to GET cmd\r\n", dfs_name, args.thread_id);
                 // TODO: ARMANDO
                 // make up a conf variable just for sending
-                // sm_send(pkt.file_name, conf, args.fd_client) to client.
+                conf_results_t conf;
+                char file_name[30];
+
+                strcpy(conf.user_name, pkt.user_name);
+                strcpy(conf.password, pkt.password);
+                sprintf(file_name, "./%s/%s", dfs_name, pkt.file_name);
+                sm_send(file_name, conf, args.fd_client);
+
             break;
 
             case CMD_PUT_PKT:
                 printf("%s#%d: Made it to PUT cmd\r\n", dfs_name, args.thread_id);
-                sm_receive(args.fd_client, pkt);
+                sm_receive(args.fd_client, pkt, 1);
 
             break;
 
@@ -169,52 +180,6 @@ void *sm_dispatch_thread(void *p_args)
             break;
         }
     }
-}
-
-void *sm_worker_thread(void *p_args)
-{
-    if(p_args == NULL)
-    {
-        printf("WT: GOT NULL ARGS! Terminating.\r\n");
-    }
-
-    worker_thread_args_t *args = (worker_thread_args_t *)p_args;
-
-    /***************************************************************
-     * (0) Debug print pkt
-     * (1) Respond to packet
-     * (2) Terminate worker thread
-     **************************************************************/
-
-    // (0) Debug print pkt
-    packet_print(args->pkt);
-
-    // (1) Process request
-    switch(args->pkt.cmd_header)
-    {
-        case CMD_GET_PKT:
-            printf("Made it to GET cmd\r\n");
-        break;
-
-        case CMD_PUT_PKT:
-            printf("Made it to PUT cmd\r\n");
-            sm_receive(args->fd_client, args->pkt);
-
-        break;
-
-        case CMD_LS_PKT:
-            printf("Made it to LS cmd\r\n");
-        break;
-
-        default:
-            printf("Invalid CMD received: %d\r\n", args->pkt.cmd_header);
-        break;
-    }
-                
-    // (2) Termiante worker thread.
-    printf("Terminating\r\n");
-    pthread_exit(0);
-
 }
 
 /*******************************************************************************
@@ -234,6 +199,9 @@ void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd)
     uint32_t packet_size = 0;
     char out_buffer[PACKET_SIZE];
 
+    /***************************************************************************
+     * Get fle pieces from DFS1
+     **************************************************************************/
     // Generate the CMD header
     Packet pkt = packet_get_default();
 
@@ -241,24 +209,39 @@ void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd)
     strcpy(pkt.password, "KoolPass");
     pkt.cmd_header = CMD_GET_PKT;
     pkt.crc32_header = 1198457;
-    pkt.payload_header = 100;
-    pkt.payload[0] = '1';
-    pkt.payload[pkt.payload_header-1] = '1';
+    strcpy(pkt.file_name, file_name);
 
     // Generate packet to send
     packet_size = packet_convert_to_buffer(pkt, out_buffer);
 
-    // Send the packet
-    bytes_sent = sock_send(fd_dfs1, out_buffer, packet_size);
+    // Send the packet to DFS1
+    bytes_sent = sock_send(fd.dfs1, out_buffer, packet_size);
 
     printf("packet_size: %d, bytes_sent: %d\r\n", packet_size, bytes_sent);
 
+    // Wait for response from DFS1
+    if(sm_receive_pieces(fd.dfs1) == -1)
+    {
+        printf("Client: Failed to get %s\r\n", file_name);
+    }
+
+    /***************************************************************************
+     * Get fle pieces from DFS2
+     **************************************************************************/
+
+    /***************************************************************************
+     * Get fle pieces from DFS3
+     **************************************************************************/
+
+    /***************************************************************************
+     * Get fle pieces from DFS4
+     **************************************************************************/
     return;
 }
 
 // This function will send the `file_name` to socket connection `fd` with 
 // user_name and passowrd from `conf`.
-void sm_send(char *file_name, conf_results_t conf, fd_dfs_t fd)
+void sm_send(char *file_name, conf_results_t conf, int fd)
 {
     FILE *file;
     uint32_t file_bytes_read;
@@ -288,7 +271,7 @@ void sm_send(char *file_name, conf_results_t conf, fd_dfs_t fd)
     strcpy(pkt.file_name, file_name);
     pkt.payload_header = file_get_size(file);
 
-    // 2.5: Print pkt
+    // 3: Print pkt
     packet_print(pkt);
 
     // 4. Send packets
@@ -303,7 +286,7 @@ void sm_send(char *file_name, conf_results_t conf, fd_dfs_t fd)
         out_buffer_size = packet_convert_to_buffer(pkt, out_buffer);
 
         // 7. Send initial packet
-        bytes_sent = sock_send(fd.dfs1, out_buffer, out_buffer_size);
+        bytes_sent = sock_send(fd, out_buffer, out_buffer_size);
         printf("Sent %d bytes out of %d bytes to DFS1\r\n", bytes_sent, out_buffer_size);
     }  
     else
@@ -319,7 +302,7 @@ void sm_send(char *file_name, conf_results_t conf, fd_dfs_t fd)
         printf("out_buffer_size: %d\r\n", out_buffer_size);
         
         // 7. Send initial packet
-        bytes_sent = sock_send(fd.dfs1, out_buffer, out_buffer_size);
+        bytes_sent = sock_send(fd, out_buffer, out_buffer_size);
 
         // 8. Send the rest of the payload
         file_bytes_sent = PAYLOAD_CHUNK_SIZE;
@@ -337,7 +320,7 @@ void sm_send(char *file_name, conf_results_t conf, fd_dfs_t fd)
                 file_read(file_buffer, file, (pkt.payload_header - file_bytes_sent));
 
                 // 12. Send the pure payload
-                bytes_sent = sock_send(fd.dfs1, file_buffer, (pkt.payload_header - file_bytes_sent));
+                bytes_sent = sock_send(fd, file_buffer, (pkt.payload_header - file_bytes_sent));
                 
                 file_bytes_sent += (pkt.payload_header - file_bytes_sent);
                 printf("Sent: %d; File transfer: %d/%d sent\r\n", bytes_sent, file_bytes_sent, pkt.payload_header);
@@ -347,7 +330,7 @@ void sm_send(char *file_name, conf_results_t conf, fd_dfs_t fd)
                 file_read(file_buffer, file, PAYLOAD_CHUNK_SIZE);
                 file_bytes_sent += PAYLOAD_CHUNK_SIZE;
 
-                bytes_sent = sock_send(fd.dfs1, file_buffer, PAYLOAD_CHUNK_SIZE);
+                bytes_sent = sock_send(fd, file_buffer, PAYLOAD_CHUNK_SIZE);
                 printf("Sent: %d; File transfer: %d/%d sent\r\n", bytes_sent, file_bytes_sent, pkt.payload_header);
             }
         }
@@ -356,9 +339,12 @@ void sm_send(char *file_name, conf_results_t conf, fd_dfs_t fd)
     return;
 }
 
+/*******************************************************************************
+ * 
+ ******************************************************************************/
 // This function will receive a file from socket connection `fd`. The initial 
 // parameters of the file are provided to the function in `pkt`.
-void sm_receive(int fd, Packet pkt)
+void sm_receive(int fd, Packet pkt, int is_server)
 {
     FILE *file;
     uint32_t bytes_saved = 0;
@@ -373,8 +359,18 @@ void sm_receive(int fd, Packet pkt)
         return;
     }
 
+    // Process filename 
     char file_path[FILE_NAME_SIZE + 21];
-    sprintf(file_path, "./%s/%s", dfs_name, pkt.file_name);
+    if(is_server)
+    {
+        sprintf(file_path, "./%s/%s", dfs_name, pkt.file_name);
+    }
+    else
+    {
+        get_filename(pkt.file_name);
+        strcpy(file_path, pkt.file_name);
+    }
+    
 
     // Open/create file
     file = file_open_create(file_path, 1);
@@ -412,5 +408,63 @@ void sm_receive(int fd, Packet pkt)
     file_close(file);
     printf("Exiting receive command\r\n");
     return;
+}
 
+int sm_receive_pieces(int fd)
+{
+    // FILE *file;
+    Packet pkt;
+    // uint32_t bytes_saved = 0;
+    uint32_t bytes_recv = 0;
+    char in_buf[PACKET_SIZE];
+    // uint32_t file_bytes_recv = 0;
+    int is_timeout = 0;
+
+    // 1. Get an incomming message.
+    memset(in_buf, 0, PACKET_SIZE);
+    printf("Client: waiting for message from server");
+    bytes_recv = sock_read(fd, in_buf, PACKET_SIZE, is_timeout);
+    if(bytes_recv == -1)
+    {
+        if(is_timeout)
+        {
+            printf("Client: TIMEOUT! Closing connection to server.\n");
+            return -1;
+            // current_event = evt_timeout;
+        }
+        else
+        {
+            printf("Client: Unexpected error during recv.\n");
+            return -1;
+        }
+    }
+    else if(bytes_recv == 0)
+    {
+        // current_event = evt_close_request;
+        printf("Client: Got EOF from client. Shutting down.\n");
+        return -1;
+    }
+    else
+    {
+        // current_event = evt_message_received;
+        printf("Client: GOT %d BYTES FROM CLIENT (DFC COMMAND)\n", bytes_recv);
+    }
+
+    // 2. Parse received command
+    printf("Client: Attempting to parse DFC command.\n");
+    pkt = packet_parse_packet(in_buf, bytes_recv);
+    if(packet_is_default(pkt))
+    {
+        // invalid request received
+        printf("Client: received invalid request\r\n");
+        return -1;
+    }  
+
+    // 3. process command
+    packet_print(pkt);
+
+    // 4. Receive the file chunk
+    sm_receive(fd, pkt, 0);
+
+    return 0;
 }

@@ -46,17 +46,17 @@ typedef struct {
  * DFS state machines
  ******************************************************************************/
 void sm_server(int sockfd_listen);
-void *sm_dispatch_thread(void *p_args);
-void *sm_worker_thread(void *p_args);
+void *sm_server_thread(void *p_args);
 
 /*******************************************************************************
  * DFC state machines
  ******************************************************************************/
 void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd);
-void sm_send(char *file_name, conf_results_t conf, fd_dfs_t fd);
+void sm_send(char *file_name, conf_results_t conf, int fd);
 
-/****
- *********/
-void sm_receive(int fd, Packet pkt);
+/*******************************************************************************
+ ******************************************************************************/
+void sm_receive(int fd, Packet pkt, int is_server);
+int sm_receive_pieces(int fd);
 
 #endif /*INC_STATE_MACINE_*/

@@ -112,3 +112,17 @@ bool is_port(char *port_str)
     return false;
 }
 
+void get_filename(char *file_path)
+{
+    char *token;
+    char file_name[30];
+    token = strtok(file_path, "/");
+    printf("file_path: %s\r\n", file_path);
+    do
+    {
+        printf("token: %s\r\n", token);
+        strcpy(file_name, token);
+    } while ((token = strtok(NULL, "/")) != NULL);
+
+    strcpy(file_path, file_name);
+}
