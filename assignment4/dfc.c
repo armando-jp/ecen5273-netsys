@@ -134,7 +134,7 @@ int main(int argc, char *argv[])
                     printf("Failed to open %s\r\n", user_param);
                 }
                 crc32 = crc_generate_file(file);
-                close(file);
+                file_close(file);
                 printf("crc32 for %s is %u\r\n", user_param, crc32);
                 printf("%u %% 4 = %d\r\n", crc32, crc32%4);
 
@@ -299,6 +299,21 @@ int main(int argc, char *argv[])
                 }
 
                 // 4. Delete the chunks locally
+                memset(file_path_buffer, 0, MAX_FILE_NAME);
+                sprintf(file_path_buffer, ".%s.1", user_param);
+                file_delete(file_path_buffer);
+
+                memset(file_path_buffer, 0, MAX_FILE_NAME);
+                sprintf(file_path_buffer, ".%s.2", user_param);
+                file_delete(file_path_buffer);
+
+                memset(file_path_buffer, 0, MAX_FILE_NAME);
+                sprintf(file_path_buffer, ".%s.3", user_param);
+                file_delete(file_path_buffer);
+
+                memset(file_path_buffer, 0, MAX_FILE_NAME);
+                sprintf(file_path_buffer, ".%s.4", user_param);
+                file_delete(file_path_buffer);
 
             break;
 
