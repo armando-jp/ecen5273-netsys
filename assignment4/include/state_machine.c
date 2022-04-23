@@ -309,7 +309,7 @@ void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd)
     }
 
     /***************************************************************************
-     * Get fle pieces from DFS4
+     * Get file pieces from DFS4
      **************************************************************************/
     // Send the packet to DFS4
     bytes_sent = sock_send(fd.dfs4, out_buffer, packet_size);
@@ -439,6 +439,212 @@ void sm_send(char *file_name, conf_results_t conf, int fd, int is_server)
     return;
 }
 
+int sm_merge(char *file_name, conf_results_t conf)
+{
+    FILE *new_file;
+    FILE *chunk_file;
+    char file_chunk_name[50];
+    int file_size;
+    int data_chunk_size = 512;
+    char data_chunk[data_chunk_size];
+    int bytes;
+
+    // 1. Check if the file already exists locally
+    if(file_exists(file_name) == 1)
+    {
+        printf("Client: %s already exists.\r\n", file_name);
+        return -1;
+    }
+
+    // 2. Check if we have enough chunks to combine.
+    memset(file_chunk_name, 0, 50);
+    sprintf(file_chunk_name, ".%s.1", file_name);
+    if(file_exists(file_chunk_name) == 0)
+    {
+        printf("Client: missing file %s\r\n", file_chunk_name);
+        return -1;
+    }
+
+    memset(file_chunk_name, 0, 50);
+    sprintf(file_chunk_name, ".%s.2", file_name);
+    if(file_exists(file_chunk_name) == 0)
+    {
+        printf("Client: missing file %s\r\n", file_chunk_name);
+        return -1;
+    }
+
+    memset(file_chunk_name, 0, 50);
+    sprintf(file_chunk_name, ".%s.3", file_name);
+    if(file_exists(file_chunk_name) == 0)
+    {
+        printf("Client: missing file %s\r\n", file_chunk_name);
+        return -1;
+    }
+
+    memset(file_chunk_name, 0, 50);
+    sprintf(file_chunk_name, ".%s.4", file_name);
+    if(file_exists(file_chunk_name) == 0)
+    {
+        printf("Client: missing file %s\r\n", file_chunk_name);
+        return -1;
+    }
+
+    // 3. Open the new file.
+    new_file = file_open_create(file_name);
+    if(new_file == NULL)
+    {
+        printf("Client: Failed to create %s\r\n", file_name);
+        return -1;
+    }
+
+    // 4. Open CHUNK1 and write to new file;
+    memset(file_chunk_name, 0, 50);
+    sprintf(file_chunk_name, ".%s.1", file_name);
+    chunk_file = file_open(file_chunk_name, 0);
+    if(chunk_file == NULL)
+    {
+        printf("Client: Failed to open %s\r\n", file_chunk_name);
+        return -1;
+    }
+
+    file_size = file_get_size(chunk_file);
+    printf("Client: File %s is %d bytes in size\r\n", file_chunk_name, file_size);
+
+    if(file_size < data_chunk_size)
+    {
+        memset(data_chunk, 0, data_chunk_size);
+        bytes = file_read(data_chunk, chunk_file, file_size);
+        bytes = file_write(data_chunk, new_file, bytes);
+        printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+    }
+    else
+    {
+        while(file_size > 0)
+        {
+            memset(data_chunk, 0, data_chunk_size);
+            bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            bytes = file_write(data_chunk, new_file, bytes);
+            file_size -= bytes;
+            printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+        }
+
+    }
+
+    file_close(chunk_file);
+
+    // 5. Open CHUNK2 and write to new file;
+    memset(file_chunk_name, 0, 50);
+    sprintf(file_chunk_name, ".%s.2", file_name);
+    chunk_file = file_open(file_chunk_name, 0);
+    if(chunk_file == NULL)
+    {
+        printf("Client: Failed to open %s\r\n", file_chunk_name);
+        return -1;
+    }
+
+    file_size = file_get_size(chunk_file);
+    printf("Client: File %s is %d bytes in size\r\n", file_chunk_name, file_size);
+
+    if(file_size < data_chunk_size)
+    {
+        memset(data_chunk, 0, data_chunk_size);
+        bytes = file_read(data_chunk, chunk_file, file_size);
+        bytes = file_write(data_chunk, new_file, bytes);
+        printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+    }
+    else
+    {
+        while(file_size > 0)
+        {
+            memset(data_chunk, 0, data_chunk_size);
+            bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            bytes = file_write(data_chunk, new_file, bytes);
+            file_size -= bytes;
+            printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+        }
+
+    }
+
+    file_close(chunk_file);
+
+    // 6. Open CHUNK3 and write to new file;
+    memset(file_chunk_name, 0, 50);
+    sprintf(file_chunk_name, ".%s.3", file_name);
+    chunk_file = file_open(file_chunk_name, 0);
+    if(chunk_file == NULL)
+    {
+        printf("Client: Failed to open %s\r\n", file_chunk_name);
+        return -1;
+    }
+
+    file_size = file_get_size(chunk_file);
+    printf("Client: File %s is %d bytes in size\r\n", file_chunk_name, file_size);
+
+    if(file_size < data_chunk_size)
+    {
+        memset(data_chunk, 0, data_chunk_size);
+        bytes = file_read(data_chunk, chunk_file, file_size);
+        bytes = file_write(data_chunk, new_file, bytes);
+        printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+    }
+    else
+    {
+        while(file_size > 0)
+        {
+            memset(data_chunk, 0, data_chunk_size);
+            bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            bytes = file_write(data_chunk, new_file, bytes);
+            file_size -= bytes;
+            printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+        }
+
+    }
+
+    file_close(chunk_file);
+
+    // 7. Open CHUNK4 and write to new file;
+    memset(file_chunk_name, 0, 50);
+    sprintf(file_chunk_name, ".%s.4", file_name);
+    chunk_file = file_open(file_chunk_name, 0);
+    if(chunk_file == NULL)
+    {
+        printf("Client: Failed to open %s\r\n", file_chunk_name);
+        return -1;
+    }
+
+    file_size = file_get_size(chunk_file);
+    printf("Client: File %s is %d bytes in size\r\n", file_chunk_name, file_size);
+
+    if(file_size < data_chunk_size)
+    {
+        memset(data_chunk, 0, data_chunk_size);
+        bytes = file_read(data_chunk, chunk_file, file_size);
+        bytes = file_write(data_chunk, new_file, bytes);
+        printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+    }
+    else
+    {
+        while(file_size > 0)
+        {
+            memset(data_chunk, 0, data_chunk_size);
+            bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            bytes = file_write(data_chunk, new_file, bytes);
+            file_size -= bytes;
+            printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+        }
+
+    }
+
+    file_close(chunk_file);
+
+    // 8. Close the new file
+    file_close(new_file);
+
+    // 9. Delete the file chunks
+
+    return 0;
+
+}
 /*******************************************************************************
  * 
  ******************************************************************************/
@@ -446,7 +652,7 @@ void sm_send(char *file_name, conf_results_t conf, int fd, int is_server)
 // parameters of the file are provided to the function in `pkt`.
 void sm_receive(int fd, Packet pkt, int is_server)
 {
-    FILE *file;
+    FILE *file = NULL;
     uint32_t bytes_saved = 0;
     uint32_t bytes_recv = 0;
     char in_buf[PAYLOAD_CHUNK_SIZE];
@@ -474,8 +680,7 @@ void sm_receive(int fd, Packet pkt, int is_server)
 
     // Open/create file
     int already_exists = file_exists(file_path);
-
-    printf("Does the file exist already? = %d\r\n", already_exists);
+    printf("Does the file %s exist already? = %d\r\n", file_path, already_exists);
     if(!already_exists)
     {
         file = file_open_create(file_path);
@@ -485,8 +690,6 @@ void sm_receive(int fd, Packet pkt, int is_server)
             return;
         }
     }
-
-
 
     if(pkt.payload_header > PAYLOAD_CHUNK_SIZE)
     {
@@ -543,7 +746,7 @@ int sm_receive_pieces(int fd)
 
     // 1. Get an incomming message.
     memset(in_buf, 0, PACKET_SIZE);
-    printf("Client: waiting for message from server");
+    printf("Client: waiting for message from server\r\n");
     bytes_recv = sock_read(fd, in_buf, PACKET_SIZE, is_timeout);
     if(bytes_recv == -1)
     {

@@ -117,7 +117,34 @@ int main(int argc, char *argv[])
         {
             case CMD_GET:
                 // printf("GET NOT IMPLEMENTED YET\r\n");
-                sm_get(user_param, conf, fd);
+                if(file_exists(user_param) == 0)
+                {
+                    // 1. Get and merge file pieces
+                    sm_get(user_param, conf, fd);
+                    sm_merge(user_param, conf);
+
+                    // 2. Delete the chunks locally
+                    memset(file_path_buffer, 0, MAX_FILE_NAME);
+                    sprintf(file_path_buffer, ".%s.1", user_param);
+                    file_delete(file_path_buffer);
+
+                    memset(file_path_buffer, 0, MAX_FILE_NAME);
+                    sprintf(file_path_buffer, ".%s.2", user_param);
+                    file_delete(file_path_buffer);
+
+                    memset(file_path_buffer, 0, MAX_FILE_NAME);
+                    sprintf(file_path_buffer, ".%s.3", user_param);
+                    file_delete(file_path_buffer);
+
+                    memset(file_path_buffer, 0, MAX_FILE_NAME);
+                    sprintf(file_path_buffer, ".%s.4", user_param);
+                    file_delete(file_path_buffer);
+                }
+                else
+                {
+                    printf("Clinet: %s already exists on client.\r\n", user_param);
+                }
+
             break;
 
             case CMD_PUT:
