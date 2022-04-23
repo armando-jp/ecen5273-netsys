@@ -275,12 +275,12 @@ void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd)
     /***************************************************************************
      * Get fle pieces from DFS2
      **************************************************************************/
-    // Send the packet to DFS1
+    // Send the packet to DFS2
     bytes_sent = sock_send(fd.dfs2, out_buffer, packet_size);
 
     printf("packet_size: %d, bytes_sent: %d\r\n", packet_size, bytes_sent);
 
-    // Wait for responses from DFS1
+    // Wait for responses from DFS2
     if(sm_receive_pieces(fd.dfs2) == -1)
     {
         printf("Client: Failed to get %s\r\n", file_name);
@@ -289,13 +289,42 @@ void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd)
     {
         printf("Client: Failed to get %s\r\n", file_name);
     }
+
     /***************************************************************************
      * Get fle pieces from DFS3
      **************************************************************************/
+    // Send the packet to DFS3
+    bytes_sent = sock_send(fd.dfs3, out_buffer, packet_size);
+
+    printf("packet_size: %d, bytes_sent: %d\r\n", packet_size, bytes_sent);
+
+    // Wait for responses from DFS3
+    if(sm_receive_pieces(fd.dfs3) == -1)
+    {
+        printf("Client: Failed to get %s\r\n", file_name);
+    }
+    if(sm_receive_pieces(fd.dfs3) == -1)
+    {
+        printf("Client: Failed to get %s\r\n", file_name);
+    }
 
     /***************************************************************************
      * Get fle pieces from DFS4
      **************************************************************************/
+    // Send the packet to DFS4
+    bytes_sent = sock_send(fd.dfs4, out_buffer, packet_size);
+
+    printf("packet_size: %d, bytes_sent: %d\r\n", packet_size, bytes_sent);
+
+    // Wait for responses from DFS4
+    if(sm_receive_pieces(fd.dfs4) == -1)
+    {
+        printf("Client: Failed to get %s\r\n", file_name);
+    }
+    if(sm_receive_pieces(fd.dfs4) == -1)
+    {
+        printf("Client: Failed to get %s\r\n", file_name);
+    }
     return;
 }
 
