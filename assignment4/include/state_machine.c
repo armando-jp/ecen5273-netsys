@@ -373,7 +373,7 @@ void sm_receive(int fd, Packet pkt, int is_server)
     
 
     // Open/create file
-    file = file_open_create(file_path, 1);
+    file = file_open_create(file_path);
     if(file == NULL)
     {
         printf("Failed to create file %s\r\n", file_path);

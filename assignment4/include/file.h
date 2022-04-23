@@ -14,12 +14,13 @@
 *******************************************************************************/
 // returns file size in bytes
 int file_get_size(FILE *fp);
+void file_set_fp(FILE *fp, int location);
 
 /*******************************************************************************
  * Functions for OPENING and CLOSING files
 *******************************************************************************/
 FILE *file_open(char* name, bool mode);
-FILE *file_open_create(char *name, bool mode);
+FILE *file_open_create(char *name);
 void file_close(FILE *fp);
 
 /*******************************************************************************
@@ -37,4 +38,7 @@ int file_delete(char * file_name);
  * Functions for managing directory.
 *******************************************************************************/
 DIR *file_open_dir(const char *dir_name);
+
+
+int file_split(char *file_name);
 #endif /*INC_FILE_*/

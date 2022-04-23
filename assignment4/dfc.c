@@ -118,11 +118,22 @@ int main(int argc, char *argv[])
             break;
 
             case CMD_PUT:
+                // 0. Create 4 files
+                if(file_split(user_param) == -1)
+                {
+                    printf("Failed to split %s\r\n", user_param);
+                }
                 // 1. Send to DFS1
-                sm_send(user_param, conf, fd.dfs1);
+                // sm_send(user_param, conf, fd.dfs1);
+
                 // 2. Send to DFS2
+                // sm_send(user_param, conf, fd.dfs2);
+
                 // 3. Send to DFS3
+                // sm_send(user_param, conf, fd.dfs3);
+
                 // 4. Send to DFS4
+                // sm_send(user_param, conf, fd.dfs4);
             break;
 
             case CMD_LS:
