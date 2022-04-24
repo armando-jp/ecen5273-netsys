@@ -45,7 +45,7 @@ typedef struct {
 /*******************************************************************************
  * DFS state machines
  ******************************************************************************/
-void sm_server(int sockfd_listen);
+void sm_server(int sockfd_listen, conf_results_dfs_t conf);
 void *sm_server_thread(void *p_args);
 
 /*******************************************************************************

@@ -19,11 +19,12 @@ static uint8_t dispatcher_thread_counter = 0;
 /*******************************************************************************
  * Thread creating functions
 *******************************************************************************/
-int threading_create_dispatcher(int fd_client)
+int threading_create_dispatcher(int fd_client, conf_results_dfs_t conf)
 {
     // prepare args struct for dispatcher thread
     dispatcher_args[dispatcher_thread_counter%MAX_NUMBER_OF_THREADS].fd_client = fd_client;
     dispatcher_args[dispatcher_thread_counter%MAX_NUMBER_OF_THREADS].thread_id = dispatcher_thread_counter%MAX_NUMBER_OF_THREADS;
+    dispatcher_args[dispatcher_thread_counter%MAX_NUMBER_OF_THREADS].conf = conf;
 
     // create dispatcher thread
     if(pthread_create(

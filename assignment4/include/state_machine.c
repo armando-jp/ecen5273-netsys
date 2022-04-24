@@ -21,7 +21,7 @@ extern char *dfs_name;
 /*******************************************************************************
  * DFS state machines
  ******************************************************************************/
-void sm_server(int sockfd_listen)
+void sm_server(int sockfd_listen, conf_results_dfs_t conf)
 {
     int new_fd;
     state_t current_state = state_idle;
@@ -54,7 +54,7 @@ void sm_server(int sockfd_listen)
             break;
 
             case state_creating_thread:
-                if(threading_create_dispatcher(new_fd) != 0)
+                if(threading_create_dispatcher(new_fd, conf) != 0)
                 {
                     current_event = evt_thread_create_fail;
                 }
@@ -86,6 +86,7 @@ void *sm_server_thread(void *p_args)
 {
     // get parameters passed to thread
     thread_args_t args = *(thread_args_t *)p_args;
+    conf_results_dfs_t conf = args.conf;
 
     // variable to enable timeout
     bool is_timeout = false;
@@ -93,6 +94,8 @@ void *sm_server_thread(void *p_args)
     // variables to store socket read results
     char in_buf[PACKET_SIZE];
     int recvbytes;
+
+    DIR *dir = NULL;
 
     // // worker thread variables
     // pthread_t worker_thread_id[MAX_NUMBER_OF_THREADS];
@@ -127,6 +130,7 @@ void *sm_server_thread(void *p_args)
         {
             // current_event = evt_close_request;
             printf("%s#%d: Got EOF from client. Shutting down.\n", dfs_name, args.thread_id);
+            return 0;
         }
         else
         {
@@ -149,6 +153,71 @@ void *sm_server_thread(void *p_args)
         // (0) Debug print pkt
         packet_print(pkt);
 
+        // 4. Verify if the command has a valid user+pass combo
+        int is_match = 0;
+        printf("user_name: %s; length: %ld\r\n", pkt.user_name, strlen(pkt.user_name));
+        printf("password: %s; length: %ld\r\n", pkt.password, strlen(pkt.password));
+        printf("user1: %s; length: %ld\r\n", conf.user1, strlen(conf.user1));
+        printf("conf password: %s; length: %ld\r\n", conf.pass1, strlen(conf.pass1));
+        if(strcmp(pkt.user_name, conf.user1) == 0)
+        {
+            if(strcmp(pkt.password, conf.pass1) == 0)
+            {
+                is_match = 1;
+            }
+        }
+        else if(strcmp(pkt.user_name, conf.user2) == 0)
+        {
+            if(strcmp(pkt.password, conf.pass2) == 0)
+            {
+                is_match = 1;
+            }
+        }
+        else if(strcmp(pkt.user_name, conf.user3) == 0)
+        {
+            if(strcmp(pkt.password, conf.pass3) == 0)
+            {
+                is_match = 1;
+            }
+        }
+        else if(strcmp(pkt.user_name, conf.user4) == 0)
+        {
+            if(strcmp(pkt.password, conf.pass4) == 0)
+            {
+                is_match = 1;
+            }
+        }
+        else if(strcmp(pkt.user_name, conf.user5) == 0)
+        {
+            if(strcmp(pkt.password, conf.pass5) == 0)
+            {
+                is_match = 1;
+            }
+        }
+    
+        
+        // 5. If the request is from a known user, ensure there is a directory 
+        // for them, if not, create the directory.
+        if(is_match)
+        {
+            printf("Valid user found\r\n");
+            char directory_string[30];
+            sprintf(directory_string, "./%s/%s", dfs_name, pkt.user_name);
+            dir = file_open_dir(directory_string);
+            if(dir == NULL)
+            {
+                printf("Failed to open %s\r\n", directory_string);
+                sock_close(args.fd_client);
+                return 0;
+            }
+        }
+        else
+        {
+            printf("Invalid user detected. Closing connection to client\r\n");
+            sock_close(args.fd_client);
+            return 0;
+        }
+
         // (1) Process request
         switch(pkt.cmd_header)
         {
@@ -159,15 +228,15 @@ void *sm_server_thread(void *p_args)
                 // 1. Initialize variables
                 conf_results_t conf;
                 char file_name[50];
-                char file_path[60];
+                char file_path[70];
                 strcpy(conf.user_name, pkt.user_name);
                 strcpy(conf.password, pkt.password);
 
                 // 2. Check if a file chunk 1 exists
                 memset(file_name, 0, 50);
-                memset(file_path, 0, 60);
+                memset(file_path, 0, 70);
                 sprintf(file_name, ".%s.1", pkt.file_name);
-                sprintf(file_path, "./%s/%s", dfs_name, file_name);
+                sprintf(file_path, "./%s/%s/%s", dfs_name, pkt.user_name, file_name);
                 if(file_exists(file_path))
                 {
                     printf("found %s\r\n", file_path);
@@ -176,9 +245,9 @@ void *sm_server_thread(void *p_args)
 
                 // 3. Check if a file chunk 2 exists
                 memset(file_name, 0, 50);
-                memset(file_path, 0, 60);
+                memset(file_path, 0, 70);
                 sprintf(file_name, ".%s.2", pkt.file_name);
-                sprintf(file_path, "./%s/%s", dfs_name, file_name);
+                sprintf(file_path, "./%s/%s/%s", dfs_name, pkt.user_name, file_name);
                 if(file_exists(file_path))
                 {
                     printf("found %s\r\n", file_path);
@@ -187,9 +256,9 @@ void *sm_server_thread(void *p_args)
 
                 // 4. Check if a file chunk 3 exists
                 memset(file_name, 0, 50);
-                memset(file_path, 0, 60);
+                memset(file_path, 0, 70);
                 sprintf(file_name, ".%s.3", pkt.file_name);
-                sprintf(file_path, "./%s/%s", dfs_name, file_name);
+                sprintf(file_path, "./%s/%s/%s", dfs_name, pkt.user_name, file_name);
                 if(file_exists(file_path))
                 {
                     printf("found %s\r\n", file_path);
@@ -198,9 +267,9 @@ void *sm_server_thread(void *p_args)
 
                 // 5. Check if a file chunk 4 exists
                 memset(file_name, 0, 50);
-                memset(file_path, 0, 60);
+                memset(file_path, 0, 70);
                 sprintf(file_name, ".%s.4", pkt.file_name);
-                sprintf(file_path, "./%s/%s", dfs_name, file_name);
+                sprintf(file_path, "./%s/%s/%s", dfs_name, pkt.user_name, file_name);
                 if(file_exists(file_path))
                 {
                     printf("found %s\r\n", file_path);
@@ -695,7 +764,7 @@ void sm_receive(int fd, Packet pkt, int is_server)
     char file_path[FILE_NAME_SIZE + 21];
     if(is_server)
     {
-        sprintf(file_path, "./%s/%s", dfs_name, pkt.file_name);
+        sprintf(file_path, "./%s/%s/%s", dfs_name, pkt.user_name, pkt.file_name);
     }
     else
     {

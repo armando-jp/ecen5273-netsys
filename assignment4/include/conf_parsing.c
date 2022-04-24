@@ -61,6 +61,11 @@ void conf_parsing_remove_cr_nl(char *buf, int size)
         {
             buf[idx] = '\0';
         }
+
+        if(buf[idx] == ' ')
+        {
+            buf[idx] = '\0';
+        }
     }
 }
 

@@ -7,6 +7,7 @@
 #define MAX_IPv4_PRT (6)
 #define MAX_USR_NAME (11)
 #define MAX_USR_PASS (21)
+#define MAX_USERS    (5)
 
 typedef struct {
     char dfs1_addr[MAX_IPv4_STR]; 

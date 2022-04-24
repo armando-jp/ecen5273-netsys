@@ -57,7 +57,7 @@ int main(int argc, char *argv[])
     }
 
     // create thread
-    sm_server(sockfd);
+    sm_server(sockfd, conf);
 
     // shouldn't get here
     sock_close(sockfd);

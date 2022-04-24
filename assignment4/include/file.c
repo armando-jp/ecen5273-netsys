@@ -200,6 +200,7 @@ DIR *file_open_dir(const char *dir_name)
     DIR* dir = opendir(dir_name);
     if (dir) {
         /* Directory exists. */
+        return dir;
     } else if (ENOENT == errno) {
         dir = NULL;
         /* Directory does not exist. */
