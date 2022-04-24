@@ -11,6 +11,7 @@
 #include "file.h"
 #include "crc.h"
 #include "utils.h"
+#include "encryption.h"
 
 #define DEBUG_PRINT_DISPATCHER (0)
 #define DEBUG_PRINT_WORKER     (0)
@@ -248,10 +249,10 @@ void sm_get(char *file_name, conf_results_t conf, fd_dfs_t fd)
     // Generate the CMD header
     Packet pkt = packet_get_default();
 
-    strcpy(pkt.user_name, "Amy");
-    strcpy(pkt.password, "KoolPass");
+    strcpy(pkt.user_name, conf.user_name);
+    strcpy(pkt.password, conf.password);
     pkt.cmd_header = CMD_GET_PKT;
-    pkt.crc32_header = 1198457;
+    pkt.crc32_header = 9999;
     strcpy(pkt.file_name, file_name);
 
     // Generate packet to send
@@ -382,6 +383,12 @@ void sm_send(char *file_name, conf_results_t conf, int fd, int is_server)
         file_read(file_buffer, file, pkt.payload_header);
         memcpy(pkt.payload, file_buffer, pkt.payload_header);
 
+        if(is_server)
+        {
+            // 5.5 Encrypt payload
+            encrypt_decrypt(pkt.payload, pkt.payload_header, pkt.password, strlen(pkt.password));
+        }
+
         // 6. Turn packet into a bytes buffer
         out_buffer_size = packet_convert_to_buffer(pkt, out_buffer);
 
@@ -397,6 +404,13 @@ void sm_send(char *file_name, conf_results_t conf, int fd, int is_server)
         file_bytes_read = file_read(file_buffer, file, PAYLOAD_CHUNK_SIZE);
         printf("file_bytes_read: %d\r\n", file_bytes_read);
         memcpy(pkt.payload, file_buffer, PAYLOAD_CHUNK_SIZE);
+
+        if(is_server)
+        {
+            // 5.5 Encrypt payload
+            encrypt_decrypt(pkt.payload, pkt.payload_header, pkt.password, strlen(pkt.password));
+        }
+
         // 6. Turn packet into a bytes buffer
         out_buffer_size = packet_convert_to_buffer(pkt, out_buffer);
         printf("out_buffer_size: %d\r\n", out_buffer_size);
@@ -419,6 +433,12 @@ void sm_send(char *file_name, conf_results_t conf, int fd, int is_server)
                 // 11. Copy payload
                 file_read(file_buffer, file, (pkt.payload_header - file_bytes_sent));
 
+                if(is_server)
+                {
+                    // 11.5 Encrypt payload
+                    encrypt_decrypt(pkt.payload, (pkt.payload_header - file_bytes_sent), pkt.password, strlen(pkt.password));
+                }
+
                 // 12. Send the pure payload
                 bytes_sent = sock_send(fd, file_buffer, (pkt.payload_header - file_bytes_sent));
                 
@@ -429,6 +449,12 @@ void sm_send(char *file_name, conf_results_t conf, int fd, int is_server)
             {
                 file_read(file_buffer, file, PAYLOAD_CHUNK_SIZE);
                 file_bytes_sent += PAYLOAD_CHUNK_SIZE;
+
+                if(is_server)
+                {
+                    // 11.5 Encrypt payload
+                    encrypt_decrypt(pkt.payload, PAYLOAD_CHUNK_SIZE, pkt.password, strlen(pkt.password));
+                }
 
                 bytes_sent = sock_send(fd, file_buffer, PAYLOAD_CHUNK_SIZE);
                 printf("Sent: %d; File transfer: %d/%d sent\r\n", bytes_sent, file_bytes_sent, pkt.payload_header);
@@ -698,16 +724,27 @@ void sm_receive(int fd, Packet pkt, int is_server)
         // Write initial payload
         if(!already_exists)
         {
+            if(is_server)
+            {
+                // Decrypt payload
+                encrypt_decrypt(pkt.payload, file_bytes_recv, pkt.password, strlen(pkt.password));
+            }
+            // Save payload
             bytes_saved = file_write(pkt.payload, file, PAYLOAD_CHUNK_SIZE);
             printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
         }
-        file_bytes_recv = PAYLOAD_CHUNK_SIZE;
         while(file_bytes_recv < pkt.payload_header)
         {
             memset(in_buf, 0, PAYLOAD_CHUNK_SIZE);
             bytes_recv = sock_read(fd, in_buf, PAYLOAD_CHUNK_SIZE, 0);
             if(!already_exists)
             {
+                if(is_server)
+                {
+                    // Decrypt payload
+                    encrypt_decrypt(pkt.payload, pkt.payload_header, pkt.password, strlen(pkt.password));
+                }
+                // Save payload
                 bytes_saved += file_write(in_buf, file, bytes_recv);
                 printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
             }
@@ -719,6 +756,12 @@ void sm_receive(int fd, Packet pkt, int is_server)
         // Write initial payload
         if(!already_exists)
         {
+            if(is_server)
+            {
+                // Decrypt payload
+                encrypt_decrypt(pkt.payload, pkt.payload_header, pkt.password, strlen(pkt.password));
+            }
+            // Save payload
             bytes_saved = file_write((char *)pkt.payload, file, pkt.payload_header);
             printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
         }
