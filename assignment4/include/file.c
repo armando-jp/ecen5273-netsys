@@ -125,59 +125,59 @@ int file_delete(char * file_name)
     return remove(file_name);
 }
 
-// /*******************************************************************************
-//  * Functions for getting directory contents (LS)
-// *******************************************************************************/
-// static int file_select(const struct direct *entry)
-// {
-//     if((strcmp(entry->d_name, ".") == 0) || (strcmp(entry->d_name, "..") == 0))
-//     {
-//         return (0);
-//     }
-//     else
-//     {
-//         return (1);
-//     }
-// }
+/*******************************************************************************
+ * Functions for getting directory contents (LS)
+*******************************************************************************/
+static int file_select(const struct direct *entry)
+{
+    if((strcmp(entry->d_name, ".") == 0) || (strcmp(entry->d_name, "..") == 0))
+    {
+        return (0);
+    }
+    else
+    {
+        return (1);
+    }
+}
 
-// int file_get_ls(char* buffer, uint32_t buffer_size)
-// {
-//     int count;
-//     int i;
-//     struct direct **files;
+int file_get_ls(char* buffer, uint32_t buffer_size)
+{
+    int count;
+    int i;
+    struct direct **files;
+    memset(buffer, 0, buffer_size);
 
-//     memset(buffer, 0, buffer_size);
+    // 
+    if(!getcwd(buffer, sizeof(buffer)))
+    {
+        printf("Error getting pathname\n");
+        return -1;
+    }
+    // printf("Pathname obtained: %s\n", buffer);
 
-//     if(!getcwd(buffer, sizeof(buffer)))
-//     {
-//         printf("Error getting pathname\n");
-//         return -1;
-//     }
-//     // printf("Pathname obtained: %s\n", buffer);
+    count = scandir(buffer, &files, file_select, alphasort);
 
-//     count = scandir(buffer, &files, file_select, alphasort);
+    // If no files found,make a non-selectable menu item
+    if(count <= 0)
+    {
+        printf("No files in this directory\n");
+        return -1;
+    }
 
-//     // If no files found,make a non-selectable menu item
-//     if(count <= 0)
-//     {
-//         printf("No files in this directory\n");
-//         return -1;
-//     }
+    // save file names info buffer
+    memset(buffer, 0, buffer_size);
+    printf("Number of files = %d\n", count);
+    for (i=0; i < count; ++i)
+    {
+        strcat(buffer, files[i]->d_name);
+        strncat(buffer, " \n", 1);
 
-//     // save file names info buffer
-//     memset(buffer, 0, buffer_size);
-//     printf("Number of files = %d\n", count);
-//     for (i=0; i < count; ++i)
-//     {
-//         strcat(buffer, files[i]->d_name);
-//         strncat(buffer, " \n", 1);
+        //printf("%s  ", files[i]->d_name);
+    }
+    // printf("\n");
 
-//         //printf("%s  ", files[i]->d_name);
-//     }
-//     // printf("\n");
-
-//     return strlen(buffer);
-// }
+    return strlen(buffer);
+}
 
 // void file_print_ls_buf(char *buf)
 // {
@@ -216,6 +216,31 @@ DIR *file_open_dir(const char *dir_name)
     return dir;
 }
 
+int print_directory(char *path, char *result)
+{
+    DIR *d;
+    struct dirent *dir;
+    uint32_t bytes_written = 0;
+
+    d = opendir(path);
+    if (d) 
+    {
+        // Skip the first two results ('.' and '..')
+        dir = readdir(d);
+        dir = readdir(d);
+        while ((dir = readdir(d)) != NULL) 
+        {
+            strcpy(result+bytes_written, dir->d_name);
+            bytes_written += strlen(dir->d_name);
+            result[bytes_written] = ' ';
+            bytes_written++;
+            printf("%s\n", dir->d_name);
+        }
+        closedir(d);
+    } 
+
+    return bytes_written;
+}
 
 
 /*******************************************************************************
@@ -344,7 +369,7 @@ int file_split(char *file_name)
     {
         // read a chunk
         memset(buffer, 0, 512);
-        if(chunk2_size > 512)
+        if(chunk3_size > 512)
         {
             bytes = file_read(buffer, file, 512);
         }

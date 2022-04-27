@@ -40,6 +40,17 @@ int file_delete(char * file_name);
 *******************************************************************************/
 DIR *file_open_dir(const char *dir_name);
 
+/*******************************************************************************
+ * Functions for LS
+*******************************************************************************/
+// static int file_select(const struct direct *entry);
+int file_get_ls(char* buffer, uint32_t buffer_size);
+int print_directory(char *path, char *result);
 
+/*******************************************************************************
+ * Utils
+*******************************************************************************/
 int file_split(char *file_name);
+
+
 #endif /*INC_FILE_*/

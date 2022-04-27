@@ -59,5 +59,6 @@ int sm_merge(char *file_name, conf_results_t conf);
  ******************************************************************************/
 void sm_receive(int fd, Packet pkt, int is_server);
 int sm_receive_pieces(int fd);
+int sm_client_ls(fd_dfs_t fd, conf_results_t conf, char *path);
 
 #endif /*INC_STATE_MACINE_*/

@@ -80,7 +80,7 @@ int16_t get_command(char *buf, char *param)
     cmd = match_command(token);
 
     /* Early exit if argless command  */
-    if(cmd == 0 || cmd == CMD_EXIT || cmd == CMD_LS) 
+    if(cmd == 0 || cmd == CMD_EXIT) 
     {
         return (cmd);
     }
@@ -109,6 +109,20 @@ int16_t get_command(char *buf, char *param)
         // For CMD_PUT we expect
         // "put <file_name>"
         case CMD_PUT:
+            token = strtok(NULL, ws2);
+            strcpy(param, token);
+
+            // if <file_name> not found, return 0.
+            if (token == NULL) 
+            {
+                cmd = 0;
+            }
+
+        break;
+
+        // For CMD_LS we expect
+        // "ls <file_name>"
+        case CMD_LS:
             token = strtok(NULL, ws2);
             strcpy(param, token);
 

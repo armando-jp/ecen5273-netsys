@@ -149,12 +149,15 @@ int main(int argc, char *argv[])
 
             case CMD_PUT:
                 // 1. Create 4 files
-                if(file_split(user_param) == -1)
+                printf("Client: Splitting files\r\n");
+                int res = file_split(user_param);
+                if(res == -1)
                 {
                     printf("Failed to split %s\r\n", user_param);
                 }
-
+                
                 // 2. Calculate which server gets which piece
+                printf("Client: Calculating file distribution\r\n");
                 file = file_open(user_param, 0);
                 if(file == NULL)
                 {
@@ -166,6 +169,7 @@ int main(int argc, char *argv[])
                 printf("%u %% 4 = %d\r\n", crc32, crc32%4);
 
                 // 3. Send file chunks to servers
+                printf("Client: Distributing file chunks\r\n");
                 switch(crc32 % 4)
                 {
                     case 0:
@@ -345,7 +349,8 @@ int main(int argc, char *argv[])
             break;
 
             case CMD_LS:
-                printf("LS NOT IMPLEMENTED YET\r\n");
+                // printf("LS NOT IMPLEMENTED YET\r\n");
+                sm_client_ls(fd, conf, user_param);
                 // sm_client_ls();
             break;
 

@@ -97,6 +97,10 @@ void *sm_server_thread(void *p_args)
 
     DIR *dir = NULL;
 
+    char path_buffer[60];
+    char results_buffer[60];
+    char output_buffer[PACKET_SIZE];
+
     // // worker thread variables
     // pthread_t worker_thread_id[MAX_NUMBER_OF_THREADS];
     // worker_thread_args_t worker_args[MAX_NUMBER_OF_THREADS];
@@ -286,6 +290,25 @@ void *sm_server_thread(void *p_args)
 
             case CMD_LS_PKT:
                 printf("%s#%d: Made it to LS cmd\r\n", dfs_name, args.thread_id);
+
+                // Get ls
+                sprintf(path_buffer, "./%s/%s", dfs_name, pkt.user_name);
+                recvbytes = print_directory(path_buffer, results_buffer);
+                printf("Results:\r\n%s\r\nbytes = %d\r\n", results_buffer, recvbytes);
+
+                // Send results
+                pkt.payload_header = recvbytes;
+                memset(pkt.payload, 0, PAYLOAD_CHUNK_SIZE);
+                memcpy(pkt.payload, results_buffer, recvbytes);
+
+                printf("===payload: %s\r\n", pkt.payload);
+
+                recvbytes = packet_convert_to_buffer(pkt, output_buffer);
+                printf("message size = %d\r\n", recvbytes);
+
+                recvbytes = sock_send(args.fd_client, output_buffer, recvbytes);
+                printf("bytes sent = %d\r\n", recvbytes);
+            
             break;
 
             default:
@@ -505,7 +528,7 @@ void sm_send(char *file_name, conf_results_t conf, int fd, int is_server)
                 if(is_server)
                 {
                     // 11.5 Encrypt payload
-                    encrypt_decrypt(pkt.payload, (pkt.payload_header - file_bytes_sent), pkt.password, strlen(pkt.password));
+                    encrypt_decrypt(file_buffer, (pkt.payload_header - file_bytes_sent), pkt.password, strlen(pkt.password));
                 }
 
                 // 12. Send the pure payload
@@ -522,7 +545,7 @@ void sm_send(char *file_name, conf_results_t conf, int fd, int is_server)
                 if(is_server)
                 {
                     // 11.5 Encrypt payload
-                    encrypt_decrypt(pkt.payload, PAYLOAD_CHUNK_SIZE, pkt.password, strlen(pkt.password));
+                    encrypt_decrypt(file_buffer, PAYLOAD_CHUNK_SIZE, pkt.password, strlen(pkt.password));
                 }
 
                 bytes_sent = sock_send(fd, file_buffer, PAYLOAD_CHUNK_SIZE);
@@ -543,6 +566,9 @@ int sm_merge(char *file_name, conf_results_t conf)
     int data_chunk_size = 512;
     char data_chunk[data_chunk_size];
     int bytes;
+
+    // 0. Design
+    printf("Client: Attempting to merge file.\r\n");
 
     // 1. Check if the file already exists locally
     if(file_exists(file_name) == 1)
@@ -617,10 +643,19 @@ int sm_merge(char *file_name, conf_results_t conf)
         while(file_size > 0)
         {
             memset(data_chunk, 0, data_chunk_size);
-            bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            if(file_size > data_chunk_size)
+            {
+                bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            }
+            else
+            {
+                bytes = file_read(data_chunk, chunk_file, file_size);
+            }
+            
             bytes = file_write(data_chunk, new_file, bytes);
             file_size -= bytes;
             printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+            printf("Clinet: Bytes remaining = %d\r\n", file_size);
         }
 
     }
@@ -652,10 +687,19 @@ int sm_merge(char *file_name, conf_results_t conf)
         while(file_size > 0)
         {
             memset(data_chunk, 0, data_chunk_size);
-            bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            if(file_size > data_chunk_size)
+            {
+                bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            }
+            else
+            {
+                bytes = file_read(data_chunk, chunk_file, file_size);
+            }
+            
             bytes = file_write(data_chunk, new_file, bytes);
             file_size -= bytes;
             printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+            printf("Clinet: Bytes remaining = %d\r\n", file_size);
         }
 
     }
@@ -687,10 +731,19 @@ int sm_merge(char *file_name, conf_results_t conf)
         while(file_size > 0)
         {
             memset(data_chunk, 0, data_chunk_size);
-            bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            if(file_size > data_chunk_size)
+            {
+                bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            }
+            else
+            {
+                bytes = file_read(data_chunk, chunk_file, file_size);
+            }
+            
             bytes = file_write(data_chunk, new_file, bytes);
             file_size -= bytes;
             printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+            printf("Clinet: Bytes remaining = %d\r\n", file_size);
         }
 
     }
@@ -722,10 +775,19 @@ int sm_merge(char *file_name, conf_results_t conf)
         while(file_size > 0)
         {
             memset(data_chunk, 0, data_chunk_size);
-            bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            if(file_size > data_chunk_size)
+            {
+                bytes = file_read(data_chunk, chunk_file, data_chunk_size);
+            }
+            else
+            {
+                bytes = file_read(data_chunk, chunk_file, file_size);
+            }
+            
             bytes = file_write(data_chunk, new_file, bytes);
             file_size -= bytes;
             printf("Client: Wrote %d bytes of %s to %s\r\n", bytes, file_chunk_name, file_name);
+            printf("Clinet: Bytes remaining = %d\r\n", file_size);
         }
 
     }
@@ -786,6 +848,7 @@ void sm_receive(int fd, Packet pkt, int is_server)
         }
     }
 
+    // If the payload is going to require more than 1 transfer
     if(pkt.payload_header > PAYLOAD_CHUNK_SIZE)
     {
         file_bytes_recv = PAYLOAD_CHUNK_SIZE;
@@ -802,16 +865,25 @@ void sm_receive(int fd, Packet pkt, int is_server)
             bytes_saved = file_write(pkt.payload, file, PAYLOAD_CHUNK_SIZE);
             printf("Saved %d/%d bytes to %s\r\n", bytes_saved, pkt.payload_header, file_path);
         }
+
         while(file_bytes_recv < pkt.payload_header)
         {
             memset(in_buf, 0, PAYLOAD_CHUNK_SIZE);
-            bytes_recv = sock_read(fd, in_buf, PAYLOAD_CHUNK_SIZE, 0);
+            if((pkt.payload_header-file_bytes_recv) > PAYLOAD_CHUNK_SIZE)
+            {
+                bytes_recv = sock_read(fd, in_buf, PAYLOAD_CHUNK_SIZE, 0);
+            }
+            else
+            {
+                bytes_recv = sock_read(fd, in_buf, (pkt.payload_header-file_bytes_recv) , 0);
+            }
+            
             if(!already_exists)
             {
                 if(is_server)
                 {
                     // Decrypt payload
-                    encrypt_decrypt(pkt.payload, pkt.payload_header, pkt.password, strlen(pkt.password));
+                    encrypt_decrypt(in_buf, (pkt.payload_header-file_bytes_recv), pkt.password, strlen(pkt.password));
                 }
                 // Save payload
                 bytes_saved += file_write(in_buf, file, bytes_recv);
@@ -820,6 +892,7 @@ void sm_receive(int fd, Packet pkt, int is_server)
             file_bytes_recv += bytes_recv;
         }
     }
+    // payload requires only 1 transfer
     else
     {
         // Write initial payload
@@ -902,6 +975,186 @@ int sm_receive_pieces(int fd)
 
     // 4. Receive the file chunk
     sm_receive(fd, pkt, 0);
+
+    return 0;
+}
+
+int sm_client_ls(fd_dfs_t fd, conf_results_t conf, char *path)
+{
+    // 1. Create command.
+    // 2. Send command to all servers.
+    // 3. Wait for response from each server.
+    // 4. Process results.
+    // 5. Display result.
+
+    char in_buffer[PACKET_SIZE];
+
+    uint32_t bytes_sent = 0;
+    uint32_t bytes_recv = 0;
+    uint32_t packet_size = 0;
+    char out_buffer[PACKET_SIZE];
+    char *token;
+
+    // Generate the CMD header
+    Packet pkt = packet_get_default();
+    Packet pkt1 = packet_get_default();
+    Packet pkt2 = packet_get_default();
+    Packet pkt3 = packet_get_default();
+    Packet pkt4 = packet_get_default();
+
+    strcpy(pkt.user_name, conf.user_name);
+    strcpy(pkt.password, conf.password);
+    pkt.cmd_header = CMD_LS_PKT;
+    pkt.crc32_header = 9999;
+    strcpy(pkt.file_name, path);
+
+    /***************************************************************************
+     * Send CMD to DFS1, wait for DFS1 response
+     **************************************************************************/
+    memset(out_buffer, 0, PACKET_SIZE);
+    memset(in_buffer, 0, PACKET_SIZE);
+    // Generate packet to send
+    packet_size = packet_convert_to_buffer(pkt, out_buffer);
+
+    // Send the packet to DFS1
+    bytes_sent = sock_send(fd.dfs1, out_buffer, packet_size);
+
+    // Wait for response from DFS1
+    bytes_recv = sock_read(fd.dfs1, in_buffer, PACKET_SIZE, 0);
+    if(bytes_recv == -1)
+    {
+        printf("Client: Error receiving from DFS1\r\n");
+        return -1;
+    }
+
+    // Parse input
+    pkt1 = packet_parse_packet(in_buffer, PACKET_SIZE);
+    if(packet_is_default(pkt1) == true)
+    {
+        printf("Client: Failed to parse response from DFS1\r\n");
+    }
+    else
+    {
+        // Print result
+        printf("DFS1 Contents:\r\n");
+        token = strtok(pkt1.payload, " ");
+        do
+        {
+            printf("%s\r\n", token);
+        } while ((token = strtok(NULL, " ")) != NULL);
+        printf("\r\n");
+    }
+    
+    /***************************************************************************
+     * Send CMD to DFS2, wait for DFS2 response
+     **************************************************************************/
+    memset(out_buffer, 0, PACKET_SIZE);
+    memset(in_buffer, 0, PACKET_SIZE);
+    // Generate packet to send
+    packet_size = packet_convert_to_buffer(pkt, out_buffer);
+
+    // Send the packet to DFS2
+    bytes_sent = sock_send(fd.dfs2, out_buffer, packet_size);
+
+    // Wait for response from DFS2
+    bytes_recv = sock_read(fd.dfs2, in_buffer, PACKET_SIZE, 0);
+    if(bytes_recv == -1)
+    {
+        printf("Client: Error receiving from DFS2\r\n");
+        return -1;
+    }
+
+    // Parse input
+    pkt2 = packet_parse_packet(in_buffer, PACKET_SIZE);
+    if(packet_is_default(pkt2) == true)
+    {
+        printf("Client: Failed to parse response from DFS2\r\n");
+    }
+    else
+    {
+        // Print result
+        printf("DFS2 Contents:\r\n");
+        token = strtok(pkt2.payload, " ");
+        do
+        {
+            printf("%s\r\n", token);
+        } while ((token = strtok(NULL, " ")) != NULL);
+        printf("\r\n");
+    }
+
+    /***************************************************************************
+     * Send CMD to DFS3, wait for DFS3 response
+     **************************************************************************/
+    memset(out_buffer, 0, PACKET_SIZE);
+    memset(in_buffer, 0, PACKET_SIZE);
+    // Generate packet to send
+    packet_size = packet_convert_to_buffer(pkt, out_buffer);
+
+    // Send the packet to DFS3
+    bytes_sent = sock_send(fd.dfs3, out_buffer, packet_size);
+
+    // Wait for response from DFS3
+    bytes_recv = sock_read(fd.dfs3, in_buffer, PACKET_SIZE, 0);
+    if(bytes_recv == -1)
+    {
+        printf("Client: Error receiving from DFS3\r\n");
+        return -1;
+    }
+
+    // Parse input
+    pkt3 = packet_parse_packet(in_buffer, PACKET_SIZE);
+    if(packet_is_default(pkt3) == true)
+    {
+        printf("Client: Failed to parse response from DFS3\r\n");
+    }
+    else
+    {
+        // Print result
+        printf("DFS3 Contents:\r\n");
+        token = strtok(pkt3.payload, " ");
+        do
+        {
+            printf("%s\r\n", token);
+        } while ((token = strtok(NULL, " ")) != NULL);
+        printf("\r\n");
+    }
+
+    /***************************************************************************
+     * Send CMD to DFS4, wait for DFS4 response
+     **************************************************************************/
+    memset(out_buffer, 0, PACKET_SIZE);
+    memset(in_buffer, 0, PACKET_SIZE);
+    // Generate packet to send
+    packet_size = packet_convert_to_buffer(pkt, out_buffer);
+
+    // Send the packet to DFS4
+    bytes_sent = sock_send(fd.dfs4, out_buffer, packet_size);
+
+    // Wait for response from DFS4
+    bytes_recv = sock_read(fd.dfs4, in_buffer, PACKET_SIZE, 0);
+    if(bytes_recv == -1)
+    {
+        printf("Client: Error receiving from DFS4\r\n");
+        return -1;
+    }
+
+    // Parse input
+    pkt4 = packet_parse_packet(in_buffer, PACKET_SIZE);
+    if(packet_is_default(pkt4) == true)
+    {
+        printf("Client: Failed to parse response from DFS4\r\n");
+    }
+    else
+    {
+        // Print result
+        printf("DFS4 Contents:\r\n");
+        token = strtok(pkt4.payload, " ");
+        do
+        {
+            printf("%s\r\n", token);
+        } while ((token = strtok(NULL, " ")) != NULL);
+        printf("\r\n");
+    }
 
     return 0;
 }
